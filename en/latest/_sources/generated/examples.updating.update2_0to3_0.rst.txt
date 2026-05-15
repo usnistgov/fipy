@@ -4,20 +4,3 @@ examples.updating.update2\_0to3\_0
 .. automodule:: examples.updating.update2_0to3_0
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

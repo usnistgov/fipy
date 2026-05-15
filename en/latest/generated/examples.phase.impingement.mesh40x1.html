@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.impingement.mesh40x1 &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.phase.impingement.mesh40x1 &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.impingement.mesh40x1.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.phase.impingement" href="examples.phase.impingement.html" />
     <link rel="next" title="examples.phase.impingement.test" href="examples.phase.impingement.test.html" />
     <link rel="prev" title="examples.phase.impingement.mesh20x20" href="examples.phase.impingement.mesh20x20.html" />
@@ -119,13 +119,13 @@
               <div class="body" role="main">
 		
   <section id="module-examples.phase.impingement.mesh40x1">
-<span id="examples-phase-impingement-mesh40x1"></span><h1>examples.phase.impingement.mesh40x1<a class="headerlink" href="#module-examples.phase.impingement.mesh40x1" title="Permalink to this heading">¶</a></h1>
+<span id="examples-phase-impingement-mesh40x1"></span><h1>examples.phase.impingement.mesh40x1<a class="headerlink" href="#module-examples.phase.impingement.mesh40x1" title="Link to this heading">¶</a></h1>
 <p>Solve for the impingement of two grains in one dimension.</p>
 <p>In this example we solve a coupled phase and orientation equation on a one
 dimensional grid. This is another aspect of the model of Warren, Kobayashi,
-Lobkovsky and Carter <span id="id1">[<a class="reference internal" href="../references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span></p>
-<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">ModularVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ExplicitDiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">GeneralSolver</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+Lobkovsky and Carter <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span></p>
+<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">ModularVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ExplicitDiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">GeneralSolver</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">40</span>
@@ -259,7 +259,7 @@ evaluates the gradient without modular arithmetic.</p>
 </div>
 <p>If the example is run interactively, we create viewers for the phase
 and orientation variables.</p>
-<span class="target" id="index-4"></span><div class="doctest highlight-default notranslate" id="index-5"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<div class="doctest highlight-default notranslate" id="index-5"><span id="index-4"></span><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">phaseViewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">datamin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">thetaProductViewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
 <span class="gp">... </span>                                <span class="n">datamin</span><span class="o">=-</span><span class="n">numerix</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="n">numerix</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
@@ -287,7 +287,7 @@ so we require a stricter tolerance.</p>
 with <code class="docutils literal notranslate"><span class="pre">steps</span> <span class="pre">=</span> <span class="pre">10</span></code> with a FORTRAN code written by Ryo Kobayashi for
 phase field modeling. The following code opens the file <code class="file docutils literal notranslate"><span class="pre">mesh40x1.gz</span></code>
 extracts the data and compares it with the <code class="docutils literal notranslate"><span class="pre">theta</span></code> variable.</p>
-<div class="doctest highlight-default notranslate" id="index-6"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<div class="doctest highlight-default notranslate" id="index-6"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">testData</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.gz&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">testData</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">testData</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">theta</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">testData</span><span class="p">))</span>
@@ -298,8 +298,8 @@ extracts the data and compares it with the <code class="docutils literal notrans
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -308,7 +308,7 @@ extracts the data and compares it with the <code class="docutils literal notrans
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

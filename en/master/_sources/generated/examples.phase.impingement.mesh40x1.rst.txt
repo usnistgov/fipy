@@ -4,20 +4,3 @@ examples.phase.impingement.mesh40x1
 .. automodule:: examples.phase.impingement.mesh40x1
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

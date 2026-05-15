@@ -4,20 +4,3 @@ examples.levelSet.electroChem.trenchMesh
 .. automodule:: examples.levelSet.electroChem.trenchMesh
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

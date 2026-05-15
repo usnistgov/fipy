@@ -4,20 +4,3 @@ fipy.variables.interfaceAreaVariable
 .. automodule:: fipy.variables.interfaceAreaVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

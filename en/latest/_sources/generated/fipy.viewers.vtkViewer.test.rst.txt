@@ -4,20 +4,3 @@ fipy.viewers.vtkViewer.test
 .. automodule:: fipy.viewers.vtkViewer.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

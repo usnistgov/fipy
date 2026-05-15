@@ -4,26 +4,9 @@ fipy.terms.residualTerm
 .. automodule:: fipy.terms.residualTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       ResidualTerm
    
-   
-
-   
-   
-   
-
-
-

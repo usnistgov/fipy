@@ -4,26 +4,9 @@ fipy.solvers.pyamgx.classicalAMGSolver
 .. automodule:: fipy.solvers.pyamgx.classicalAMGSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       ClassicalAMGSolver
    
-   
-
-   
-   
-   
-
-
-

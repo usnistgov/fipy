@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.flow.stokesCavity &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.flow.stokesCavity &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.flow.stokesCavity.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.flow" href="examples.flow.html" />
     <link rel="next" title="examples.flow.test" href="examples.flow.test.html" />
     <link rel="prev" title="examples.flow" href="examples.flow.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.flow.stokesCavity">
-<span id="examples-flow-stokescavity"></span><h1>examples.flow.stokesCavity<a class="headerlink" href="#module-examples.flow.stokesCavity" title="Permalink to this heading">¶</a></h1>
+<span id="examples-flow-stokescavity"></span><h1>examples.flow.stokesCavity<a class="headerlink" href="#module-examples.flow.stokesCavity" title="Link to this heading">¶</a></h1>
 <p>Solve the Navier-Stokes equation in the viscous limit.</p>
 <p>Many thanks to Benny Malengier &lt;<a class="reference external" href="mailto:bm&#37;&#52;&#48;cage&#46;ugent&#46;be">bm<span>&#64;</span>cage<span>&#46;</span>ugent<span>&#46;</span>be</a>&gt; for reworking this example and
 actually making it work correctly… see <a class="reference external" href="https://github.com/usnistgov/fipy/issues/209">#209</a></p>
@@ -136,7 +136,7 @@ of unit dimensions with a moving lid of unit speed.  This example
 uses the SIMPLE algorithm with Rhie-Chow interpolation for collocated grids to solve
 the pressure-momentum coupling. Some of the details of the
 algorithm will be highlighted below but a good reference for this
-material is Ferziger and Peric <span id="id2">[<a class="reference internal" href="../references.html#id29" title="J. H. Ferziger and M. Perić. Computational Methods for Fluid Dynamics. Springer, 1996.">25</a>]</span> and Rossow <span id="id3">[<a class="reference internal" href="../references.html#id30" title="C.-C. Rossow. A blended pressure/density based method for the computation of incompressible and compressible flows. Journal of Computational Physics, 185(2):375-398, 2003. doi:10.1016/S0021-9991(02)00059-1.">26</a>]</span>. The
+material is Ferziger and Peric <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id29" title="J. H. Ferziger and M. Perić. Computational Methods for Fluid Dynamics. Springer, 1996.">25</a>]</span> and Rossow <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../references.html#id30" title="C.-C. Rossow. A blended pressure/density based method for the computation of incompressible and compressible flows. Journal of Computational Physics, 185(2):375-398, 2003. doi:10.1016/S0021-9991(02)00059-1.">26</a>]</span>. The
 solution has a high degree of error close to the corners of the
 domain for the pressure but does a reasonable job of predicting
 the velocities away from the boundaries. A number of aspects of
@@ -187,8 +187,8 @@ and <a class="reference internal" href="../glossary.html#term-FiPy"><span class=
 </tbody>
 </table>
 <p>To start, some parameters are declared.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">FaceVariable</span><span class="p">,</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">FaceVariable</span><span class="p">,</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -296,7 +296,7 @@ This formula has the consequence that the velocity on a face depends not only
 on the pressure of the adjacent cells, but also on the cells further away, which
 removes the unphysical pressure oscillations. We start by introducing needed
 terms</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.faceGradVariable</span> <span class="kn">import</span> <span class="n">_FaceGradVariable</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.variables.faceGradVariable</span><span class="w"> </span><span class="kn">import</span> <span class="n">_FaceGradVariable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">cellVolumes</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Volume&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">contrvolume</span><span class="o">=</span><span class="n">volume</span><span class="o">.</span><span class="n">arithmeticFaceValue</span>
 </pre></div>
@@ -386,13 +386,14 @@ we allow it to iterate longer to drive to a more demanding tolerance.</p>
 <span class="gp">... </span>            <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/cavity.png"><img alt="flow field for moving lid problem" class="align-center" src="../_images/cavity.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/cavity.png"><img alt="flow field for moving lid problem" class="align-center" src="../_images/cavity.png" style="width: 90%;" />
+</a>
 <p>Test values in the last cell.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">globalValue</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">162.790867927</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">globalValue</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">162.790867927</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">xVelocity</span><span class="o">.</span><span class="n">globalValue</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.265072740929</span><span class="p">))</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">xVelocity</span><span class="o">.</span><span class="n">globalValue</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.265072740929</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">yVelocity</span><span class="o">.</span><span class="n">globalValue</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.150290488304</span><span class="p">))</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">yVelocity</span><span class="o">.</span><span class="n">globalValue</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.150290488304</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
@@ -400,8 +401,8 @@ we allow it to iterate longer to drive to a more demanding tolerance.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -410,7 +411,7 @@ we allow it to iterate longer to drive to a more demanding tolerance.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

@@ -4,20 +4,3 @@ examples.cahnHilliard.sphereDaemon
 .. automodule:: examples.cahnHilliard.sphereDaemon
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

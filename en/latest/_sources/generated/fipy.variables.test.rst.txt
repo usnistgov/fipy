@@ -4,20 +4,3 @@ fipy.variables.test
 .. automodule:: fipy.variables.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

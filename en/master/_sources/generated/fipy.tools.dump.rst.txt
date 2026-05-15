@@ -4,11 +4,6 @@ fipy.tools.dump
 .. automodule:: fipy.tools.dump
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -16,15 +11,3 @@ fipy.tools.dump
       read
       write
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,26 +4,9 @@ fipy.terms.firstOrderAdvectionTerm
 .. automodule:: fipy.terms.firstOrderAdvectionTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       FirstOrderAdvectionTerm
    
-   
-
-   
-   
-   
-
-
-

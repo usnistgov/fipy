@@ -4,20 +4,3 @@ fipy.matrices.test
 .. automodule:: fipy.matrices.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

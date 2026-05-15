@@ -4,15 +4,6 @@ fipy.meshes.periodicGrid3D
 .. automodule:: fipy.meshes.periodicGrid3D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -25,11 +16,3 @@ fipy.meshes.periodicGrid3D
       PeriodicGrid3DTopBottom
       PeriodicGrid3DTopBottomFrontBack
    
-   
-
-   
-   
-   
-
-
-

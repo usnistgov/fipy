@@ -4,32 +4,14 @@ examples.levelSet
 .. automodule:: examples.levelSet
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   examples.levelSet.advection
-   examples.levelSet.distanceFunction
-   examples.levelSet.electroChem
-   examples.levelSet.surfactant
-   examples.levelSet.test
-
+   advection
+   distanceFunction
+   electroChem
+   surfactant
+   test

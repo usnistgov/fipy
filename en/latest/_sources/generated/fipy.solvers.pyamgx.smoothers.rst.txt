@@ -4,26 +4,9 @@ fipy.solvers.pyamgx.smoothers
 .. automodule:: fipy.solvers.pyamgx.smoothers
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       Smoother
    
-   
-
-   
-   
-   
-
-
-

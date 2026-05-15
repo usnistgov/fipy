@@ -4,20 +4,3 @@ examples.convection.exponential1DSource.tri2D
 .. automodule:: examples.convection.exponential1DSource.tri2D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

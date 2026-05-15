@@ -4,26 +4,9 @@ fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer
 .. automodule:: fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       MatplotlibSparseMatrixViewer
    
-   
-
-   
-   
-   
-
-
-

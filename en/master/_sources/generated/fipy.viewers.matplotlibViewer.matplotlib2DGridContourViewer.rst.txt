@@ -4,26 +4,9 @@ fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer
 .. automodule:: fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       Matplotlib2DGridContourViewer
    
-   
-
-   
-   
-   
-
-
-

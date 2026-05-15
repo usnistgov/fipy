@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.mesh20x20 &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.diffusion.mesh20x20 &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.diffusion.mesh20x20.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion" href="examples.diffusion.html" />
     <link rel="next" title="examples.diffusion.mesh20x20Coupled" href="examples.diffusion.mesh20x20Coupled.html" />
     <link rel="prev" title="examples.diffusion.mesh1D" href="examples.diffusion.mesh1D.html" />
@@ -116,12 +116,12 @@
               <div class="body" role="main">
 		
   <section id="module-examples.diffusion.mesh20x20">
-<span id="examples-diffusion-mesh20x20"></span><h1>examples.diffusion.mesh20x20<a class="headerlink" href="#module-examples.diffusion.mesh20x20" title="Permalink to this heading">¶</a></h1>
+<span id="examples-diffusion-mesh20x20"></span><h1>examples.diffusion.mesh20x20<a class="headerlink" href="#module-examples.diffusion.mesh20x20" title="Link to this heading">¶</a></h1>
 <p>Solve a two-dimensional diffusion problem in a square domain.</p>
 <p>This example solves a diffusion problem and demonstrates the use of
 applying boundary condition patches.</p>
-<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">20</span>
@@ -178,13 +178,14 @@ are automatically applied to the top-right and bottom-left corners.</p>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh20x20transient.png"><img alt="solution to diffusion problem on a 2D domain with some Dirichlet boundaries" class="align-center" src="../_images/mesh20x20transient.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh20x20transient.png"><img alt="solution to diffusion problem on a 2D domain with some Dirichlet boundaries" class="align-center" src="../_images/mesh20x20transient.png" style="width: 90%;" />
+</a>
 <p>We can test the value of the bottom-right corner cell.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">(((</span><span class="n">L</span><span class="p">,),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,))),</span> <span class="n">valueBottomRight</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-2</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Implicit transient diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
@@ -196,13 +197,14 @@ are automatically applied to the top-right and bottom-left corners.</p>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh20x20steadyState.png"><img alt="stead-state solution to diffusion problem on a 2D domain with some Dirichlet boundaries" class="align-center" src="../_images/mesh20x20steadyState.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh20x20steadyState.png"><img alt="stead-state solution to diffusion problem on a 2D domain with some Dirichlet boundaries" class="align-center" src="../_images/mesh20x20steadyState.png" style="width: 90%;" />
+</a>
 <p>and test the value of the bottom-right corner cell.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">(((</span><span class="n">L</span><span class="p">,),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,))),</span> <span class="n">valueBottomRight</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-2</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Implicit steady-state diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
@@ -211,8 +213,8 @@ are automatically applied to the top-right and bottom-left corners.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -221,7 +223,7 @@ are automatically applied to the top-right and bottom-left corners.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

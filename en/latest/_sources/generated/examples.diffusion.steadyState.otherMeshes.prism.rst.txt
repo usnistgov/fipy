@@ -4,20 +4,3 @@ examples.diffusion.steadyState.otherMeshes.prism
 .. automodule:: examples.diffusion.steadyState.otherMeshes.prism
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

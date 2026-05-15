@@ -4,26 +4,9 @@ fipy.matrices.offsetSparseMatrix
 .. automodule:: fipy.matrices.offsetSparseMatrix
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       OffsetSparseMatrix
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

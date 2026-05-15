@@ -35,25 +35,25 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>General Conservation Equation &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>General Conservation Equation &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/numerical/equation.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="Theoretical and Numerical Background" href="index.html" />
-    <link rel="next" title="Finite Volume Method" href="discret.html" />
+    <link rel="next" title="Numerical Schemes" href="scheme.html" />
     <link rel="prev" title="Theoretical and Numerical Background" href="index.html" />
   
  
@@ -81,7 +81,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="discret.html" title="Finite Volume Method"
+          <a href="scheme.html" title="Numerical Schemes"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Theoretical and Numerical Background"
@@ -117,7 +117,7 @@
               <div class="body" role="main">
 		
   <section id="general-conservation-equation">
-<span id="sec-generalconservationequation"></span><h1>General Conservation Equation<a class="headerlink" href="#general-conservation-equation" title="Permalink to this heading">¶</a></h1>
+<span id="sec-generalconservationequation"></span><h1>General Conservation Equation<a class="headerlink" href="#general-conservation-equation" title="Link to this heading">¶</a></h1>
 <p>The equations that model the evolution of physical, chemical and
 biological systems often have a remarkably universal form.  Indeed,
 PDEs have proven necessary to model complex physical systems and
@@ -125,7 +125,7 @@ processes that involve variations in both space and time.  In general,
 given a variable of interest <span class="math notranslate nohighlight">\(\phi\)</span> such as species concentration,
 pH, or temperature, there exists an evolution equation of the form</p>
 <div class="math notranslate nohighlight" id="equation-general-equation">
-<span class="eqno">(1)<a class="headerlink" href="#equation-general-equation" title="Permalink to this equation">¶</a></span>\[\frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)\]</div>
+<span class="eqno">(1)<a class="headerlink" href="#equation-general-equation" title="Link to this equation">¶</a></span>\[\frac{\partial \phi}{\partial t} = H(\phi, \lambda_i)\]</div>
 <p>where <span class="math notranslate nohighlight">\(H\)</span> is a function of <span class="math notranslate nohighlight">\(\phi\)</span>, other state variables
 <span class="math notranslate nohighlight">\(\lambda_i\)</span>, and higher order derivatives of all of these variables.
 Examples of such systems are wide ranging, but include problems that
@@ -136,7 +136,7 @@ Schrödinger equation.</p>
 <p>A general conservation equation, solved using <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, can include any
 combination of the following terms,</p>
 <div class="math notranslate nohighlight" id="equation-num-gen">
-<span class="eqno">(2)<a class="headerlink" href="#equation-num-gen" title="Permalink to this equation">¶</a></span>\[\underbrace{
+<span class="eqno">(2)<a class="headerlink" href="#equation-num-gen" title="Link to this equation">¶</a></span>\[\underbrace{
   \frac{\partial (\rho \phi)}{\partial t}
 }_{\text{transient}}
 +
@@ -164,18 +164,18 @@ For example, the diffusion term can represent conventional Fickian
 diffusion [<em>i.e.</em>, <span class="math notranslate nohighlight">\(\nabla\cdot(\Gamma\nabla\phi)\)</span>] when the
 exponent <span class="math notranslate nohighlight">\(n = 1\)</span> or a Cahn-Hilliard term [<em>i.e.</em>, <span class="math notranslate nohighlight">\(\nabla
 \cdot (\Gamma_1 \nabla [ \nabla \cdot \Gamma_2 \nabla \phi ) ] )\)</span>
-<span id="id1">[<a class="reference internal" href="../references.html#id16" title="John W. Cahn and John E. Hilliard. Free energy of a nonuniform system. I. Interfacial free energy. Journal of Chemical Physics, 28(2):258-267, 1958.">18</a>]</span> <span id="id2">[<a class="reference internal" href="../references.html#id17" title="John W. Cahn. Free energy of a nonuniform system. II. Thermodynamic basis. Journal of Chemical Physics, 30(5):1121-1124, 1959.">19</a>]</span> <span id="id3">[<a class="reference internal" href="../references.html#id18" title="John W. Cahn and John E. Hilliard. Free energy of a nonuniform system. III. Nucleation in a two-component incompressible fluid. Journal of Chemical Physics, 31(3):688-699, 1959.">20</a>]</span>] when <span class="math notranslate nohighlight">\(n = 2\)</span>,
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id16" title="John W. Cahn and John E. Hilliard. Free energy of a nonuniform system. I. Interfacial free energy. Journal of Chemical Physics, 28(2):258-267, 1958.">18</a>]</span> <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id17" title="John W. Cahn. Free energy of a nonuniform system. II. Thermodynamic basis. Journal of Chemical Physics, 30(5):1121-1124, 1959.">19</a>]</span> <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../references.html#id18" title="John W. Cahn and John E. Hilliard. Free energy of a nonuniform system. III. Nucleation in a two-component incompressible fluid. Journal of Chemical Physics, 31(3):688-699, 1959.">20</a>]</span>] when <span class="math notranslate nohighlight">\(n = 2\)</span>,
 or a phase field crystal term [<em>i.e.</em>, <span class="math notranslate nohighlight">\(\nabla \cdot (\Gamma_1 \nabla
 [ \nabla \cdot \Gamma_2 \nabla \{ \nabla \cdot \Gamma_3 \nabla \phi ) \} )
-] )\)</span> <span id="id4">[<a class="reference internal" href="../references.html#id34" title="K. R Elder, K Thornton, and J. J Hoyt. The kirkendall effect in the phase field crystal model. Philosophical Magagazine, 91(1):151–164, Jan 2011. doi:10.1080/14786435.2010.506427.">21</a>]</span>] when <span class="math notranslate nohighlight">\(n = 3\)</span>, although spectral methods are probably a
+] )\)</span> <span class="bibtex-citation" id="id4">[<a class="reference internal" href="../references.html#id34" title="K. R Elder, K Thornton, and J. J Hoyt. The kirkendall effect in the phase field crystal model. Philosophical Magagazine, 91(1):151–164, Jan 2011. doi:10.1080/14786435.2010.506427.">21</a>]</span>] when <span class="math notranslate nohighlight">\(n = 3\)</span>, although spectral methods are probably a
 better approach. Higher order terms (<span class="math notranslate nohighlight">\(n &gt; 3\)</span>) are also possible, but
 the matrix condition number becomes quite poor.</p>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -184,15 +184,15 @@ the matrix condition number becomes quite poor.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Theoretical and Numerical Background</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="discret.html"
-                        title="next chapter">Finite Volume Method</a></p>
+  <p class="topless"><a href="scheme.html"
+                        title="next chapter">Numerical Schemes</a></p>
 </div>
   <div class="sphinxsidebarsection">
   <h3>This Page</h3>

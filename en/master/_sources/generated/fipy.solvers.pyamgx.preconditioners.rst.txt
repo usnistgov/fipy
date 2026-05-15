@@ -4,15 +4,6 @@ fipy.solvers.pyamgx.preconditioners
 .. automodule:: fipy.solvers.pyamgx.preconditioners
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -29,11 +20,3 @@ fipy.solvers.pyamgx.preconditioners
       PolynomialPreconditioner
       PyAMGXPreconditioner
    
-   
-
-   
-   
-   
-
-
-

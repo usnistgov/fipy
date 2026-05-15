@@ -4,20 +4,3 @@ examples.diffusion.explicit.mesh1D
 .. automodule:: examples.diffusion.explicit.mesh1D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

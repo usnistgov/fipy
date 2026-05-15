@@ -4,20 +4,3 @@ fipy.viewers.test
 .. automodule:: fipy.viewers.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

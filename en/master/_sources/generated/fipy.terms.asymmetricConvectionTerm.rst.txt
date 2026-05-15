@@ -4,20 +4,3 @@ fipy.terms.asymmetricConvectionTerm
 .. automodule:: fipy.terms.asymmetricConvectionTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

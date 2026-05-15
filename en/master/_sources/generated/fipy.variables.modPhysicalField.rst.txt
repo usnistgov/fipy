@@ -4,20 +4,3 @@ fipy.variables.modPhysicalField
 .. automodule:: fipy.variables.modPhysicalField
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

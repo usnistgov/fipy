@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.mesh1D &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.diffusion.mesh1D &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.diffusion.mesh1D.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion" href="examples.diffusion.html" />
     <link rel="next" title="examples.diffusion.mesh20x20" href="examples.diffusion.mesh20x20.html" />
     <link rel="prev" title="examples.diffusion.explicit.tri2D" href="examples.diffusion.explicit.tri2D.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.diffusion.mesh1D">
-<span id="examples-diffusion-mesh1d"></span><h1>examples.diffusion.mesh1D<a class="headerlink" href="#module-examples.diffusion.mesh1D" title="Permalink to this heading">¶</a></h1>
+<span id="examples-diffusion-mesh1d"></span><h1>examples.diffusion.mesh1D<a class="headerlink" href="#module-examples.diffusion.mesh1D" title="Link to this heading">¶</a></h1>
 <p>Solve a one-dimensional diffusion equation under different conditions.</p>
 <p>To run this example from the base <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> directory, type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python examples/diffusion/mesh1D.py
@@ -130,12 +130,12 @@ along with prompting messages in the terminal.</p>
 It describes different approaches to a 1D diffusion problem with constant
 diffusivity and fixed value boundary conditions such that,</p>
 <div class="math notranslate nohighlight" id="equation-eq-diffusion-mesh1d-constantd">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-diffusion-mesh1d-constantd" title="Permalink to this equation">¶</a></span>\[\frac{\partial \phi}{\partial t} = D \nabla^2 \phi.\]</div>
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-diffusion-mesh1d-constantd" title="Link to this equation">¶</a></span>\[\frac{\partial \phi}{\partial t} = D \nabla^2 \phi.\]</div>
 <p>The first step is to define a one dimensional domain with 50 solution
 points. The <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid1D</span></code> object represents a linear structured grid. The
 parameter <code class="docutils literal notranslate"><span class="pre">dx</span></code> refers to the grid spacing (set to unity here).</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">FaceVariable</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">ExplicitDiffusionTerm</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">FaceVariable</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">ExplicitDiffusionTerm</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">50</span>
@@ -237,8 +237,8 @@ the result is tested against the expected profile:</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span> 
-<span class="gp">... </span>    <span class="n">phiAnalytical</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">erf</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">t</span><span class="p">))))</span> 
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span>
+<span class="gp">... </span>    <span class="n">phiAnalytical</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">erf</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">t</span><span class="p">))))</span>
 <span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The SciPy library is not available to test the solution to </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">the transient diffusion equation&quot;</span><span class="p">)</span>
@@ -252,16 +252,17 @@ the result is tested against the expected profile:</p>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">7e-4</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">7e-4</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Explicit transient diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1Dexplicit.png"><img alt="solution to diffusion problem evolved by explicit time steps" class="align-center" src="../_images/mesh1Dexplicit.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1Dexplicit.png"><img alt="solution to diffusion problem evolved by explicit time steps" class="align-center" src="../_images/mesh1Dexplicit.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>Although explicit finite differences are easy to program, we have just seen
 that this 1D transient diffusion problem is limited to taking rather small
@@ -294,16 +295,17 @@ difficult to program than the “explicit” form that we just used, but in
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">2e-2</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">2e-2</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Implicit transient diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1Dimplicit.png"><img alt="solution to diffusion problem evolved by implicit time steps" class="align-center" src="../_images/mesh1Dimplicit.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1Dimplicit.png"><img alt="solution to diffusion problem evolved by implicit time steps" class="align-center" src="../_images/mesh1Dimplicit.png" style="width: 90%;" />
+</a>
 <p>Note that although much larger <em>stable</em> timesteps can be taken with this
 implicit version (there is, in fact, no limit to how large an implicit
 timestep you can take for this particular problem), the solution is less
@@ -325,7 +327,7 @@ above. This can be rendered in <a class="reference internal" href="../glossary.h
 </div>
 <p>and apply the Crank-Nicholson scheme until the end, when we apply one step
 of the fully implicit scheme to drive down the error
-(see, <em>e.g.</em>, section 19.2 of <span id="id1">[<a class="reference internal" href="../references.html#id10" title="William H. Press, Saul A. Teukolsky, William T. Vetterling, and Brian P. Flannery. Numerical Recipes in C: the Art of Scientific Computing. Cambridge University Press, 2nd edition, 1999.">24</a>]</span>).</p>
+(see, <em>e.g.</em>, section 19.2 of <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id10" title="William H. Press, Saul A. Teukolsky, William T. Vetterling, and Brian P. Flannery. Numerical Recipes in C: the Art of Scientific Computing. Cambridge University Press, 2nd edition, 1999.">24</a>]</span>).</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">eqCN</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
 <span class="gp">... </span>               <span class="n">dt</span><span class="o">=</span><span class="n">timeStepDuration</span><span class="p">)</span>
@@ -337,11 +339,11 @@ of the fully implicit scheme to drive down the error
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Crank-Nicholson transient diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
@@ -371,12 +373,13 @@ of <span class="math notranslate nohighlight">\(10^{-10}\)</span>.</p>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Implicit steady-state diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1DsteadyState.png"><img alt="steady-state solution to diffusion problem" class="align-center" src="../_images/mesh1DsteadyState.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1DsteadyState.png"><img alt="steady-state solution to diffusion problem" class="align-center" src="../_images/mesh1DsteadyState.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>Often, boundary conditions may be functions of another variable in the
 system or of time.</p>
@@ -410,12 +413,13 @@ condition will automatically update,</p>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Time-dependent boundary condition. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1DtimedBC.png"><img alt="solution to diffusion problem with a time-dependent Dirichlet boundary condition" class="align-center" src="../_images/mesh1DtimedBC.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1DtimedBC.png"><img alt="solution to diffusion problem with a time-dependent Dirichlet boundary condition" class="align-center" src="../_images/mesh1DtimedBC.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>Many interesting problems do not have simple, uniform diffusivities. We consider a
 steady-state diffusion problem</p>
@@ -487,13 +491,14 @@ x + 18 L / 4 &amp; \text{for \( 3 L / 4 \le x &lt; L \),}
 </pre></div>
 </div>
 <p>And finally, we can plot the result</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">phiAnalytical</span><span class="p">))</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Non-uniform steady-state diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1Dnon-uniform.png"><img alt="steady-state solution to diffusion problem with a non-uniform diffusivity" class="align-center" src="../_images/mesh1Dnon-uniform.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1Dnon-uniform.png"><img alt="steady-state solution to diffusion problem with a non-uniform diffusivity" class="align-center" src="../_images/mesh1Dnon-uniform.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>Note that for problems involving heat transfer and other similar
 conservation equations, it is important to ensure that we begin with
@@ -554,23 +559,24 @@ variables for the correct and incorrect solution</p>
 <p>Comparing to the correct analytical solution, <span class="math notranslate nohighlight">\(\phi = x\)</span></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phiAnalytical</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phiT</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">))</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phiT</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
 <p>and finally, plot</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="p">(</span><span class="n">phiT</span><span class="p">,</span> <span class="n">phiF</span><span class="p">))</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Non-uniform thermal conductivity. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1Dalpha.png"><img alt="representation of difference between non-uniform alpha and D" class="align-center" src="../_images/mesh1Dalpha.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1Dalpha.png"><img alt="representation of difference between non-uniform alpha and D" class="align-center" src="../_images/mesh1Dalpha.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>Often, the diffusivity is not only non-uniform, but also depends on
 the value of the variable, such that</p>
 <div class="math notranslate nohighlight" id="equation-eq-diffusion-mesh1d-variabled">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-diffusion-mesh1d-variabled" title="Permalink to this equation">¶</a></span>\[\frac{\partial \phi}{\partial t} = \nabla \cdot [ D(\phi) \nabla \phi].\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-diffusion-mesh1d-variabled" title="Link to this equation">¶</a></span>\[\frac{\partial \phi}{\partial t} = \nabla \cdot [ D(\phi) \nabla \phi].\]</div>
 <p>With such a non-linearity, it is generally necessary to “sweep” the
 solution to convergence. This means that each time step should be
 calculated over and over, using the result of the previous sweep to update
@@ -649,7 +655,7 @@ method equation, when sweeping, it is often useful to call
 used as part of the exit condition.</p>
 <p>We now repeatedly run the problem with increasing numbers of
 sweeps.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">sweeps</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">valueRight</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
@@ -699,14 +705,15 @@ can just solve for it directly</p>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Implicit variable diffusivity - steady-state. </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1Dvariable.png"><img alt="solution to a diffusion problem a non-linear diffusivity" class="align-center" src="../_images/mesh1Dvariable.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1Dvariable.png"><img alt="solution to a diffusion problem a non-linear diffusivity" class="align-center" src="../_images/mesh1Dvariable.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>Fully implicit solutions are not without their pitfalls, particularly in steady
 state. Consider a localized block of material diffusing in a closed box.</p>
@@ -719,7 +726,8 @@ state. Consider a localized block of material diffusing in a closed box.</p>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">datamin</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1D-noflux_initial.png"><img alt="initial condition for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_initial.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1D-noflux_initial.png"><img alt="initial condition for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_initial.png" style="width: 90%;" />
+</a>
 <p>We assign no explicit boundary conditions, leaving the default no-flux boundary
 conditions, and solve</p>
 <div class="math notranslate nohighlight">
@@ -736,13 +744,14 @@ conditions, and solve</p>
 <span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;No-flux - transient. </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1D-noflux_transient.png"><img alt="long-time solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_transient.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1D-noflux_transient.png"><img alt="long-time solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_transient.png" style="width: 90%;" />
+</a>
 <p>and see that <span class="math notranslate nohighlight">\(\phi\)</span> dissipates to the expected average value of 0.2 with
 reasonable accuracy.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">4e-5</span><span class="p">))</span>
@@ -763,17 +772,18 @@ reasonable accuracy.</p>
 <span class="gp">... </span>    <span class="k">pass</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;No-flux - steady-state failure. </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span>
 <span class="go">False</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1D-noflux_steady_fail.png"><img alt="(failed) steady-state solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_steady_fail.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1D-noflux_steady_fail.png"><img alt="(failed) steady-state solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_steady_fail.png" style="width: 90%;" />
+</a>
 <p>Depending on the solver, we find that the value may be uniformly zero,
 infinity, or NaN, or the solver may just fail!
 What happened to our no-flux boundary conditions?
@@ -827,7 +837,7 @@ vector, so we use <cite>“initial”</cite> tolerance scaling.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1e6</span><span class="o">*</span><span class="n">dt</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;No-flux - steady-state. </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
@@ -837,7 +847,8 @@ vector, so we use <cite>“initial”</cite> tolerance scaling.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/mesh1D-noflux_steady.png"><img alt="steady-state solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_steady.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/mesh1D-noflux_steady.png"><img alt="steady-state solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_steady.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>If this example had been written primarily as a script, instead of as
 documentation, we would delete every line that does not begin with
@@ -884,8 +895,8 @@ mixture of plain scripts and doctest documentation/tests.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -894,7 +905,7 @@ mixture of plain scripts and doctest documentation/tests.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

@@ -4,20 +4,3 @@ examples.elphf.diffusion.mesh1Ddimensional
 .. automodule:: examples.elphf.diffusion.mesh1Ddimensional
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,20 +4,3 @@ fipy.terms.abstractDiffusionTerm
 .. automodule:: fipy.terms.abstractDiffusionTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

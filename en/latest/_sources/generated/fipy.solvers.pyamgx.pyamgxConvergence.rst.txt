@@ -4,15 +4,6 @@ fipy.solvers.pyamgx.pyamgxConvergence
 .. automodule:: fipy.solvers.pyamgx.pyamgxConvergence
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -21,11 +12,3 @@ fipy.solvers.pyamgx.pyamgxConvergence
       pyamgx_Convergence
       pyamgx_IterationDivergence
    
-   
-
-   
-   
-   
-
-
-

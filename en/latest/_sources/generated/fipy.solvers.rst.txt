@@ -4,7 +4,6 @@ fipy.solvers
 .. automodule:: fipy.solvers
 
    
-   
    .. rubric:: Module Attributes
 
    .. autosummary::
@@ -14,41 +13,24 @@ fipy.solvers
       DummySolver
       GeneralSolver
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Exceptions
 
    .. autosummary::
    
       SerialSolverError
    
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.solvers.convergence
-   fipy.solvers.petsc
-   fipy.solvers.preconditioner
-   fipy.solvers.pyAMG
-   fipy.solvers.pyamgx
-   fipy.solvers.scipy
-   fipy.solvers.solver
-   fipy.solvers.test
-   fipy.solvers.trilinos
-
+   convergence
+   petsc
+   preconditioner
+   pyAMG
+   pyamgx
+   scipy
+   solver
+   test
+   trilinos

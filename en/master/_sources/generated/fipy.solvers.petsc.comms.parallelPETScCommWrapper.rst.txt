@@ -4,26 +4,9 @@ fipy.solvers.petsc.comms.parallelPETScCommWrapper
 .. automodule:: fipy.solvers.petsc.comms.parallelPETScCommWrapper
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       ParallelPETScCommWrapper
    
-   
-
-   
-   
-   
-
-
-

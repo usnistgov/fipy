@@ -4,26 +4,9 @@ fipy.solvers.trilinos.comms.epetraCommWrapper
 .. automodule:: fipy.solvers.trilinos.comms.epetraCommWrapper
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       EpetraCommWrapper
    
-   
-
-   
-   
-   
-
-
-

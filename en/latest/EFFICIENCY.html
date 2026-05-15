@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Efficiency &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>Efficiency &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=45154cb6"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/EFFICIENCY.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Theoretical and Numerical Background" href="numerical/index.html" />
     <link rel="prev" title="Frequently Asked Questions" href="FAQ.html" />
@@ -114,7 +114,7 @@
               <div class="body" role="main">
 		
   <section id="efficiency">
-<span id="chap-efficiency"></span><h1>Efficiency<a class="headerlink" href="#efficiency" title="Permalink to this heading">¶</a></h1>
+<span id="chap-efficiency"></span><h1>Efficiency<a class="headerlink" href="#efficiency" title="Link to this heading">¶</a></h1>
 <p>This section will present results and discussion of efficiency
 evaluations with <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>. Programming in <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> allows greater
 efficiency when designing and implementing new code, but it has some
@@ -130,7 +130,7 @@ problem can be executed by running:</p>
 </div>
 <p>from the base <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> directory. The in-house code was written by Ryo
 Kobayashi and is used to generate the results presented in
-<span id="id1">[<a class="reference internal" href="references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span>.</p>
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span>.</p>
 <p>The raw CPU execution times for 10 time steps are presented in the
 following table. The run times are in seconds and the memory usage is
 in kilobytes. The Kobayashi code is given the heading of FORTRAN while
@@ -214,7 +214,7 @@ memory allocation, so these figures should only be used as a very
 rough guide. The FORTRAN memory usage is exact since memory is not
 allocated dynamically.</p>
 <section id="efficiency-comparison-between-no-cache-and-cache-flags">
-<h2>Efficiency comparison between <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-cache</span></code></a> and <a class="reference internal" href="USAGE.html#cmdoption-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--cache</span></code></a> flags<a class="headerlink" href="#efficiency-comparison-between-no-cache-and-cache-flags" title="Permalink to this heading">¶</a></h2>
+<h2>Efficiency comparison between <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-cache</span></code></a> and <a class="reference internal" href="USAGE.html#cmdoption-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--cache</span></code></a> flags<a class="headerlink" href="#efficiency-comparison-between-no-cache-and-cache-flags" title="Link to this heading">¶</a></h2>
 <p>This table shows results for efficiency tests when using the caching
 flags. Examples with more variables involved in complex expressions
 show the largest improvement in memory usage. The <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-cache</span></code></a>
@@ -268,8 +268,8 @@ The <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code cla
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -278,7 +278,7 @@ The <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code cla
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

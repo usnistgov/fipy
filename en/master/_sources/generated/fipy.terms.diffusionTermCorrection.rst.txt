@@ -4,26 +4,9 @@ fipy.terms.diffusionTermCorrection
 .. automodule:: fipy.terms.diffusionTermCorrection
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       DiffusionTermCorrection
    
-   
-
-   
-   
-   
-
-
-

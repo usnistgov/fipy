@@ -4,20 +4,3 @@ fipy.steppers.pidStepper
 .. automodule:: fipy.steppers.pidStepper
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

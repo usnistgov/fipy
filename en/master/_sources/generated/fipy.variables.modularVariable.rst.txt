@@ -4,26 +4,9 @@ fipy.variables.modularVariable
 .. automodule:: fipy.variables.modularVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       ModularVariable
    
-   
-
-   
-   
-   
-
-
-

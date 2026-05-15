@@ -4,26 +4,9 @@ fipy.meshes.cylindricalUniformGrid1D
 .. automodule:: fipy.meshes.cylindricalUniformGrid1D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       CylindricalUniformGrid1D
    
-   
-
-   
-   
-   
-
-
-

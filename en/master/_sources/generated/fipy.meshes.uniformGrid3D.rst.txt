@@ -4,26 +4,9 @@ fipy.meshes.uniformGrid3D
 .. automodule:: fipy.meshes.uniformGrid3D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       UniformGrid3D
    
-   
-
-   
-   
-   
-
-
-

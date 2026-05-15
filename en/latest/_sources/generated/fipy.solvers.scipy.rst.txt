@@ -4,36 +4,18 @@ fipy.solvers.scipy
 .. automodule:: fipy.solvers.scipy
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.solvers.scipy.linearBicgstabSolver
-   fipy.solvers.scipy.linearCGSSolver
-   fipy.solvers.scipy.linearCGSolver
-   fipy.solvers.scipy.linearGMRESSolver
-   fipy.solvers.scipy.linearLUSolver
-   fipy.solvers.scipy.preconditioners
-   fipy.solvers.scipy.scipyConvergence
-   fipy.solvers.scipy.scipyKrylovSolver
-   fipy.solvers.scipy.scipySolver
-
+   linearBicgstabSolver
+   linearCGSSolver
+   linearCGSolver
+   linearGMRESSolver
+   linearLUSolver
+   preconditioners
+   scipyConvergence
+   scipyKrylovSolver
+   scipySolver

@@ -4,11 +4,6 @@ fipy.tests.doctestPlus
 .. automodule:: fipy.tests.doctestPlus
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -18,15 +13,3 @@ fipy.tests.doctestPlus
       report_skips
       testmod
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

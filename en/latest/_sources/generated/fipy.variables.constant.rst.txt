@@ -4,20 +4,3 @@ fipy.variables.constant
 .. automodule:: fipy.variables.constant
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

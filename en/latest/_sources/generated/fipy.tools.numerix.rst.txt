@@ -4,11 +4,6 @@ fipy.tools.numerix
 .. automodule:: fipy.tools.numerix
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -32,15 +27,3 @@ fipy.tools.numerix
       take
       tostring
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

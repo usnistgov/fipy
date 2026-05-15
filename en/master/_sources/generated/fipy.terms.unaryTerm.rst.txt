@@ -4,20 +4,3 @@ fipy.terms.unaryTerm
 .. automodule:: fipy.terms.unaryTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

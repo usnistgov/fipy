@@ -4,26 +4,9 @@ fipy.meshes.nonUniformGrid2D
 .. automodule:: fipy.meshes.nonUniformGrid2D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       NonUniformGrid2D
    
-   
-
-   
-   
-   
-
-
-

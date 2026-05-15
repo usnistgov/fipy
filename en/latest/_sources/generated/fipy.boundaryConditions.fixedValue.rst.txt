@@ -4,26 +4,9 @@ fipy.boundaryConditions.fixedValue
 .. automodule:: fipy.boundaryConditions.fixedValue
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       FixedValue
    
-   
-
-   
-   
-   
-
-
-

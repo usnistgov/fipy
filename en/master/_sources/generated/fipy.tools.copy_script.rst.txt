@@ -4,11 +4,6 @@ fipy.tools.copy\_script
 .. automodule:: fipy.tools.copy_script
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -16,15 +11,3 @@ fipy.tools.copy\_script
       copy_script
       import_from_path
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,20 +4,3 @@ fipy.variables.arithmeticCellToFaceVariable
 .. automodule:: fipy.variables.arithmeticCellToFaceVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

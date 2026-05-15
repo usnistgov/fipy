@@ -4,20 +4,3 @@ fipy.matrices.petscMatrix
 .. automodule:: fipy.matrices.petscMatrix
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

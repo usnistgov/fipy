@@ -4,20 +4,3 @@ fipy.terms.binaryTerm
 .. automodule:: fipy.terms.binaryTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

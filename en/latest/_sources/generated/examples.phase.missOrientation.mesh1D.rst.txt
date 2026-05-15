@@ -4,20 +4,3 @@ examples.phase.missOrientation.mesh1D
 .. automodule:: examples.phase.missOrientation.mesh1D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

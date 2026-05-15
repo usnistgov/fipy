@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.levelSet.electroChem.howToWriteAScript &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.levelSet.electroChem.howToWriteAScript &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.levelSet.electroChem.howToWriteAScript.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.levelSet.electroChem" href="examples.levelSet.electroChem.html" />
     <link rel="next" title="examples.levelSet.electroChem.leveler" href="examples.levelSet.electroChem.leveler.html" />
     <link rel="prev" title="examples.levelSet.electroChem.gold" href="examples.levelSet.electroChem.gold.html" />
@@ -119,7 +119,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.levelSet.electroChem.howToWriteAScript">
-<span id="examples-levelset-electrochem-howtowriteascript"></span><h1>examples.levelSet.electroChem.howToWriteAScript<a class="headerlink" href="#module-examples.levelSet.electroChem.howToWriteAScript" title="Permalink to this heading">¶</a></h1>
+<span id="examples-levelset-electrochem-howtowriteascript"></span><h1>examples.levelSet.electroChem.howToWriteAScript<a class="headerlink" href="#module-examples.levelSet.electroChem.howToWriteAScript" title="Link to this heading">¶</a></h1>
 <p>Tutorial for writing an electrochemical superfill script.</p>
 <p>This input file demonstrates how to
 create a new superfill script if the existing suite of scripts do
@@ -205,14 +205,14 @@ instantiation of various objects and are the same as those explained in
 intentionally small in this example to keep the mesh at a reasonable
 size.</p>
 <p>Build the mesh:</p>
-<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools.parser</span> <span class="kn">import</span> <span class="n">parse</span>
+<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">numberOfElements</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s1">&#39;--numberOfElements&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">numberOfSteps</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s1">&#39;--numberOfSteps&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate" id="index-1"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="doctest highlight-default notranslate" id="index-1"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">numberOfElements</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -229,11 +229,11 @@ size.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xCells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">trenchSpacing</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">cellSize</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate" id="index-2"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.metalIonDiffusionEquation</span> <span class="kn">import</span> <span class="n">buildMetalIonDiffusionEquation</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.adsorbingSurfactantEquation</span> <span class="kn">import</span> <span class="n">AdsorbingSurfactantEquation</span>
+<div class="doctest highlight-default notranslate" id="index-2"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">.metalIonDiffusionEquation</span><span class="w"> </span><span class="kn">import</span> <span class="n">buildMetalIonDiffusionEquation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">.adsorbingSurfactantEquation</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdsorbingSurfactantEquation</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">serialComm</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">serialComm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">cellSize</span><span class="p">,</span>
 <span class="gp">... </span>              <span class="n">dy</span><span class="o">=</span><span class="n">cellSize</span><span class="p">,</span>
 <span class="gp">... </span>              <span class="n">nx</span><span class="o">=</span><span class="n">xCells</span><span class="p">,</span>
@@ -271,7 +271,7 @@ region will be negative.</p>
 <span class="gp">... </span>                                   <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">xCells</span> <span class="o">*</span> <span class="n">cellSize</span> <span class="o">-</span> <span class="n">sideWidth</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">distanceVar</span><span class="o">.</span><span class="n">calcDistanceFunction</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">distanceVar</span><span class="o">.</span><span class="n">calcDistanceFunction</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">distanceVariable</span></code> has now been created to mark the interface. Some other
@@ -417,7 +417,7 @@ at <span class="math notranslate nohighlight">\(\phi = 0\)</span> is given by,</
 <div class="math notranslate nohighlight">
 \[D \hat{n} \cdot \nabla c = -k c (1 - \theta).\]</div>
 <p>The surfactant bulk diffusion equation is set up with the following commands.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.surfactantBulkDiffusionEquation</span> <span class="kn">import</span> <span class="n">buildSurfactantBulkDiffusionEquation</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">.surfactantBulkDiffusionEquation</span><span class="w"> </span><span class="kn">import</span> <span class="n">buildSurfactantBulkDiffusionEquation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bulkCatalystEquation</span> <span class="o">=</span> <span class="n">buildSurfactantBulkDiffusionEquation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">bulkVar</span><span class="o">=</span><span class="n">bulkCatalystVar</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">distanceVar</span><span class="o">=</span><span class="n">distanceVar</span><span class="p">,</span>
@@ -433,7 +433,7 @@ at <span class="math notranslate nohighlight">\(\phi = 0\)</span> is given by,</
 <p>If running interactively, create viewers.</p>
 <div class="doctest highlight-default notranslate" id="index-7"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="kn">from</span> <span class="nn">.mayaviSurfactantViewer</span> <span class="kn">import</span> <span class="n">MayaviSurfactantViewer</span>
+<span class="gp">... </span>        <span class="kn">from</span><span class="w"> </span><span class="nn">.mayaviSurfactantViewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MayaviSurfactantViewer</span>
 <span class="gp">... </span>        <span class="n">viewer</span> <span class="o">=</span> <span class="n">MayaviSurfactantViewer</span><span class="p">(</span><span class="n">distanceVar</span><span class="p">,</span>
 <span class="gp">... </span>                                        <span class="n">catalystVar</span><span class="o">.</span><span class="n">interfaceVar</span><span class="p">,</span>
 <span class="gp">... </span>                                        <span class="n">zoomFactor</span><span class="o">=</span><span class="mf">1e6</span><span class="p">,</span>
@@ -444,7 +444,7 @@ at <span class="math notranslate nohighlight">\(\phi = 0\)</span> is given by,</
 <span class="gp">... </span>        <span class="n">viewer</span> <span class="o">=</span> <span class="n">MultiViewer</span><span class="p">(</span><span class="n">viewers</span><span class="o">=</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">Viewer</span><span class="p">(</span><span class="n">distanceVar</span><span class="p">,</span> <span class="n">datamin</span><span class="o">=-</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">),</span>
 <span class="gp">... </span>            <span class="n">Viewer</span><span class="p">(</span><span class="n">catalystVar</span><span class="o">.</span><span class="n">interfaceVar</span><span class="p">)))</span>
-<span class="gp">... </span>        <span class="kn">from</span> <span class="nn">fipy.models.levelSet.surfactant.matplotlibSurfactantViewer</span> <span class="kn">import</span> <span class="n">MatplotlibSurfactantViewer</span>
+<span class="gp">... </span>        <span class="kn">from</span><span class="w"> </span><span class="nn">fipy.models.levelSet.surfactant.matplotlibSurfactantViewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatplotlibSurfactantViewer</span>
 <span class="gp">... </span>        <span class="n">viewer</span> <span class="o">=</span> <span class="n">MatplotlibSurfactantViewer</span><span class="p">(</span><span class="n">catalystVar</span><span class="o">.</span><span class="n">interfaceVar</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">else</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="kc">None</span>
@@ -478,23 +478,23 @@ is calculated with the CFL number and the maximum extension velocity.
 <span class="gp">... </span>    <span class="n">advectionEquation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">distanceVar</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">surfactantEquation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">catalystVar</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">metalEquation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">metalVar</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">bulkCatalystEquation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">bulkCatalystVar</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">GeneralSolver</span><span class="p">())</span> 
+<span class="gp">... </span>    <span class="n">bulkCatalystEquation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">bulkCatalystVar</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">GeneralSolver</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.</p>
-<div class="doctest highlight-default notranslate" id="index-8"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<div class="doctest highlight-default notranslate" id="index-8"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>                        <span class="s2">&quot;simpleTrenchSystem.gz&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">##numerix.savetxt(filepath, numerix.array(catalystVar))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">catalystVar</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">))</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">catalystVar</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
 </pre></div>
@@ -503,8 +503,8 @@ to tell if something has changed or been broken.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -513,7 +513,7 @@ to tell if something has changed or been broken.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

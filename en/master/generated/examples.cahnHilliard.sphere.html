@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.cahnHilliard.sphere &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.cahnHilliard.sphere &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.cahnHilliard.sphere.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.cahnHilliard" href="examples.cahnHilliard.html" />
     <link rel="next" title="examples.cahnHilliard.sphereDaemon" href="examples.cahnHilliard.sphereDaemon.html" />
     <link rel="prev" title="examples.cahnHilliard.mesh3D" href="examples.cahnHilliard.mesh3D.html" />
@@ -118,11 +118,11 @@
               <div class="body" role="main">
 		
   <section id="module-examples.cahnHilliard.sphere">
-<span id="examples-cahnhilliard-sphere"></span><h1>examples.cahnHilliard.sphere<a class="headerlink" href="#module-examples.cahnHilliard.sphere" title="Permalink to this heading">¶</a></h1>
+<span id="examples-cahnhilliard-sphere"></span><h1>examples.cahnHilliard.sphere<a class="headerlink" href="#module-examples.cahnHilliard.sphere" title="Link to this heading">¶</a></h1>
 <p>Solves the Cahn-Hilliard problem on the surface of a sphere.</p>
 <p>This phenomenon can occur on vesicles (<a class="reference external" href="http://www.youtube.com/watch?v=kDsFP67_ZSE">http://www.youtube.com/watch?v=kDsFP67_ZSE</a>).</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2DIn3DSpace</span><span class="p">,</span> <span class="n">GaussianNoiseVariable</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">DefaultSolver</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2DIn3DSpace</span><span class="p">,</span> <span class="n">GaussianNoiseVariable</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">DefaultSolver</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <p>The only difference from <a class="reference internal" href="examples.cahnHilliard.mesh2D.html#module-examples.cahnHilliard.mesh2D" title="examples.cahnHilliard.mesh2D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.cahnHilliard.mesh2D</span></code></a> is the
@@ -153,15 +153,15 @@ declaration of <code class="docutils literal notranslate"><span class="pre">mesh
 <span class="gp">...</span>
 <span class="gp">... </span><span class="s1">    // create entire inner and outer shell</span>
 <span class="gp">... </span><span class="s1">    Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};</span>
-<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="n">extrudeFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span> 
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="n">extrudeFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We start the problem with random fluctuations about
 <span class="math notranslate nohighlight">\(\phi = 1/2\)</span></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">GaussianNoiseVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
 <span class="gp">... </span>                                   <span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-<span class="gp">... </span>                                   <span class="n">variance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span> 
+<span class="gp">... </span>                                   <span class="n">variance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
 </pre></div>
 </div>
 <p><a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> doesn’t plot or output anything unless you tell it to: If
@@ -194,11 +194,11 @@ somewhat more accurate results by performing a linear interpolation from
 <code class="docutils literal notranslate"><span class="pre">phi</span></code> at cell centers to <code class="docutils literal notranslate"><span class="pre">PHI</span></code> at face centers.
 Some problems benefit from non-linear interpolations, such as harmonic or
 geometric means, and <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> makes it easy to obtain these, too.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PHI</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">arithmeticFaceValue</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PHI</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">arithmeticFaceValue</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">a</span> <span class="o">=</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="p">(</span><span class="n">TransientTerm</span><span class="p">()</span>
 <span class="gp">... </span>      <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D</span> <span class="o">*</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">PHI</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">PHI</span><span class="p">)))</span>
-<span class="gp">... </span>      <span class="o">-</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span> 
+<span class="gp">... </span>      <span class="o">-</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p>Because the evolution of a spinodal microstructure slows with time, we
@@ -215,18 +215,19 @@ evolution of their problem.</p>
 <span class="gp">... </span>    <span class="n">dt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dexp</span><span class="p">))</span>
 <span class="gp">... </span>    <span class="n">elapsed</span> <span class="o">+=</span> <span class="n">dt</span>
 <span class="gp">... </span>    <span class="n">dexp</span> <span class="o">+=</span> <span class="mf">0.01</span>
-<span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">DefaultSolver</span><span class="p">(</span><span class="n">precon</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span> 
+<span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">DefaultSolver</span><span class="p">(</span><span class="n">precon</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/sphere.png"><img alt="Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh" class="align-center" src="../_images/sphere.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/sphere.png"><img alt="Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh" class="align-center" src="../_images/sphere.png" style="width: 90%;" />
+</a>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -235,7 +236,7 @@ evolution of their problem.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

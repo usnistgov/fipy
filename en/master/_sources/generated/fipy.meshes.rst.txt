@@ -4,60 +4,42 @@ fipy.meshes
 .. automodule:: fipy.meshes
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.meshes.abstractMesh
-   fipy.meshes.builders
-   fipy.meshes.cylindricalGrid1D
-   fipy.meshes.cylindricalGrid2D
-   fipy.meshes.cylindricalNonUniformGrid1D
-   fipy.meshes.cylindricalNonUniformGrid2D
-   fipy.meshes.cylindricalUniformGrid1D
-   fipy.meshes.cylindricalUniformGrid2D
-   fipy.meshes.factoryMeshes
-   fipy.meshes.gmshMesh
-   fipy.meshes.grid1D
-   fipy.meshes.grid2D
-   fipy.meshes.grid3D
-   fipy.meshes.mesh
-   fipy.meshes.mesh1D
-   fipy.meshes.mesh2D
-   fipy.meshes.nonUniformGrid1D
-   fipy.meshes.nonUniformGrid2D
-   fipy.meshes.nonUniformGrid3D
-   fipy.meshes.periodicGrid1D
-   fipy.meshes.periodicGrid2D
-   fipy.meshes.periodicGrid3D
-   fipy.meshes.representations
-   fipy.meshes.skewedGrid2D
-   fipy.meshes.sphericalNonUniformGrid1D
-   fipy.meshes.sphericalUniformGrid1D
-   fipy.meshes.test
-   fipy.meshes.topologies
-   fipy.meshes.tri2D
-   fipy.meshes.uniformGrid
-   fipy.meshes.uniformGrid1D
-   fipy.meshes.uniformGrid2D
-   fipy.meshes.uniformGrid3D
-
+   abstractMesh
+   builders
+   cylindricalGrid1D
+   cylindricalGrid2D
+   cylindricalNonUniformGrid1D
+   cylindricalNonUniformGrid2D
+   cylindricalUniformGrid1D
+   cylindricalUniformGrid2D
+   factoryMeshes
+   gmshMesh
+   grid1D
+   grid2D
+   grid3D
+   mesh
+   mesh1D
+   mesh2D
+   nonUniformGrid1D
+   nonUniformGrid2D
+   nonUniformGrid3D
+   periodicGrid1D
+   periodicGrid2D
+   periodicGrid3D
+   representations
+   skewedGrid2D
+   sphericalNonUniformGrid1D
+   sphericalUniformGrid1D
+   test
+   topologies
+   tri2D
+   uniformGrid
+   uniformGrid1D
+   uniformGrid2D
+   uniformGrid3D

@@ -4,11 +4,6 @@ fipy.tools.logging.environment
 .. automodule:: fipy.tools.logging.environment
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -19,15 +14,3 @@ fipy.tools.logging.environment
       pip_info
       platform_info
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

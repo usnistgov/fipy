@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tools.numerix &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>fipy.tools.numerix &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.tools.numerix.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="fipy.tools" href="fipy.tools.html" />
     <link rel="next" title="fipy.tools.parser" href="fipy.tools.parser.html" />
     <link rel="prev" title="fipy.tools.logging.environment" href="fipy.tools.logging.environment.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-fipy.tools.numerix">
-<span id="fipy-tools-numerix"></span><h1>fipy.tools.numerix<a class="headerlink" href="#module-fipy.tools.numerix" title="Permalink to this heading">¶</a></h1>
+<span id="fipy-tools-numerix"></span><h1>fipy.tools.numerix<a class="headerlink" href="#module-fipy.tools.numerix" title="Link to this heading">¶</a></h1>
 <p>Replacement module for NumPy</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -130,7 +130,7 @@ canonical for all functions and classes not explicitly documented here.</p>
 <p>The functions provided in this module replace and augment the <cite>NumPy</cite> module.
 The functions work with <cite>Variables</cite>, arrays or numbers. For example,
 create a <cite>Variable</cite>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.variables.variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -214,47 +214,47 @@ create a <cite>Variable</cite>.</p>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.L1norm">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">L1norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.L1norm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">L1norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.L1norm" title="Link to this definition">¶</a></dt>
 <dd><p>Taxicab or Manhattan norm of <cite>arr</cite></p>
 <p><span class="math notranslate nohighlight">\(\|\mathtt{arr}\|_1 = \sum_{j=1}^{n} |\mathtt{arr}_j|\)</span> is the
 <span class="math notranslate nohighlight">\(L^1\)</span> norm of <span class="math notranslate nohighlight">\(\mathtt{arr}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – </p>
+<dd class="field-odd"><p><strong>arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.L2norm">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">L2norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.L2norm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">L2norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.L2norm" title="Link to this definition">¶</a></dt>
 <dd><p>Euclidean norm of <cite>arr</cite></p>
 <p><span class="math notranslate nohighlight">\(\|\mathtt{arr}\|_2 = \sqrt{\sum_{j=1}^{n} |\mathtt{arr}_j|^2}\)</span> is
 the <span class="math notranslate nohighlight">\(L^2\)</span> norm of <span class="math notranslate nohighlight">\(\mathtt{arr}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – </p>
+<dd class="field-odd"><p><strong>arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.LINFnorm">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">LINFnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.LINFnorm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">LINFnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.LINFnorm" title="Link to this definition">¶</a></dt>
 <dd><p>Infinity norm of <cite>arr</cite></p>
 <p><span class="math notranslate nohighlight">\(\|\mathtt{arr}\|_\infty = [\sum_{j=1}^{n}
 |\mathtt{arr}_j|^\infty]^\infty = \underset{j}{\max} |\mathtt{arr}_j|\)</span> is the
 <span class="math notranslate nohighlight">\(L^\infty\)</span> norm of <span class="math notranslate nohighlight">\(\mathtt{arr}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – </p>
+<dd class="field-odd"><p><strong>arr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.all">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.all" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.all" title="Link to this definition">¶</a></dt>
 <dd><p>Test whether all array elements along a given axis evaluate to True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -274,7 +274,7 @@ the type is preserved.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.allclose">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.allclose" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.allclose" title="Link to this definition">¶</a></dt>
 <dd><p>Tests whether or not <cite>first</cite> and <cite>second</cite> are equal, subject to the given
 relative and absolute tolerances, such that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|</span><span class="n">first</span> <span class="o">-</span> <span class="n">second</span><span class="o">|</span> <span class="o">&lt;</span> <span class="n">atol</span> <span class="o">+</span> <span class="n">rtol</span> <span class="o">*</span> <span class="o">|</span><span class="n">second</span><span class="o">|</span>
@@ -286,21 +286,21 @@ their difference divided by <code class="docutils literal notranslate"><span cla
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.allequal">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">allequal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.allequal" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">allequal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.allequal" title="Link to this definition">¶</a></dt>
 <dd><p>Returns <cite>true</cite> if every element of <cite>first</cite> is equal to the corresponding
 element of <cite>second</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.dot">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.dot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.dot" title="Link to this definition">¶</a></dt>
 <dd><p>return array of vector dot-products of <cite>v1</cite> and <cite>v2</cite>
 for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <cite>v2</cite></p>
 <p>We can’t use <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v2.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> on an array of vectors</p>
 <p>Test that <cite>Variables</cite> are returned as <cite>Variables</cite>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid2D</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.meshes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grid2D</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.variables.cellVariable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span><span class="o">.</span><span class="n">_variableClass</span>
@@ -326,13 +326,13 @@ for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <c
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.getShape">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">getShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.getShape" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">getShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.getShape" title="Link to this definition">¶</a></dt>
 <dd><p>Return the shape of <cite>arr</cite></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">getShape</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getShape</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
 <span class="go">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.variables.variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getShape</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getShape</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
@@ -347,14 +347,14 @@ for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <c
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.getUnit">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">getUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.getUnit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">getUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.getUnit" title="Link to this definition">¶</a></dt>
 <dd><p>Return the unit of <cite>arr</cite>.</p>
 <p>If <cite>arr</cite> has no units, returns 1.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.isclose">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.isclose" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.isclose" title="Link to this definition">¶</a></dt>
 <dd><p>Returns which elements of <cite>first</cite> and <cite>second</cite> are equal, subject to the given
 relative and absolute tolerances, such that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|</span><span class="n">first</span> <span class="o">-</span> <span class="n">second</span><span class="o">|</span> <span class="o">&lt;</span> <span class="n">atol</span> <span class="o">+</span> <span class="n">rtol</span> <span class="o">*</span> <span class="o">|</span><span class="n">second</span><span class="o">|</span>
@@ -366,9 +366,9 @@ their difference divided by <code class="docutils literal notranslate"><span cla
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.nearest">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000000.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.nearest" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000000.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.nearest" title="Link to this definition">¶</a></dt>
 <dd><p>find the indices of <cite>data</cite> that are closest to <cite>points</cite></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m0</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">),</span> <span class="n">dy</span><span class="o">=</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">5.</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">nearest</span><span class="p">(</span><span class="n">m0</span><span class="o">.</span><span class="n">cellCenters</span><span class="o">.</span><span class="n">globalValue</span><span class="p">,</span> <span class="n">m1</span><span class="o">.</span><span class="n">cellCenters</span><span class="o">.</span><span class="n">globalValue</span><span class="p">))</span>
@@ -383,7 +383,7 @@ their difference divided by <code class="docutils literal notranslate"><span cla
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.put">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.put" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.put" title="Link to this definition">¶</a></dt>
 <dd><p>The opposite of <cite>take</cite>.  The values of <cite>arr</cite> at the locations
 specified by <cite>ids</cite> are set to the corresponding value of <cite>values</cite>.</p>
 <p>The following is to test improvements to puts with masked arrays.
@@ -419,7 +419,7 @@ Places in the code were assuming incorrect put behavior.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.rank">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.rank" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.rank" title="Link to this definition">¶</a></dt>
 <dd><p>Get the rank of sequence a (the number of dimensions, not a matrix rank)
 The rank of a scalar is zero.</p>
 <div class="admonition note">
@@ -434,7 +434,7 @@ scalars at each cell, and defined on a 9 element <cite>Grid1D</cite>, has rank
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.reshape">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.reshape" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.reshape" title="Link to this definition">¶</a></dt>
 <dd><p>Change the shape of <cite>arr</cite> to <cite>shape</cite>, as long as the product of all the
 lengths of all the axes is constant (the total number of elements does not
 change).</p>
@@ -442,7 +442,7 @@ change).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.sqrtDot">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">sqrtDot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.sqrtDot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">sqrtDot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.sqrtDot" title="Link to this definition">¶</a></dt>
 <dd><p>Return array of square roots of vector dot-products
 for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <cite>v2</cite></p>
 <p>Usually used with <cite>v1==v2</cite> to return magnitude of <cite>v1</cite>.</p>
@@ -450,19 +450,19 @@ for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <c
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.sum">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.sum" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.sum" title="Link to this definition">¶</a></dt>
 <dd><p>The sum of all the elements of <cite>arr</cite> along the specified axis.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.take">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">take</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.take" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">take</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.take" title="Link to this definition">¶</a></dt>
 <dd><p>Selects the elements of <cite>a</cite> corresponding to <cite>indices</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.tostring">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">tostring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_small</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.tostring" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">tostring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_small</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.tostring" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a textual representation of a number or field of numbers.  Each
 dimension is indicated by a pair of matching square brackets (<cite>[]</cite>), within
 which each subset of the field is output.  The orientation of the dimensions
@@ -470,7 +470,7 @@ is as follows: the last (rightmost) dimension is always horizontal, so that
 the frequent rank-1 fields use a minimum of screen real-estate.  The
 next-to-last dimension is displayed vertically if present and any earlier
 dimension is displayed with additional bracket divisions.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Variable</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tostring</span><span class="p">(</span><span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">11.2345</span><span class="p">)),</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">[  1.    0.   11.2]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tostring</span><span class="p">(</span><span class="n">array</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
@@ -511,8 +511,8 @@ Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -521,7 +521,7 @@ Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

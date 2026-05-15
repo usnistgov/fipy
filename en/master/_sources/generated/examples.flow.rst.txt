@@ -4,29 +4,11 @@ examples.flow
 .. automodule:: examples.flow
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   examples.flow.stokesCavity
-   examples.flow.test
-
+   stokesCavity
+   test

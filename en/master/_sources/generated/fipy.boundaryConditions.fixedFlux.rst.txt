@@ -4,26 +4,9 @@ fipy.boundaryConditions.fixedFlux
 .. automodule:: fipy.boundaryConditions.fixedFlux
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       FixedFlux
    
-   
-
-   
-   
-   
-
-
-

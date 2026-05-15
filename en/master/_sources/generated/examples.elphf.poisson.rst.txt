@@ -4,20 +4,3 @@ examples.elphf.poisson
 .. automodule:: examples.elphf.poisson
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

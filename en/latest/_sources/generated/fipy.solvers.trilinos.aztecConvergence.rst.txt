@@ -4,15 +4,6 @@ fipy.solvers.trilinos.aztecConvergence
 .. automodule:: fipy.solvers.trilinos.aztecConvergence
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -24,11 +15,3 @@ fipy.solvers.trilinos.aztecConvergence
       AZ_NormalConvergence
       AZ_ParameterDivergence
    
-   
-
-   
-   
-   
-
-
-

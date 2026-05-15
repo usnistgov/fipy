@@ -4,33 +4,15 @@ fipy.matrices
 .. automodule:: fipy.matrices
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.matrices.offsetSparseMatrix
-   fipy.matrices.petscMatrix
-   fipy.matrices.scipyMatrix
-   fipy.matrices.sparseMatrix
-   fipy.matrices.test
-   fipy.matrices.trilinosMatrix
-
+   offsetSparseMatrix
+   petscMatrix
+   scipyMatrix
+   sparseMatrix
+   test
+   trilinosMatrix

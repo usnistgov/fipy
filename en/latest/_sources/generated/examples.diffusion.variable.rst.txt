@@ -4,20 +4,3 @@ examples.diffusion.variable
 .. automodule:: examples.diffusion.variable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

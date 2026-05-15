@@ -4,26 +4,9 @@ fipy.variables.faceVariable
 .. automodule:: fipy.variables.faceVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       FaceVariable
    
-   
-
-   
-   
-   
-
-
-

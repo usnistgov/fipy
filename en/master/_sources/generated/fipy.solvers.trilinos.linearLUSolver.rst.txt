@@ -4,26 +4,9 @@ fipy.solvers.trilinos.linearLUSolver
 .. automodule:: fipy.solvers.trilinos.linearLUSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       LinearLUSolver
    
-   
-
-   
-   
-   
-
-
-

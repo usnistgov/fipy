@@ -4,11 +4,6 @@ fipy.meshes.gmshMesh
 .. automodule:: fipy.meshes.gmshMesh
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -16,10 +11,6 @@ fipy.meshes.gmshMesh
       gmshVersion
       openMSHFile
       openPOSFile
-   
-   
-
-   
    
    .. rubric:: Classes
 
@@ -34,10 +25,6 @@ fipy.meshes.gmshMesh
       MSHFile
       POSFile
    
-   
-
-   
-   
    .. rubric:: Exceptions
 
    .. autosummary::
@@ -45,7 +32,3 @@ fipy.meshes.gmshMesh
       GmshException
       MeshExportError
    
-   
-
-
-

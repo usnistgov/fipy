@@ -4,20 +4,3 @@ fipy.boundaryConditions.test
 .. automodule:: fipy.boundaryConditions.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

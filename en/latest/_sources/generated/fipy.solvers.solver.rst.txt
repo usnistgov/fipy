@@ -4,24 +4,11 @@ fipy.solvers.solver
 .. automodule:: fipy.solvers.solver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       Solver
-   
-   
-
-   
    
    .. rubric:: Exceptions
 
@@ -41,7 +28,3 @@ fipy.solvers.solver
       SolverConvergenceWarning
       StagnatedSolverWarning
    
-   
-
-
-

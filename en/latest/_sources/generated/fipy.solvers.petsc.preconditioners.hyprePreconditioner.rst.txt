@@ -4,26 +4,9 @@ fipy.solvers.petsc.preconditioners.hyprePreconditioner
 .. automodule:: fipy.solvers.petsc.preconditioners.hyprePreconditioner
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       HYPREPreconditioner
    
-   
-
-   
-   
-   
-
-
-

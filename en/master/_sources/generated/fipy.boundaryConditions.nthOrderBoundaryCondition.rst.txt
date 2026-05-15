@@ -4,26 +4,9 @@ fipy.boundaryConditions.nthOrderBoundaryCondition
 .. automodule:: fipy.boundaryConditions.nthOrderBoundaryCondition
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       NthOrderBoundaryCondition
    
-   
-
-   
-   
-   
-
-
-

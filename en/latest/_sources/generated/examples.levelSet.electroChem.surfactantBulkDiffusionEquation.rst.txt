@@ -4,20 +4,3 @@ examples.levelSet.electroChem.surfactantBulkDiffusionEquation
 .. automodule:: examples.levelSet.electroChem.surfactantBulkDiffusionEquation
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

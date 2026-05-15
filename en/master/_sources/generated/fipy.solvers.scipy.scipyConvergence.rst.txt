@@ -4,15 +4,6 @@ fipy.solvers.scipy.scipyConvergence
 .. automodule:: fipy.solvers.scipy.scipyConvergence
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -21,11 +12,3 @@ fipy.solvers.scipy.scipyConvergence
       SciPy_Convergence
       SciPy_IterationDivergence
    
-   
-
-   
-   
-   
-
-
-

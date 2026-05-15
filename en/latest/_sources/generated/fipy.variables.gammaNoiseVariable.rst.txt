@@ -4,26 +4,9 @@ fipy.variables.gammaNoiseVariable
 .. automodule:: fipy.variables.gammaNoiseVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       GammaNoiseVariable
    
-   
-
-   
-   
-   
-
-
-

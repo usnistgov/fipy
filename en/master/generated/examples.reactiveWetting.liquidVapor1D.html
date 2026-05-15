@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.reactiveWetting.liquidVapor1D &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.reactiveWetting.liquidVapor1D &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.reactiveWetting.liquidVapor1D.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.reactiveWetting" href="examples.reactiveWetting.html" />
     <link rel="next" title="examples.reactiveWetting.liquidVapor2D" href="examples.reactiveWetting.liquidVapor2D.html" />
     <link rel="prev" title="examples.reactiveWetting" href="examples.reactiveWetting.html" />
@@ -118,28 +118,28 @@
               <div class="body" role="main">
 		
   <section id="module-examples.reactiveWetting.liquidVapor1D">
-<span id="examples-reactivewetting-liquidvapor1d"></span><h1>examples.reactiveWetting.liquidVapor1D<a class="headerlink" href="#module-examples.reactiveWetting.liquidVapor1D" title="Permalink to this heading">¶</a></h1>
+<span id="examples-reactivewetting-liquidvapor1d"></span><h1>examples.reactiveWetting.liquidVapor1D<a class="headerlink" href="#module-examples.reactiveWetting.liquidVapor1D" title="Link to this heading">¶</a></h1>
 <p>Solve a single-component, liquid-vapor, van der Waals system.</p>
 <p>This example solves a single-component, liquid-vapor, van der Waals system as
-described by Wheeler <em>et al.</em> <span id="id1">[<a class="reference internal" href="../references.html#id31" title="Daniel Wheeler, James A. Warren, and William J. Boettinger. Modeling the early stages of reactive wetting. Physical Review E, 82(5):051601, Nov 2010. doi:10.1103/PhysRevE.82.051601.">5</a>]</span>. The free energy for this
+described by Wheeler <em>et al.</em> <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id31" title="Daniel Wheeler, James A. Warren, and William J. Boettinger. Modeling the early stages of reactive wetting. Physical Review E, 82(5):051601, Nov 2010. doi:10.1103/PhysRevE.82.051601.">5</a>]</span>. The free energy for this
 system takes the form,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-freeenergy">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-freeenergy" title="Permalink to this equation">¶</a></span>\[f = - \frac{e \rho^2}{m^2} + \frac{R T}{m} \left( \ln \frac{\rho}{m - \bar{v} \rho} \right)\]</div>
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-freeenergy" title="Link to this equation">¶</a></span>\[f = - \frac{e \rho^2}{m^2} + \frac{R T}{m} \left( \ln \frac{\rho}{m - \bar{v} \rho} \right)\]</div>
 <p>where <span class="math notranslate nohighlight">\(\rho\)</span> is the density. This free energy supports a two phase
 equilibrium with densities given by <span class="math notranslate nohighlight">\(\rho^l\)</span> and <span class="math notranslate nohighlight">\(\rho^v\)</span> in the
 liquid and vapor phases, respectively. The densities are determined by solving
 the following system of equations,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-pressureequilibrium">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-pressureequilibrium" title="Permalink to this equation">¶</a></span>\[P \left( \rho^l \right) = P \left( \rho^v \right)\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-pressureequilibrium" title="Link to this equation">¶</a></span>\[P \left( \rho^l \right) = P \left( \rho^v \right)\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-chemicalpotentialequilibrium">
-<span class="eqno">(3)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotentialequilibrium" title="Permalink to this equation">¶</a></span>\[\mu \left( \rho^l \right) = \mu \left( \rho^v \right)\]</div>
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotentialequilibrium" title="Link to this equation">¶</a></span>\[\mu \left( \rho^l \right) = \mu \left( \rho^v \right)\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mu\)</span> is the chemical potential,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-chemicalpotential">
-<span class="eqno">(4)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotential" title="Permalink to this equation">¶</a></span>\[\mu = \frac{\partial f}{\partial \rho}\]</div>
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotential" title="Link to this equation">¶</a></span>\[\mu = \frac{\partial f}{\partial \rho}\]</div>
 <p>and <span class="math notranslate nohighlight">\(P\)</span> is the pressure,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-pressure">
-<span class="eqno">(5)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-pressure" title="Permalink to this equation">¶</a></span>\[P = \rho \mu - f\]</div>
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-pressure" title="Link to this equation">¶</a></span>\[P = \rho \mu - f\]</div>
 <p>One choice of thermodynamic parameters that yields a relatively physical two phase system is</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">molarWeight</span> <span class="o">=</span> <span class="mf">0.118</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ee</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.455971</span>
@@ -159,21 +159,21 @@ the following system of equations,</p>
 Eqs. <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapor1d-freeenergy">(1)</a>,
 <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotential">(4)</a> and
 <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapor1d-pressure">(5)</a> are defined as python functions,</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">VanLeerConvectionTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">ConvectionTerm</span><span class="p">,</span> <span class="n">CentralDifferenceConvectionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">VanLeerConvectionTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">ConvectionTerm</span><span class="p">,</span> <span class="n">CentralDifferenceConvectionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">ee</span> <span class="o">*</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">molarWeight</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gasConstant</span> <span class="o">*</span> <span class="n">temperature</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">molarWeight</span> <span class="o">*</span> \
 <span class="gp">... </span>           <span class="n">numerix</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rho</span> <span class="o">/</span> <span class="p">(</span><span class="n">molarWeight</span> <span class="o">-</span> <span class="n">vbar</span> <span class="o">*</span> <span class="n">rho</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">mu</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">mu</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ee</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">molarWeight</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gasConstant</span> <span class="o">*</span> <span class="n">temperature</span> <span class="o">/</span> <span class="n">molarWeight</span> <span class="o">*</span> \
 <span class="gp">... </span>           <span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rho</span> <span class="o">/</span> <span class="p">(</span><span class="n">molarWeight</span> <span class="o">-</span> <span class="n">vbar</span> <span class="o">*</span> <span class="n">rho</span><span class="p">))</span> <span class="o">+</span> <span class="n">molarWeight</span> <span class="o">/</span> <span class="p">(</span><span class="n">molarWeight</span> <span class="o">-</span> <span class="n">vbar</span> <span class="o">*</span> <span class="n">rho</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">P</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">P</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">mu</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span> <span class="o">-</span> <span class="n">f</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -193,15 +193,15 @@ Eqs. <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapo
 <p>Using standard dissipation laws, we write the governing equations for mass and
 momentum conservation,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-mass">
-<span class="eqno">(6)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-mass" title="Permalink to this equation">¶</a></span>\[\frac{\partial \rho}{\partial t} + \partial_j \left(\rho u_j \right) = 0\]</div>
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-mass" title="Link to this equation">¶</a></span>\[\frac{\partial \rho}{\partial t} + \partial_j \left(\rho u_j \right) = 0\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-momentum">
-<span class="eqno">(7)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-momentum" title="Permalink to this equation">¶</a></span>\[\frac{\partial \left( \rho u_i\right) }{\partial t} + \partial_j\left( \rho
+<span class="eqno">(7)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-momentum" title="Link to this equation">¶</a></span>\[\frac{\partial \left( \rho u_i\right) }{\partial t} + \partial_j\left( \rho
 u_iu_j \right) = \partial_j\left( \nu \left[ \partial_j u_i + \partial_i u_j
 \right] \right) - \rho \partial_i \mu^{NC}\]</div>
 <p>where the non-classical potential, <span class="math notranslate nohighlight">\(\mu^{NC}\)</span>, is given by,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-nonclassicalpotential">
-<span class="eqno">(8)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-nonclassicalpotential" title="Permalink to this equation">¶</a></span>\[ \mu^{NC} = \frac{\delta F}{\delta \rho} = \mu - \epsilon T \partial_j^2 \rho\]</div>
+<span class="eqno">(8)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-nonclassicalpotential" title="Link to this equation">¶</a></span>\[ \mu^{NC} = \frac{\delta F}{\delta \rho} = \mu - \epsilon T \partial_j^2 \rho\]</div>
 <p>As usual, to proceed, we define a mesh</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Lx</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">100</span>
@@ -231,7 +231,7 @@ prevent the velocity and density fields decoupling. The following velocity
 correction equation (expressed in discretized form) prevents decoupling from
 occurring,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-correction">
-<span class="eqno">(9)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-correction" title="Permalink to this equation">¶</a></span>\[u_{i,f}^c = \frac{A_f d_f}{\overline{d}_f} \left( \overline{ \rho \partial_i
+<span class="eqno">(9)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-correction" title="Link to this equation">¶</a></span>\[u_{i,f}^c = \frac{A_f d_f}{\overline{d}_f} \left( \overline{ \rho \partial_i
 \mu^{NC} }_f - \overline{\rho}_f \partial_{i,f} \mu^{NC} \right)\]</div>
 <p>where <span class="math notranslate nohighlight">\(A_f\)</span> is the face area, <span class="math notranslate nohighlight">\(d_f\)</span> is the distance between the
 adjacent cell centers and <span class="math notranslate nohighlight">\(\overline{a}_f\)</span> is the momentum conservation
@@ -241,7 +241,7 @@ derivative evaluated directly at the face (not averaged). The variable
 <span class="math notranslate nohighlight">\(u_i^c\)</span> is used to modify the velocity used in
 Eq. <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapor1d-mass">(6)</a> such that,</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-masscorrected">
-<span class="eqno">(10)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-masscorrected" title="Permalink to this equation">¶</a></span>\[\frac{\partial \rho}{\partial t} + \partial_j \left(\rho \left[u_j + u_i^c
+<span class="eqno">(10)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-masscorrected" title="Link to this equation">¶</a></span>\[\frac{\partial \rho}{\partial t} + \partial_j \left(\rho \left[u_j + u_i^c
 \right] \right) = 0\]</div>
 <p>Equation <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapor1d-masscorrected">(10)</a> becomes</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matrixDiagonal</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$a_f$&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">1e+20</span><span class="p">,</span> <span class="n">hasOld</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -280,7 +280,7 @@ independent variable.</p>
 do this the Eq. <a class="reference internal" href="#equation-eq-reactivewetting-liquidvapor1d-nonclassicalpotential">(8)</a> is
 linearized in <span class="math notranslate nohighlight">\(\rho\)</span> such that</p>
 <div class="math notranslate nohighlight" id="equation-eq-reactivewetting-liquidvapor1d-chemicalpotentialequation">
-<span class="eqno">(11)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotentialequation" title="Permalink to this equation">¶</a></span>\[\mu^{NC} = \mu^* + \left( \frac{\partial \mu}{\partial \rho} \right)^* \left( \rho - \rho^* \right) - \epsilon T \partial_j^2 \rho\]</div>
+<span class="eqno">(11)<a class="headerlink" href="#equation-eq-reactivewetting-liquidvapor1d-chemicalpotentialequation" title="Link to this equation">¶</a></span>\[\mu^{NC} = \mu^* + \left( \frac{\partial \mu}{\partial \rho} \right)^* \left( \rho - \rho^* \right) - \epsilon T \partial_j^2 \rho\]</div>
 <p>The <span class="math notranslate nohighlight">\(^*\)</span> superscript denotes the current held value. In <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>,
 <span class="math notranslate nohighlight">\(\frac{\partial \mu}{\partial \rho}\)</span> is written as,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">potentialDerivative</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ee</span> <span class="o">/</span> <span class="n">molarWeight</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gasConstant</span> <span class="o">*</span> <span class="n">temperature</span> <span class="o">*</span> <span class="n">molarWeight</span> <span class="o">/</span> <span class="n">density</span> <span class="o">/</span> <span class="p">(</span><span class="n">molarWeight</span> <span class="o">-</span> <span class="n">vbar</span> <span class="o">*</span> <span class="n">density</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
@@ -319,7 +319,7 @@ volume. The initial condition for the density is defined by</p>
 </pre></div>
 </div>
 <p>Viewers are also defined.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewers</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="n">density</span><span class="p">),</span> <span class="n">Viewer</span><span class="p">(</span><span class="n">velocity</span><span class="p">),</span> <span class="n">Viewer</span><span class="p">(</span><span class="n">potentialNC</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">viewer</span> <span class="ow">in</span> <span class="n">viewers</span><span class="p">:</span>
@@ -419,7 +419,7 @@ the other solver suites, so we don’t use it as the default.</p>
 <span class="gp">... </span>    <span class="n">timestep</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
 </pre></div>
@@ -432,8 +432,8 @@ the other solver suites, so we don’t use it as the default.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -442,7 +442,7 @@ the other solver suites, so we don’t use it as the default.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

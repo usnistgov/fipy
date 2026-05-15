@@ -4,20 +4,3 @@ fipy.solvers.pyamgx.linearLUSolver
 .. automodule:: fipy.solvers.pyamgx.linearLUSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

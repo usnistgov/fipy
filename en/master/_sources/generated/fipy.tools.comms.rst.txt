@@ -4,29 +4,11 @@ fipy.tools.comms
 .. automodule:: fipy.tools.comms
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.tools.comms.commWrapper
-   fipy.tools.comms.dummyComm
-
+   commWrapper
+   dummyComm

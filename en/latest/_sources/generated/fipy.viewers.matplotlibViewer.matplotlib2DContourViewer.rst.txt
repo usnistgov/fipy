@@ -4,26 +4,9 @@ fipy.viewers.matplotlibViewer.matplotlib2DContourViewer
 .. automodule:: fipy.viewers.matplotlibViewer.matplotlib2DContourViewer
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       Matplotlib2DContourViewer
    
-   
-
-   
-   
-   
-
-
-

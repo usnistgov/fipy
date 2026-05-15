@@ -4,26 +4,9 @@ fipy.solvers.petsc.preconditioners.ssorPreconditioner
 .. automodule:: fipy.solvers.petsc.preconditioners.ssorPreconditioner
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       SSORPreconditioner
    
-   
-
-   
-   
-   
-
-
-

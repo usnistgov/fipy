@@ -4,15 +4,6 @@ fipy.solvers.petsc.linearCGSolver
 .. automodule:: fipy.solvers.petsc.linearCGSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -20,11 +11,3 @@ fipy.solvers.petsc.linearCGSolver
       LinearCGSolver
       LinearPCGSolver
    
-   
-
-   
-   
-   
-
-
-

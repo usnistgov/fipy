@@ -4,11 +4,6 @@ fipy.meshes.factoryMeshes
 .. automodule:: fipy.meshes.factoryMeshes
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -20,15 +15,3 @@ fipy.meshes.factoryMeshes
       Grid3D
       SphericalGrid1D
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

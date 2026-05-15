@@ -4,26 +4,9 @@ fipy.terms.centralDiffConvectionTerm
 .. automodule:: fipy.terms.centralDiffConvectionTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       CentralDifferenceConvectionTerm
    
-   
-
-   
-   
-   
-
-
-

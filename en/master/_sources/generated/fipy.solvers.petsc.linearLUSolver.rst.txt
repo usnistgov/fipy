@@ -4,26 +4,9 @@ fipy.solvers.petsc.linearLUSolver
 .. automodule:: fipy.solvers.petsc.linearLUSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       LinearLUSolver
    
-   
-
-   
-   
-   
-
-
-

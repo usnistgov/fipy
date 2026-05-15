@@ -4,20 +4,3 @@ examples.chemotaxis.parameters
 .. automodule:: examples.chemotaxis.parameters
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,20 +4,3 @@ examples.meshing.inputGrid2D
 .. automodule:: examples.meshing.inputGrid2D
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

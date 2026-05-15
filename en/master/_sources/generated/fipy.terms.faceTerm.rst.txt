@@ -4,26 +4,9 @@ fipy.terms.faceTerm
 .. automodule:: fipy.terms.faceTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       FaceTerm
    
-   
-
-   
-   
-   
-
-
-

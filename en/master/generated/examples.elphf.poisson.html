@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.elphf.poisson &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.elphf.poisson &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.elphf.poisson.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.elphf" href="examples.elphf.html" />
     <link rel="next" title="examples.elphf.test" href="examples.elphf.test.html" />
     <link rel="prev" title="examples.elphf.phaseDiffusion" href="examples.elphf.phaseDiffusion.html" />
@@ -118,10 +118,10 @@
               <div class="body" role="main">
 		
   <section id="module-examples.elphf.poisson">
-<span id="examples-elphf-poisson"></span><h1>examples.elphf.poisson<a class="headerlink" href="#module-examples.elphf.poisson" title="Permalink to this heading">¶</a></h1>
+<span id="examples-elphf-poisson"></span><h1>examples.elphf.poisson<a class="headerlink" href="#module-examples.elphf.poisson" title="Link to this heading">¶</a></h1>
 <p>A simple 1D example to test the setup of the Poisson equation.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">200</span>
@@ -143,8 +143,8 @@ valence of the <span class="math notranslate nohighlight">\(j^\text{th}\)</span>
 </pre></div>
 </div>
 <p>We examine a fixed distribution of electrons with <span class="math notranslate nohighlight">\(z_{\text{e}^{-}} = -1\)</span>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ComponentVariable</span><span class="p">(</span><span class="n">CellVariable</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">ComponentVariable</span><span class="p">(</span><span class="n">CellVariable</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                 <span class="n">standardPotential</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">barrier</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
 <span class="gp">... </span>                 <span class="n">diffusivity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">valence</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">equation</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="n">CellVariable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span>
@@ -155,7 +155,7 @@ valence of the <span class="math notranslate nohighlight">\(j^\text{th}\)</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">valence</span> <span class="o">=</span> <span class="n">valence</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="n">equation</span>
 <span class="gp">...</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
 <span class="gp">... </span>                              <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
 <span class="gp">... </span>                              <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -212,7 +212,7 @@ concentration of electrons <span class="math notranslate nohighlight">\(C_{\text
 </pre></div>
 </div>
 <p>If we are running the example interactively, we view the result</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="p">(</span><span class="n">charge</span><span class="p">,</span> <span class="n">potential</span><span class="p">))</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -251,7 +251,7 @@ concentration of electrons <span class="math notranslate nohighlight">\(C_{\text
 </pre></div>
 </div>
 <p>and again view the result</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Press any key to continue...&quot;</span><span class="p">)</span>
@@ -296,8 +296,8 @@ concentration of electrons <span class="math notranslate nohighlight">\(C_{\text
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -306,7 +306,7 @@ concentration of electrons <span class="math notranslate nohighlight">\(C_{\text
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

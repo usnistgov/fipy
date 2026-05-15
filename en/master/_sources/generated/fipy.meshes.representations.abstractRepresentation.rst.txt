@@ -4,20 +4,3 @@ fipy.meshes.representations.abstractRepresentation
 .. automodule:: fipy.meshes.representations.abstractRepresentation
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

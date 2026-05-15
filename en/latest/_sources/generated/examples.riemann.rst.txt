@@ -4,29 +4,11 @@ examples.riemann
 .. automodule:: examples.riemann
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   examples.riemann.acoustics
-   examples.riemann.test
-
+   acoustics
+   test

@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Theoretical and Numerical Background &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>Theoretical and Numerical Background &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/numerical/index.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="Introduction" href="../introduction.html" />
     <link rel="next" title="General Conservation Equation" href="equation.html" />
     <link rel="prev" title="Efficiency" href="../EFFICIENCY.html" />
@@ -114,13 +114,13 @@
               <div class="body" role="main">
 		
   <section id="theoretical-and-numerical-background">
-<span id="chap-numerics"></span><h1>Theoretical and Numerical Background<a class="headerlink" href="#theoretical-and-numerical-background" title="Permalink to this heading">¶</a></h1>
+<span id="chap-numerics"></span><h1>Theoretical and Numerical Background<a class="headerlink" href="#theoretical-and-numerical-background" title="Link to this heading">¶</a></h1>
 <p>This chapter describes the numerical methods used to solve equations
 in the <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> programming environment. <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> uses the finite volume
 method (FVM) to solve coupled sets of partial differential equations
 (PDEs). For a good introduction to the FVM see Nick Croft’s PhD
-thesis <span id="id1">[<a class="reference internal" href="../references.html#id5" title="T. N. Croft. Unstructured Mesh - Finite Volume Algorithms for Swirling, Turbulent Reacting Flows. PhD thesis, University of Greenwich, 1998. URL: http://gala.gre.ac.uk/id/eprint/6371/.">14</a>]</span>, Patankar <span id="id2">[<a class="reference internal" href="../references.html#id2" title="S. V. Patankar. Numerical Heat Transfer and Fluid Flow. Taylor and Francis, 1980.">15</a>]</span> or Versteeg and
-Malalasekera <span id="id3">[<a class="reference internal" href="../references.html#id3" title="H. K. Versteeg and W. Malalasekera. An Introduction to Computational Fluid Dynamics. Longman Scientific and Technical, 1995.">16</a>]</span>.</p>
+thesis <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id5" title="T. N. Croft. Unstructured Mesh - Finite Volume Algorithms for Swirling, Turbulent Reacting Flows. PhD thesis, University of Greenwich, 1998. URL: http://gala.gre.ac.uk/id/eprint/6371/.">14</a>]</span>, Patankar <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id2" title="S. V. Patankar. Numerical Heat Transfer and Fluid Flow. Taylor and Francis, 1980.">15</a>]</span> or Versteeg and
+Malalasekera <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../references.html#id3" title="H. K. Versteeg and W. Malalasekera. An Introduction to Computational Fluid Dynamics. Longman Scientific and Technical, 1995.">16</a>]</span>.</p>
 <p>Essentially, the FVM consists of dividing the solution domain into
 discrete finite volumes over which the state variables are
 approximated with linear or higher order interpolations. The
@@ -132,31 +132,12 @@ PDEs used in many application areas (<em>e.g.</em>, Fluid Dynamics).</p>
 (FEM), just as the Finite Difference Method (FDM) is a subset of the FVM. A
 system of equations fully equivalent to the FVM can be obtained with
 the FEM using as weighting functions the characteristic functions of
-FV cells, i.e., functions equal to unity <span id="id4">[<a class="reference internal" href="../references.html#id8" title="C. Mattiussi. An analysis of finite volume, finite element, and finite difference methods using some concepts from algebraic topology. Journal of Computational Physics, 133:289-309, 1997. URL: http://lis.epfl.ch/publications/JCP1997.pdf.">17</a>]</span>. Analogously,
+FV cells, i.e., functions equal to unity <span class="bibtex-citation" id="id4">[<a class="reference internal" href="../references.html#id8" title="C. Mattiussi. An analysis of finite volume, finite element, and finite difference methods using some concepts from algebraic topology. Journal of Computational Physics, 133:289-309, 1997. URL: http://lis.epfl.ch/publications/JCP1997.pdf.">17</a>]</span>. Analogously,
 the discretization of equations with the FVM reduces to the FDM on
 Cartesian grids.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="equation.html">General Conservation Equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="discret.html">Finite Volume Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="discret.html#cell-centered-fvm-cc-fvm">Cell Centered FVM (CC-FVM)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="discret.html#boundary-conditions">Boundary Conditions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="discret.html#vertex-centered-fvm-vc-fvm">Vertex Centered FVM (VC-FVM)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="discret.html#discretization">Discretization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="discret.html#transient-term-partial-rho-phi-partial-t">Transient Term <span class="math notranslate nohighlight">\(\partial (\rho \phi) / \partial t\)</span></a></li>
-<li class="toctree-l2"><a class="reference internal" href="discret.html#convection-term-nabla-cdot-left-vec-u-phi-right">Convection Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \vec{u} \phi \right)\)</span></a></li>
-<li class="toctree-l2"><a class="reference internal" href="discret.html#diffusion-term-nabla-cdot-left-gamma-1-nabla-phi-right">Diffusion Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \Gamma_1 \nabla \phi \right)\)</span></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="discret.html#higher-order-diffusion">Higher Order Diffusion</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="discret.html#source-term">Source Term</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="discret.html#linear-equations">Linear Equations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scheme.html">Numerical Schemes</a></li>
 </ul>
 </div>
@@ -164,8 +145,8 @@ Cartesian grids.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -174,7 +155,7 @@ Cartesian grids.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

@@ -4,20 +4,3 @@ examples.diffusion.steadyState.mesh50x50.tri2Dinput
 .. automodule:: examples.diffusion.steadyState.mesh50x50.tri2Dinput
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,28 +4,10 @@ fipy.tools.logging
 .. automodule:: fipy.tools.logging
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.tools.logging.environment
-
+   environment

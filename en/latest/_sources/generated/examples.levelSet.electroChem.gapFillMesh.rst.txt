@@ -4,20 +4,3 @@ examples.levelSet.electroChem.gapFillMesh
 .. automodule:: examples.levelSet.electroChem.gapFillMesh
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

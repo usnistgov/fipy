@@ -4,26 +4,9 @@ fipy.solvers.scipy.linearBicgstabSolver
 .. automodule:: fipy.solvers.scipy.linearBicgstabSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       LinearBicgstabSolver
    
-   
-
-   
-   
-   
-
-
-

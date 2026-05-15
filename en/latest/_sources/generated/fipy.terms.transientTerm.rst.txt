@@ -4,26 +4,9 @@ fipy.terms.transientTerm
 .. automodule:: fipy.terms.transientTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       TransientTerm
    
-   
-
-   
-   
-   
-
-
-

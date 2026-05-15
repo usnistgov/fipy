@@ -4,20 +4,11 @@ fipy.tools.changelog
 .. automodule:: fipy.tools.changelog
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       main
-   
-   
-
-   
    
    .. rubric:: Classes
 
@@ -25,11 +16,3 @@ fipy.tools.changelog
    
       ChangeLog
    
-   
-
-   
-   
-   
-
-
-

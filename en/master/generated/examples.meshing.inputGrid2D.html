@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.meshing.inputGrid2D &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.meshing.inputGrid2D &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.meshing.inputGrid2D.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.meshing" href="examples.meshing.html" />
     <link rel="next" title="examples.meshing.sphere" href="examples.meshing.sphere.html" />
     <link rel="prev" title="examples.meshing.gmshRefinement" href="examples.meshing.gmshRefinement.html" />
@@ -116,7 +116,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.meshing.inputGrid2D">
-<span id="examples-meshing-inputgrid2d"></span><h1>examples.meshing.inputGrid2D<a class="headerlink" href="#module-examples.meshing.inputGrid2D" title="Permalink to this heading">¶</a></h1>
+<span id="examples-meshing-inputgrid2d"></span><h1>examples.meshing.inputGrid2D<a class="headerlink" href="#module-examples.meshing.inputGrid2D" title="Link to this heading">¶</a></h1>
 <p>To run this example from the base FiPy directory, type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python examples/meshing/inputGrid2D.py --numberOfElements=X
 </pre></div>
@@ -125,13 +125,13 @@
 information. The command line argument, X, controls the number of
 elements on the mesh. Firstly parse the command line argument for
 <cite>numberOfElements</cite>, with the default set at 100.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools.parser</span> <span class="kn">import</span> <span class="n">parse</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">numberOfElements</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s1">&#39;--numberOfElements&#39;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A <cite>Grid2D</cite> object is invoked in the following way,</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numberOfElements</span><span class="p">))</span>
@@ -171,8 +171,8 @@ obtained.  For example the mesh volumes can be obtained with the
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -181,7 +181,7 @@ obtained.  For example the mesh volumes can be obtained with the
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

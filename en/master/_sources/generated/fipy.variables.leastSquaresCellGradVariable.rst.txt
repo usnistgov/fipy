@@ -4,20 +4,3 @@ fipy.variables.leastSquaresCellGradVariable
 .. automodule:: fipy.variables.leastSquaresCellGradVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,26 +4,9 @@ fipy.solvers.scipy.scipySolver
 .. automodule:: fipy.solvers.scipy.scipySolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       ScipySolver
    
-   
-
-   
-   
-   
-
-
-

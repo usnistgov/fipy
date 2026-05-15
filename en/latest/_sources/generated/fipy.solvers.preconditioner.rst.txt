@@ -4,15 +4,6 @@ fipy.solvers.preconditioner
 .. automodule:: fipy.solvers.preconditioner
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -21,11 +12,3 @@ fipy.solvers.preconditioner
       Preconditioner
       SolverModifyingPreconditioner
    
-   
-
-   
-   
-   
-
-
-

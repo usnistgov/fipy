@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.viewers.matplotlibViewer.matplotlib1DViewer &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>fipy.viewers.matplotlibViewer.matplotlib1DViewer &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.viewers.matplotlibViewer.matplotlib1DViewer.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="fipy.viewers.matplotlibViewer" href="fipy.viewers.matplotlibViewer.html" />
     <link rel="next" title="fipy.viewers.matplotlibViewer.matplotlib2DContourViewer" href="fipy.viewers.matplotlibViewer.matplotlib2DContourViewer.html" />
     <link rel="prev" title="fipy.viewers.matplotlibViewer.abstractMatplotlibViewer" href="fipy.viewers.matplotlibViewer.abstractMatplotlibViewer.html" />
@@ -117,22 +117,22 @@
               <div class="body" role="main">
 		
   <section id="module-fipy.viewers.matplotlibViewer.matplotlib1DViewer">
-<span id="fipy-viewers-matplotlibviewer-matplotlib1dviewer"></span><h1>fipy.viewers.matplotlibViewer.matplotlib1DViewer<a class="headerlink" href="#module-fipy.viewers.matplotlibViewer.matplotlib1DViewer" title="Permalink to this heading">¶</a></h1>
+<span id="fipy-viewers-matplotlibviewer-matplotlib1dviewer"></span><h1>fipy.viewers.matplotlibViewer.matplotlib1DViewer<a class="headerlink" href="#module-fipy.viewers.matplotlibViewer.matplotlib1DViewer" title="Link to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer" title="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matplotlib1DViewer</span></code></a>(vars[, title, xlog, ...])</p></td>
-<td><p>Displays a y vs.</p></td>
+<td><p>Displays a y vs. x plot of one or more 1D <cite>CellVariable</cite> objects using <a class="reference external" href="http://matplotlib.sourceforge.net/">Matplotlib</a>.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.viewers.matplotlibViewer.matplotlib1DViewer.</span></span><span class="sig-name descname"><span class="pre">Matplotlib1DViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'upper</span> <span class="pre">left'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwlimits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer" title="Permalink to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fipy.viewers.matplotlibViewer.matplotlib1DViewer.</span></span><span class="sig-name descname"><span class="pre">Matplotlib1DViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'upper</span> <span class="pre">left'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwlimits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.viewers.matplotlibViewer.abstractMatplotlibViewer.html#fipy.viewers.matplotlibViewer.abstractMatplotlibViewer.AbstractMatplotlibViewer" title="fipy.viewers.matplotlibViewer.abstractMatplotlibViewer.AbstractMatplotlibViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractMatplotlibViewer</span></code></a></p>
 <p>Displays a y vs.  x plot of one or more 1D <cite>CellVariable</cite> objects using
 <a class="reference external" href="http://matplotlib.sourceforge.net/">Matplotlib</a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fipy</span> <span class="k">as</span> <span class="nn">fp</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xVar</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
@@ -142,20 +142,20 @@
 <span class="gp">... </span>                <span class="n">xmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">datamin</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Matplotlib1DViewer test&quot;</span><span class="p">)</span>
-<span class="gp">... </span>
+<span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">kval</span> <span class="ow">in</span> <span class="n">fp</span><span class="o">.</span><span class="n">numerix</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">k</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">kval</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
-<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">_promptForOpinion</span><span class="p">()</span>  
+<span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">_promptForOpinion</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;ocean&quot;</span>  
-<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="kc">True</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;ocean&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Matplotlib1DViewer changed&quot;</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
-<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">_promptForOpinion</span><span class="p">()</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Matplotlib1DViewer changed&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">_promptForOpinion</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -179,57 +179,57 @@ a (default) value of <cite>None</cite> will autoscale.
 a (default) value of <cite>None</cite> will autoscale.
 (<em>ymin</em> and <em>ymax</em> are synonyms for <em>datamin</em> and <em>datamax</em>).</p></li>
 <li><p><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – place a legend at the specified position, if not <cite>None</cite></p></li>
-<li><p><strong>axes</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – if not <cite>None</cite>, <cite>vars</cite> will be plotted into this
-<a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> object</p></li>
+<li><p><strong>axes</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – if not <cite>None</cite>, <cite>vars</cite> will be plotted into this
+<a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> object</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.axes">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>.</p>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.axes" title="Link to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.cmap">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cmap</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.cmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.</p>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cmap</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.cmap" title="Link to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.colorbar">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colorbar</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.colorbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/colorbar_api.html#matplotlib.colorbar.Colorbar" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colorbar</span></code></a>.</p>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">colorbar</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.colorbar" title="Link to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/colorbar_api.html#matplotlib.colorbar.Colorbar" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colorbar</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.fig">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fig</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.fig" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>.</p>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fig</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.fig" title="Link to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> number.</p>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.id" title="Link to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> number.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.lines">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lines</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>The collection of <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line2D</span></code></a>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lines</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.lines" title="Link to this definition">¶</a></dt>
+<dd><p>The collection of <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line2D</span></code></a>
 objects representing the plotted data.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.log">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.log" title="Permalink to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">log</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.log" title="Link to this definition">¶</a></dt>
 <dd><p>Whether data has logarithmic scaling</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.plot" title="Link to this definition">¶</a></dt>
 <dd><p>Update the display of the viewed variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -240,7 +240,7 @@ objects representing the plotted data.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.plotMesh">
-<span class="sig-name descname"><span class="pre">plotMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.plotMesh" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plotMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.plotMesh" title="Link to this definition">¶</a></dt>
 <dd><p>Display a representation of the mesh</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -251,7 +251,7 @@ objects representing the plotted data.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.setLimits">
-<span class="sig-name descname"><span class="pre">setLimits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwlimits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.setLimits" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setLimits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwlimits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.setLimits" title="Link to this definition">¶</a></dt>
 <dd><p>Update the limits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -296,7 +296,7 @@ viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.title">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.title" title="Permalink to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.title" title="Link to this definition">¶</a></dt>
 <dd><p>The text appearing at the top center.</p>
 <p>(default: if <code class="docutils literal notranslate"><span class="pre">len(self.vars)</span> <span class="pre">==</span> <span class="pre">1</span></code>, the name of
 the only <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>,
@@ -305,7 +305,7 @@ otherwise <code class="docutils literal notranslate"><span class="pre">&quot;&qu
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.vars">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vars</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.vars" title="Permalink to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">vars</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib1DViewer.Matplotlib1DViewer.vars" title="Link to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> or list
 of <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to
 display.</p>
@@ -317,8 +317,8 @@ display.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -327,7 +327,7 @@ display.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

@@ -4,42 +4,24 @@
 .. automodule:: examples
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   examples.benchmarking
-   examples.cahnHilliard
-   examples.chemotaxis
-   examples.convection
-   examples.diffusion
-   examples.elphf
-   examples.flow
-   examples.levelSet
-   examples.meshing
-   examples.parallel
-   examples.phase
-   examples.reactiveWetting
-   examples.riemann
-   examples.test
-   examples.updating
-
+   benchmarking
+   cahnHilliard
+   chemotaxis
+   convection
+   diffusion
+   elphf
+   flow
+   levelSet
+   meshing
+   parallel
+   phase
+   reactiveWetting
+   riemann
+   test
+   updating

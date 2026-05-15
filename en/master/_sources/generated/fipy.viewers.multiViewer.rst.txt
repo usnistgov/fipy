@@ -4,26 +4,9 @@ fipy.viewers.multiViewer
 .. automodule:: fipy.viewers.multiViewer
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       MultiViewer
    
-   
-
-   
-   
-   
-
-
-

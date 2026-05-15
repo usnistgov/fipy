@@ -4,26 +4,9 @@ examples.levelSet.electroChem.mayaviSurfactantViewer
 .. automodule:: examples.levelSet.electroChem.mayaviSurfactantViewer
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       MayaviSurfactantViewer
    
-   
-
-   
-   
-   
-
-
-

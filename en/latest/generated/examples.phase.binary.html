@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.binary &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.phase.binary &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.binary.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.binaryCoupled" href="examples.phase.binaryCoupled.html" />
     <link rel="prev" title="examples.phase.anisotropyOLD" href="examples.phase.anisotropyOLD.html" />
@@ -118,11 +118,11 @@
               <div class="body" role="main">
 		
   <section id="module-examples.phase.binary">
-<span id="examples-phase-binary"></span><h1>examples.phase.binary<a class="headerlink" href="#module-examples.phase.binary" title="Permalink to this heading">¶</a></h1>
+<span id="examples-phase-binary"></span><h1>examples.phase.binary<a class="headerlink" href="#module-examples.phase.binary" title="Link to this heading">¶</a></h1>
 <p>It is straightforward to extend a phase field model to include binary alloys.
 As in <a class="reference internal" href="examples.phase.simple.html#module-examples.phase.simple" title="examples.phase.simple"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.simple</span></code></a>, we will examine a 1D problem</p>
-<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">PowerLawConvectionTerm</span><span class="p">,</span> <span class="n">DefaultAsymmetricSolver</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">PowerLawConvectionTerm</span><span class="p">,</span> <span class="n">DefaultAsymmetricSolver</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">400</span>
@@ -132,7 +132,7 @@ As in <a class="reference internal" href="examples.phase.simple.html#module-exam
 </pre></div>
 </div>
 <p>The Helmholtz free energy functional can be written as the integral
-<span id="id1">[<a class="reference internal" href="../references.html#id6" title="W. J. Boettinger, J. A. Warren, C. Beckermann, and A. Karma. Phase-field simulation of solidification. Annual Review of Materials Research, 32:163-194, 2002. doi:10.1146/annurev.matsci.32.101901.155803.">1</a>]</span> <span id="id2">[<a class="reference internal" href="../references.html#id9" title="G. B. McFadden. Phase-field models of solidification. Contemporary Mathematics, 306:107-145, 2002.">3</a>]</span> <span id="id3">[<a class="reference internal" href="../references.html#id15" title="A. A. Wheeler, W. J. Boettinger, and G. B. McFadden. Phase-field model for isothermal phase transitions in binary alloys. Physical Review A, 45(10):7424–7439, 1992.">30</a>]</span></p>
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id6" title="W. J. Boettinger, J. A. Warren, C. Beckermann, and A. Karma. Phase-field simulation of solidification. Annual Review of Materials Research, 32:163-194, 2002. doi:10.1146/annurev.matsci.32.101901.155803.">1</a>]</span> <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id9" title="G. B. McFadden. Phase-field models of solidification. Contemporary Mathematics, 306:107-145, 2002.">3</a>]</span> <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../references.html#id15" title="A. A. Wheeler, W. J. Boettinger, and G. B. McFadden. Phase-field model for isothermal phase transitions in binary alloys. Physical Review A, 45(10):7424–7439, 1992.">30</a>]</span></p>
 <div class="math notranslate nohighlight">
 \[\mathcal{F}\left(\phi, C, T\right)
 = \int_\mathcal{V} \left\{
@@ -155,12 +155,12 @@ As in <a class="reference internal" href="examples.phase.simple.html#module-exam
 <p>Frequently, the gradient energy term in concentration is ignored and we
 can derive governing equations</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-phase">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-binary-phase" title="Permalink to this equation">¶</a></span>\[ \frac{\partial\phi}{\partial t}
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-binary-phase" title="Link to this equation">¶</a></span>\[ \frac{\partial\phi}{\partial t}
  = M_\phi \left( \kappa_\phi \nabla^2 \phi
                 - \frac{\partial f}{\partial \phi} \right)\]</div>
 <p>for phase and</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-diffusion">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-binary-diffusion" title="Permalink to this equation">¶</a></span>\[\frac{\partial C}{\partial t}
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-binary-diffusion" title="Link to this equation">¶</a></span>\[\frac{\partial C}{\partial t}
 = \nabla\cdot\left( M_C \nabla \frac{\partial f}{\partial C} \right)\]</div>
 <p>for solute.</p>
 <p>The free energy density <span class="math notranslate nohighlight">\(f(\phi, C, T)\)</span> can be constructed in many
@@ -174,11 +174,11 @@ are the free energy densities of the pure components. There are a
 variety of choices for the interpolation function <span class="math notranslate nohighlight">\(p(\phi)\)</span> and the
 barrier function <span class="math notranslate nohighlight">\(g(\phi)\)</span>,</p>
 <p>such as those shown in <a class="reference internal" href="examples.phase.simple.html#module-examples.phase.simple" title="examples.phase.simple"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.simple</span></code></a></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">p</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">phi</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">15</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">g</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="p">(</span><span class="n">phi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">phi</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
 </pre></div>
 </div>
@@ -236,7 +236,7 @@ pure component melting point <span class="math notranslate nohighlight">\(T_M^A\
 + \frac{W_A}{2} g(\phi).\]</div>
 <p>With these assumptions</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-phasetransformation">
-<span class="eqno">(3)<a class="headerlink" href="#equation-eq-phase-binary-phasetransformation" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial \phi}
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-phase-binary-phasetransformation" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial \phi}
 &amp;= (1-C) \frac{\partial f_A}{\partial \phi}
 + C \frac{\partial f_B}{\partial \phi} \nonumber \\
 &amp;= \left\{
@@ -248,18 +248,18 @@ pure component melting point <span class="math notranslate nohighlight">\(T_M^A\
 \right\} g'(\phi)\end{split}\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-chemicalpotential">
-<span class="eqno">(4)<a class="headerlink" href="#equation-eq-phase-binary-chemicalpotential" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial C}
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-phase-binary-chemicalpotential" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial C}
 &amp;= \left[f_B(\phi, T) + \frac{R T}{V_m} \ln C\right]
 - \left[f_A(\phi, T) + \frac{R T}{V_m} \ln (1-C) \right] \nonumber \\
 &amp;= \left[\mu_B(\phi, C, T) - \mu_A(\phi, C, T) \right] / V_m\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mu_A\)</span> and <span class="math notranslate nohighlight">\(\mu_B\)</span> are the classical chemical potentials
 for the binary species. <span class="math notranslate nohighlight">\(p'(\phi)\)</span> and <span class="math notranslate nohighlight">\(g'(\phi)\)</span> are the
 partial derivatives of of <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(g\)</span> with respect to <span class="math notranslate nohighlight">\(\phi\)</span></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">pPrime</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">pPrime</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="mf">30.</span> <span class="o">*</span> <span class="n">g</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">gPrime</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">gPrime</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -311,7 +311,7 @@ equal the previous value</p>
 evaluate the chemical potentials <span class="math notranslate nohighlight">\(\mu_A\)</span> and <span class="math notranslate nohighlight">\(\mu_B\)</span> and then
 perform the finite differences necessary to calculate their gradient and
 divergence, e.g.,:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">deltaChemPot</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">deltaChemPot</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">((</span><span class="n">Vm</span> <span class="o">*</span> <span class="p">(</span><span class="n">enthalpyB</span> <span class="o">*</span> <span class="n">p</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span> <span class="o">+</span> <span class="n">WA</span> <span class="o">*</span> <span class="n">g</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span> <span class="o">+</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">))</span> <span class="o">-</span>
             <span class="p">(</span><span class="n">Vm</span> <span class="o">*</span> <span class="p">(</span><span class="n">enthalpyA</span> <span class="o">*</span> <span class="n">p</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span> <span class="o">+</span> <span class="n">WA</span> <span class="o">*</span> <span class="n">g</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span> <span class="o">+</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">C</span><span class="p">)))</span>
 
@@ -349,7 +349,7 @@ Eq. <a class="reference internal" href="#equation-eq-phase-binary-chemicalpotent
 <p>In either bulk phase, <span class="math notranslate nohighlight">\(\nabla p(\phi) = \nabla g(\phi) = 0\)</span>, so
 we can then reduce Eq. <a class="reference internal" href="#equation-eq-phase-binary-diffusion">(2)</a> to</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-diffusion-bulk">
-<span class="eqno">(5)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-bulk" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-bulk" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
 &amp;= \nabla\cdot\left( M_C \nabla \left\{
     \frac{R T}{V_m} \left[\ln C - \ln (1-C)\right]
 \right\}
@@ -364,7 +364,7 @@ we can then reduce Eq. <a class="reference internal" href="#equation-eq-phase-bi
 <p>we can associate the mobility <span class="math notranslate nohighlight">\(M_C\)</span> with the intrinsic diffusivity <span class="math notranslate nohighlight">\(D\)</span> by
 <span class="math notranslate nohighlight">\(M_C \equiv D C (1-C) V_m / R T\)</span> and write Eq. <a class="reference internal" href="#equation-eq-phase-binary-diffusion">(2)</a> as</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-diffusion-canonical">
-<span class="eqno">(6)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-canonical" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-canonical" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
 &amp;= \nabla\cdot\left( D \nabla C \right) \nonumber \\
 &amp;\qquad + \nabla\cdot\left(
 \frac{D C (1 - C) V_m}{R T}
@@ -455,7 +455,7 @@ SciPy can be used.</p>
 0 = \mu_B(1, C_S, T) - \mu_B(0, C_L, T) &amp;=
 \frac{L_B\left(T - T_M^B\right)}{T_M^B} V_m
 + R T \ln C_S - R T \ln C_L\end{split}\]</div>
-<div class="doctest highlight-default notranslate" id="index-5"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">equilibrium</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate" id="index-5"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">equilibrium</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="p">[</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">enthalpyA</span> <span class="o">*</span> <span class="n">Vm</span>
 <span class="gp">... </span>                          <span class="o">+</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span>                          <span class="o">-</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
@@ -477,23 +477,23 @@ R T\left[\begin{matrix}
     -\frac{1}{1-C_S} &amp; \frac{1}{1-C_L} \\
     \frac{1}{C_S} &amp; -\frac{1}{C_L}
 \end{matrix}\right]\end{split}\]</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">equilibriumJacobian</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">equilibriumJacobian</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">R</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span>
 <span class="gp">... </span>                                  <span class="p">[</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>      <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate" id="index-6"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span> 
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">fsolve</span>
 <span class="gp">... </span>    <span class="n">CsRoot</span><span class="p">,</span> <span class="n">ClRoot</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">equilibrium</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
-<span class="gp">... </span>                            <span class="n">fprime</span><span class="o">=</span><span class="n">equilibriumJacobian</span><span class="p">)</span> 
+<span class="gp">... </span>                            <span class="n">fprime</span><span class="o">=</span><span class="n">equilibriumJacobian</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">ClRoot</span> <span class="o">=</span> <span class="n">CsRoot</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The SciPy library is not available to calculate the solidus and ... liquidus concentrations&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Cl</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ClRoot</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Cl</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ClRoot</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Cs</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">CsRoot</span><span class="p">))</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Cs</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">CsRoot</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
@@ -509,7 +509,7 @@ R T\left[\begin{matrix}
 </div>
 <div class="doctest highlight-default notranslate" id="index-7"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="kn">from</span> <span class="nn">phaseViewer</span> <span class="kn">import</span> <span class="n">PhaseViewer</span>
+<span class="gp">... </span>        <span class="kn">from</span><span class="w"> </span><span class="nn">phaseViewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhaseViewer</span>
 <span class="gp">...</span>
 <span class="gp">... </span>        <span class="n">viewer</span> <span class="o">=</span> <span class="n">PhaseViewer</span><span class="p">(</span><span class="n">phase</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">sharp</span><span class="o">=</span><span class="n">sharp</span><span class="p">,</span>
 <span class="gp">... </span>                             <span class="n">elapsed</span><span class="o">=</span><span class="n">elapsed</span><span class="p">,</span>
@@ -551,13 +551,14 @@ of the right-hand-side vector, so we use <cite>“initial”</cite> tolerance sc
 <span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="n">phaseRes</span> <span class="o">&gt;</span> <span class="mf">1e-8</span> <span class="ow">or</span> <span class="n">diffRes</span> <span class="o">&gt;</span> <span class="mf">1e-8</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Cavg</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">5e-7</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">phaseRes</span> <span class="o">=</span> <span class="n">phaseEq</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">diffRes</span> <span class="o">=</span> <span class="n">diffusionEq</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Stationary phase field. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/stationary.png"><img alt="phase and composition fields in equilibrium, compared with phase diagram concentrations" class="align-center" src="../_images/stationary.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/stationary.png"><img alt="phase and composition fields in equilibrium, compared with phase diagram concentrations" class="align-center" src="../_images/stationary.png" style="width: 90%;" />
+</a>
 <p>We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faceCenters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -629,12 +630,13 @@ time step of about <span class="math notranslate nohighlight">\(10^{-5}~\mathrm{
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Moving phase field. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/binary-0.000080.png"><img alt="phase and composition fields in during solidification, compared with final phase diagram concentrations" class="align-center" src="../_images/binary-0.000080.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/binary-0.000080.png"><img alt="phase and composition fields in during solidification, compared with final phase diagram concentrations" class="align-center" src="../_images/binary-0.000080.png" style="width: 90%;" />
+</a>
 <p>We see that the composition on either side of the interface approaches the
 sharp-interface solidus and liquidus, but it will take a great many more
 timesteps to reach equilibrium. If we waited sufficiently long, we
@@ -651,8 +653,8 @@ stepping, using the <a class="reference internal" href="../glossary.html#term-st
 care of many of the messy details of stepping, like overshoot, underflow,
 and step size adaptation, while keeping the structure of our solve loop
 largely intact.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">steppyngstounes</span> <span class="kn">import</span> <span class="n">SequenceStepper</span><span class="p">,</span> <span class="n">PIDStepper</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">steppyngstounes</span><span class="w"> </span><span class="kn">import</span> <span class="n">SequenceStepper</span><span class="p">,</span> <span class="n">PIDStepper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">count</span>
 </pre></div>
 </div>
 <p>Assuming the process is dominated by diffusion, we can take steps that
@@ -677,7 +679,7 @@ old values before we get started.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt0</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">checkpoint</span> <span class="ow">in</span> <span class="n">SequenceStepper</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">elapsed</span><span class="p">),</span> <span class="n">stop</span><span class="o">=</span><span class="n">totaltime</span><span class="p">,</span>     
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">checkpoint</span> <span class="ow">in</span> <span class="n">SequenceStepper</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">elapsed</span><span class="p">),</span> <span class="n">stop</span><span class="o">=</span><span class="n">totaltime</span><span class="p">,</span>
 <span class="gp">... </span>                                  <span class="n">sizes</span><span class="o">=</span><span class="p">(</span><span class="n">dt0</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">count</span><span class="p">(</span><span class="mi">7</span><span class="p">))):</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">PIDStepper</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">begin</span><span class="p">,</span>
 <span class="gp">... </span>                           <span class="n">stop</span><span class="o">=</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">end</span><span class="p">,</span>
@@ -703,14 +705,17 @@ old values before we get started.</p>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Re-equilbrated phase field. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/binary-0.000899.png"><img alt="phase and composition fields at t=0.000899, compared with final phase diagram concentrations" src="../_images/binary-0.000899.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="../_images/binary-8.949963.png"><img alt="phase and composition fields at t=8.949963, compared with final phase diagram concentrations" src="../_images/binary-8.949963.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="../_images/binary-1080000.000000.png"><img alt="phase and composition fields at t=1080000, compared with final phase diagram concentrations" src="../_images/binary-1080000.000000.png" style="width: 30%;" /></a>
+<a class="reference internal image-reference" href="../_images/binary-0.000899.png"><img alt="phase and composition fields at t=0.000899, compared with final phase diagram concentrations" src="../_images/binary-0.000899.png" style="width: 30%;" />
+</a>
+<a class="reference internal image-reference" href="../_images/binary-8.949963.png"><img alt="phase and composition fields at t=8.949963, compared with final phase diagram concentrations" src="../_images/binary-8.949963.png" style="width: 30%;" />
+</a>
+<a class="reference internal image-reference" href="../_images/binary-1080000.000000.png"><img alt="phase and composition fields at t=1080000, compared with final phase diagram concentrations" src="../_images/binary-1080000.000000.png" style="width: 30%;" />
+</a>
 <p>The interface moves <span class="math notranslate nohighlight">\(\approx 3.4~\mathrm{\mu m}\)</span> in
 <span class="math notranslate nohighlight">\(80~\mathrm{ms}\)</span>, driven by diffusion in the liquid
 phase (compare the estimate above of <span class="math notranslate nohighlight">\(0.1~\mathrm{s}\)</span>).
@@ -751,8 +756,8 @@ as a <a class="reference internal" href="fipy.variables.variable.html#fipy.varia
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -761,7 +766,7 @@ as a <a class="reference internal" href="fipy.variables.variable.html#fipy.varia
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

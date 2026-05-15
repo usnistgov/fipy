@@ -4,20 +4,3 @@ examples.convection.test
 .. automodule:: examples.convection.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,15 +4,6 @@ fipy.solvers.convergence
 .. automodule:: fipy.solvers.convergence
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -37,17 +28,9 @@ fipy.solvers.convergence
       StagnatedDivergence
       ToleranceDivergence
    
-   
-
-   
-   
    .. rubric:: Exceptions
 
    .. autosummary::
    
       DivergenceWarning
    
-   
-
-
-

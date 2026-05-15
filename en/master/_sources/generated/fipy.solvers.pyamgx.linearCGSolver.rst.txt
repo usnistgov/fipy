@@ -4,15 +4,6 @@ fipy.solvers.pyamgx.linearCGSolver
 .. automodule:: fipy.solvers.pyamgx.linearCGSolver
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -20,11 +11,3 @@ fipy.solvers.pyamgx.linearCGSolver
       LinearCGSolver
       LinearPCGSolver
    
-   
-
-   
-   
-   
-
-
-

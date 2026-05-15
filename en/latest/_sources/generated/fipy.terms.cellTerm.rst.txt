@@ -4,26 +4,9 @@ fipy.terms.cellTerm
 .. automodule:: fipy.terms.cellTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       CellTerm
    
-   
-
-   
-   
-   
-
-
-

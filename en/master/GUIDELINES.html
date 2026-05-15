@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Development Guidelines &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>Development Guidelines &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=45154cb6"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/GUIDELINES.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="contents.html" />
     <link rel="next" title="Git usage" href="GIT.html" />
     <link rel="prev" title="References" href="references.html" />
   
@@ -112,15 +112,15 @@
               <div class="body" role="main">
 		
   <section id="development-guidelines">
-<h1>Development Guidelines<a class="headerlink" href="#development-guidelines" title="Permalink to this heading">¶</a></h1>
+<h1>Development Guidelines<a class="headerlink" href="#development-guidelines" title="Link to this heading">¶</a></h1>
 <p>The following are the practices that have evolved over the course of
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s development. Stray from them at your peril.</p>
 <section id="object-oriented-design">
-<h2>Object Oriented Design<a class="headerlink" href="#object-oriented-design" title="Permalink to this heading">¶</a></h2>
+<h2>Object Oriented Design<a class="headerlink" href="#object-oriented-design" title="Link to this heading">¶</a></h2>
 <p>Multiple inheritance is forbidden.</p>
 </section>
 <section id="programming-style">
-<h2>Programming Style<a class="headerlink" href="#programming-style" title="Permalink to this heading">¶</a></h2>
+<h2>Programming Style<a class="headerlink" href="#programming-style" title="Link to this heading">¶</a></h2>
 <p>To the greatest extent possible, we follow <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0008/"><strong>PEP 8</strong></a>. We make the following
 exceptions because we had already written a great deal of code before we
 knew there even was a PEP 8.</p>
@@ -128,9 +128,9 @@ knew there even was a PEP 8.</p>
 <div><dl>
 <dt>Maximum Line Length</dt><dd><p>The preferred place to break around a binary operator is <em>before</em> the
 operator, not after it. Some examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Rectangle</span><span class="p">(</span><span class="n">Blob</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Rectangle</span><span class="p">(</span><span class="n">Blob</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>
                  <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">width</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">height</span> <span class="o">==</span> <span class="mi">0</span>
             <span class="ow">and</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span> <span class="ow">and</span> <span class="n">emphasis</span> <span class="o">==</span> <span class="s1">&#39;strong&#39;</span>
@@ -156,7 +156,7 @@ you are unsure. Even the exceptions listed above are open to discussion by
 anybody willing to do the work of changing the existing code.</p>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">¶</a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> uses <a class="reference external" href="https://docs.python.org/3/library/doctest.html#module-doctest" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">doctest</span></code></a> pervasively. We have not seen a case where
 <a class="reference external" href="https://docs.python.org/3/library/unittest.html#module-unittest" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">unittest</span></code></a> would simplify things. As a heavily numerical code, care
 must be taken in checking floating-point values.</p>
@@ -166,7 +166,7 @@ are needed to run the test:</p>
 <blockquote>
 <div><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">GMSH</span></code></dt><dd><p>The <strong class="program">gmsh</strong> executable, version 2.0 or greater, must on the
-<span class="target" id="index-1"></span><a class="reference external" href="https://matplotlib.org/stable/install/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.10.8)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<span class="target" id="index-1"></span><a class="reference external" href="https://matplotlib.org/stable/install/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.10.9)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">SCIPY</span></code></dt><dd><p>The <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.17.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> package must be importable.</p>
 </dd>
@@ -208,8 +208,8 @@ be placed in the file to which they pertain, e.g., <code class="docutils literal
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -218,7 +218,7 @@ be placed in the file to which they pertain, e.g., <code class="docutils literal
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

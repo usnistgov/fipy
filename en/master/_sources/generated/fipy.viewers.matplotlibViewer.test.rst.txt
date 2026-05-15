@@ -4,20 +4,3 @@ fipy.viewers.matplotlibViewer.test
 .. automodule:: fipy.viewers.matplotlibViewer.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

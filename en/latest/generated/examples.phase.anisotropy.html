@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.anisotropy &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.phase.anisotropy &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.anisotropy.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.anisotropyOLD" href="examples.phase.anisotropyOLD.html" />
     <link rel="prev" title="examples.phase" href="examples.phase.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.phase.anisotropy">
-<span id="examples-phase-anisotropy"></span><h1>examples.phase.anisotropy<a class="headerlink" href="#module-examples.phase.anisotropy" title="Permalink to this heading">¶</a></h1>
+<span id="examples-phase-anisotropy"></span><h1>examples.phase.anisotropy<a class="headerlink" href="#module-examples.phase.anisotropy" title="Link to this heading">¶</a></h1>
 <p>Solve a dendritic solidification problem.</p>
 <p>To convert a liquid material to a solid,  it must be cooled to a
 temperature below its melting point (known as “undercooling” or “supercooling”). The rate of
@@ -126,13 +126,13 @@ solidification is often assumed (and experimentally found) to be proportional to
 undercooling. Under the right circumstances, the
 solidification front can become unstable, leading to dendritic
 patterns.
-Warren, Kobayashi, Lobkovsky and Carter <span id="id1">[<a class="reference internal" href="../references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span>
+Warren, Kobayashi, Lobkovsky and Carter <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span>
 have described a phase field model (“Allen-Cahn”, “non-conserved
 Ginsberg-Landau”, or “model A” of Hohenberg &amp; Halperin) of such a system,
 including the effects of discrete crystalline orientations (anisotropy).</p>
 <p>We start with a regular 2D Cartesian mesh</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">Matplotlib2DGridViewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">Matplotlib2DGridViewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dx</span> <span class="o">=</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">0.025</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">nx</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">500</span>
@@ -246,16 +246,16 @@ accessible and FiPy is object oriented, it is not hard to adapt one of the
 existing viewers to create a specialized display:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="kn">import</span> <span class="nn">pylab</span>
-<span class="gp">... </span>        <span class="k">class</span> <span class="nc">DendriteViewer</span><span class="p">(</span><span class="n">Matplotlib2DGridViewer</span><span class="p">):</span>
-<span class="gp">... </span>            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">dT</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwlimits</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="kn">import</span><span class="w"> </span><span class="nn">pylab</span>
+<span class="gp">... </span>        <span class="k">class</span><span class="w"> </span><span class="nc">DendriteViewer</span><span class="p">(</span><span class="n">Matplotlib2DGridViewer</span><span class="p">):</span>
+<span class="gp">... </span>            <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">dT</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwlimits</span><span class="p">):</span>
 <span class="gp">... </span>                <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">phase</span>
 <span class="gp">... </span>                <span class="bp">self</span><span class="o">.</span><span class="n">contour</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="gp">... </span>                <span class="n">Matplotlib2DGridViewer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">vars</span><span class="o">=</span><span class="p">(</span><span class="n">dT</span><span class="p">,),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
 <span class="gp">... </span>                                                <span class="n">cmap</span><span class="o">=</span><span class="n">pylab</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">hot</span><span class="p">,</span>
 <span class="gp">... </span>                                                <span class="n">limits</span><span class="o">=</span><span class="n">limits</span><span class="p">,</span> <span class="o">**</span><span class="n">kwlimits</span><span class="p">)</span>
 <span class="gp">...</span>
-<span class="gp">... </span>            <span class="k">def</span> <span class="nf">_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>            <span class="k">def</span><span class="w"> </span><span class="nf">_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>                <span class="n">Matplotlib2DGridViewer</span><span class="o">.</span><span class="n">_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">... </span>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -294,19 +294,20 @@ existing viewers to create a specialized display:</p>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/anisotropy.png"><img alt="phase field and undercooling during solidification of a 6-fold &quot;snowflake&quot; anisotropic seed" class="align-center" src="../_images/anisotropy.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/anisotropy.png"><img alt="phase field and undercooling during solidification of a 6-fold &quot;snowflake&quot; anisotropic seed" class="align-center" src="../_images/anisotropy.png" style="width: 90%;" />
+</a>
 <p>The non-uniform temperature results from the release of latent
 heat at the solidifying interface. The dendrite arms grow fastest
 where the temperature gradient is steepest.</p>
 <p>We note that this FiPy simulation is written in about 50 lines of code (excluding the
 custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used for
-the figures in <span id="id2">[<a class="reference internal" href="../references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span>.</p>
+the figures in <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id20" title="James A. Warren, Ryo Kobayashi, Alexander E. Lobkovsky, and W. Craig Carter. Extending phase field models of solidification to polycrystalline materials. Acta Materialia, 51(20):6035-6058, 2003. doi:10.1016/S1359-6454(03)00388-4.">13</a>]</span>.</p>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -315,7 +316,7 @@ the figures in <span id="id2">[<a class="reference internal" href="../references
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

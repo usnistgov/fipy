@@ -4,26 +4,9 @@ fipy.viewers.vtkViewer.vtkViewer
 .. automodule:: fipy.viewers.vtkViewer.vtkViewer
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       VTKViewer
    
-   
-
-   
-   
-   
-
-
-

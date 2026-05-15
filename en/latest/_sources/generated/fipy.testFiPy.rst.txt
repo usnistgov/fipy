@@ -4,20 +4,3 @@ fipy.testFiPy
 .. automodule:: fipy.testFiPy
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

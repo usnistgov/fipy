@@ -4,30 +4,12 @@ fipy.solvers.petsc.comms
 .. automodule:: fipy.solvers.petsc.comms
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.solvers.petsc.comms.parallelPETScCommWrapper
-   fipy.solvers.petsc.comms.petscCommWrapper
-   fipy.solvers.petsc.comms.serialPETScCommWrapper
-
+   parallelPETScCommWrapper
+   petscCommWrapper
+   serialPETScCommWrapper

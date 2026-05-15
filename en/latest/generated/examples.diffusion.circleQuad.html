@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.circleQuad &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.diffusion.circleQuad &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.diffusion.circleQuad.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion" href="examples.diffusion.html" />
     <link rel="next" title="examples.diffusion.coupled" href="examples.diffusion.coupled.html" />
     <link rel="prev" title="examples.diffusion.circle" href="examples.diffusion.circle.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.diffusion.circleQuad">
-<span id="examples-diffusion-circlequad"></span><h1>examples.diffusion.circleQuad<a class="headerlink" href="#module-examples.diffusion.circleQuad" title="Permalink to this heading">¶</a></h1>
+<span id="examples-diffusion-circlequad"></span><h1>examples.diffusion.circleQuad<a class="headerlink" href="#module-examples.diffusion.circleQuad" title="Link to this heading">¶</a></h1>
 <p>Solve the diffusion equation in a circular domain meshed with quadrangles.</p>
 <p>This example demonstrates how to solve a simple diffusion problem on a
 non-standard mesh with varying boundary conditions. The <a class="reference internal" href="../glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> package
@@ -135,8 +135,8 @@ describes the mesh. For details of how to write such geometry files
 for <a class="reference internal" href="../glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a>, see the <a class="reference external" href="http://www.geuz.org/gmsh/doc/texinfo/gmsh.html">gmsh manual</a>.</p>
 <p>The mesh created by <a class="reference internal" href="../glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> is then imported into <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> using the
 <a class="reference internal" href="fipy.meshes.gmshMesh.html#fipy.meshes.gmshMesh.Gmsh2D" title="fipy.meshes.gmshMesh.Gmsh2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code></a> object.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Gmsh2D</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
@@ -154,25 +154,26 @@ for <a class="reference internal" href="../glossary.html#term-Gmsh"><span class=
 <span class="gp">... </span><span class="s1">              Line Loop(10) = {6, 7, 8, 9};</span>
 <span class="gp">... </span><span class="s1">              Plane Surface(11) = </span><span class="si">{10}</span><span class="s1">;</span>
 <span class="gp">... </span><span class="s1">              Recombine Surface</span><span class="si">{11}</span><span class="s1">;</span>
-<span class="gp">... </span><span class="s1">              &#39;&#39;&#39;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span> 
+<span class="gp">... </span><span class="s1">              &#39;&#39;&#39;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>Using this mesh, we can construct a solution variable</p>
 <div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;solution variable&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span>
-<span class="gp">... </span>                   <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span> 
+<span class="gp">... </span>                   <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can now create a <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> to see the mesh</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">datamin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plotMesh</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Irregular circular mesh. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/circleMesh.png"><img alt="../_images/circleMesh.png" class="align-center" src="../_images/circleMesh.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/circleMesh.png"><img alt="../_images/circleMesh.png" class="align-center" src="../_images/circleMesh.png" style="width: 90%;" />
+</a>
 <p>We set up a transient diffusion equation</p>
 <div class="doctest highlight-default notranslate" id="index-1"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="mf">1.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D</span><span class="p">)</span>
@@ -180,8 +181,8 @@ for <a class="reference internal" href="../glossary.html#term-Gmsh"><span class=
 </div>
 <p>The following line extracts the <span class="math notranslate nohighlight">\(x\)</span> coordinate values on the exterior
 faces. These are used as the boundary condition fixed values.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faceCenters</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">exteriorFaces</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">faceCenters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">exteriorFaces</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We first step through the transient problem</p>
@@ -189,12 +190,13 @@ faces. These are used as the boundary condition fixed values.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">steps</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
-<span class="gp">... </span>             <span class="n">dt</span><span class="o">=</span><span class="n">timeStepDuration</span><span class="p">)</span> 
+<span class="gp">... </span>             <span class="n">dt</span><span class="o">=</span><span class="n">timeStepDuration</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="n">viewer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/circleTransient.png"><img alt="../_images/circleTransient.png" class="align-center" src="../_images/circleTransient.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/circleTransient.png"><img alt="../_images/circleTransient.png" class="align-center" src="../_images/circleTransient.png" style="width: 90%;" />
+</a>
 <hr class="docutils" />
 <p>If we wanted to plot or analyze the results of this calculation with
 another application, we could export tab-separated-values with</p>
@@ -229,31 +231,31 @@ Vector quantities are listed in multiple columns, one for each mesh dimension.</
 function, but it’s a bit more complicated due to the varying boundary
 conditions and the different horizontal diffusion length at different
 vertical positions</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">timeStepDuration</span> <span class="o">*</span> <span class="n">steps</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phiAnalytical</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;analytical value&quot;</span><span class="p">,</span>
-<span class="gp">... </span>                             <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span> 
+<span class="gp">... </span>                             <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span> 
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span>
 <span class="gp">... </span>    <span class="c1">## This function can sometimes throw nans on OS X</span>
 <span class="gp">... </span>    <span class="c1">## see http://projects.scipy.org/scipy/scipy/ticket/325</span>
 <span class="gp">... </span>    <span class="n">phiAnalytical</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">x0</span> <span class="o">*</span> <span class="p">(</span><span class="n">erf</span><span class="p">((</span><span class="n">x0</span><span class="o">+</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">t</span><span class="p">)))</span>
-<span class="gp">... </span>                                 <span class="o">-</span> <span class="n">erf</span><span class="p">((</span><span class="n">x0</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">t</span><span class="p">)))))</span> 
+<span class="gp">... </span>                                 <span class="o">-</span> <span class="n">erf</span><span class="p">((</span><span class="n">x0</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">t</span><span class="p">)))))</span>
 <span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The SciPy library is not available to test the solution to </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">the transient diffusion equation&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">7e-2</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phiAnalytical</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">7e-2</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Transient diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
@@ -261,28 +263,29 @@ vertical positions</p>
 <hr class="docutils" />
 <p>As in the earlier examples, we can also directly solve the steady-state
 diffusion problem.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The values at the elements should be equal to their <cite>x</cite> coordinate</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">0.035</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">0.035</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
 </div>
 <p>Display the results if run as a script.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">viewer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Steady-state diffusion. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/circleSteadyState.png"><img alt="../_images/circleSteadyState.png" class="align-center" src="../_images/circleSteadyState.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/circleSteadyState.png"><img alt="../_images/circleSteadyState.png" class="align-center" src="../_images/circleSteadyState.png" style="width: 90%;" />
+</a>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -291,7 +294,7 @@ diffusion problem.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

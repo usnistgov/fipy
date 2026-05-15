@@ -4,20 +4,3 @@ fipy.meshes.topologies.abstractTopology
 .. automodule:: fipy.meshes.topologies.abstractTopology
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,20 +4,3 @@ fipy.terms.explicitSourceTerm
 .. automodule:: fipy.terms.explicitSourceTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

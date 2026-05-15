@@ -4,26 +4,9 @@ fipy.tools.parser
 .. automodule:: fipy.tools.parser
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       parse
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

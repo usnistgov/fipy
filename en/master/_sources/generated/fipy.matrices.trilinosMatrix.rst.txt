@@ -4,20 +4,3 @@ fipy.matrices.trilinosMatrix
 .. automodule:: fipy.matrices.trilinosMatrix
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

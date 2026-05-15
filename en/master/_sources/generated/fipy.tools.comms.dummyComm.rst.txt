@@ -4,26 +4,9 @@ fipy.tools.comms.dummyComm
 .. automodule:: fipy.tools.comms.dummyComm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       DummyComm
    
-   
-
-   
-   
-   
-
-
-

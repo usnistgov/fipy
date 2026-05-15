@@ -4,24 +4,11 @@ fipy.meshes.mesh
 .. automodule:: fipy.meshes.mesh
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       Mesh
-   
-   
-
-   
    
    .. rubric:: Exceptions
 
@@ -29,7 +16,3 @@ fipy.meshes.mesh
    
       MeshAdditionError
    
-   
-
-
-

@@ -4,20 +4,3 @@ examples.levelSet.test
 .. automodule:: examples.levelSet.test
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

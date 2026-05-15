@@ -4,20 +4,3 @@ fipy.variables.levelSetDiffusionVariable
 .. automodule:: fipy.variables.levelSetDiffusionVariable
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

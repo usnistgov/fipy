@@ -4,20 +4,3 @@ examples.phase.symmetry
 .. automodule:: examples.phase.symmetry
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

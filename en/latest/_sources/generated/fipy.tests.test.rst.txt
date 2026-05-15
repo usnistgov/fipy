@@ -4,20 +4,11 @@ fipy.tests.test
 .. automodule:: fipy.tests.test
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       main
-   
-   
-
-   
    
    .. rubric:: Classes
 
@@ -26,11 +17,3 @@ fipy.tests.test
       DeprecationErroringTestProgram
       TestCommand
    
-   
-
-   
-   
-   
-
-
-

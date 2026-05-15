@@ -4,28 +4,10 @@ fipy.solvers.pyAMG
 .. automodule:: fipy.solvers.pyAMG
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   fipy.solvers.pyAMG.preconditioners
-
+   preconditioners

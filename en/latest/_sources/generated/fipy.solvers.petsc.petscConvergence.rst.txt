@@ -4,15 +4,6 @@ fipy.solvers.petsc.petscConvergence
 .. automodule:: fipy.solvers.petsc.petscConvergence
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -35,11 +26,3 @@ fipy.solvers.petsc.petscConvergence
       KSP_RelativeToleranceConvergence
       KSP_ToleranceDivergence
    
-   
-
-   
-   
-   
-
-
-

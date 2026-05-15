@@ -35,26 +35,26 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Numerical Schemes &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>Numerical Schemes &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/numerical/scheme.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="Theoretical and Numerical Background" href="index.html" />
     <link rel="next" title="Design and Implementation" href="../design.html" />
-    <link rel="prev" title="Finite Volume Method" href="discret.html" />
+    <link rel="prev" title="General Conservation Equation" href="equation.html" />
   
  
 
@@ -84,7 +84,7 @@
           <a href="../design.html" title="Design and Implementation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="discret.html" title="Finite Volume Method"
+          <a href="equation.html" title="General Conservation Equation"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html"><img src="../_static/fipy.png" alt="FiPy logo"
                  style="vertical-align: middle; margin-top: -1px"/>
@@ -117,7 +117,7 @@
               <div class="body" role="main">
 		
   <section id="numerical-schemes">
-<span id="sec-numericalschemes"></span><h1>Numerical Schemes<a class="headerlink" href="#numerical-schemes" title="Permalink to this heading">¶</a></h1>
+<span id="sec-numericalschemes"></span><h1>Numerical Schemes<a class="headerlink" href="#numerical-schemes" title="Link to this heading">¶</a></h1>
 <p>The coefficients of equation <a class="reference internal" href="discret.html#equation-num-dap">(6)</a> must remain positive,
 since an increase in a neighboring value must result in an increase in
 <span class="math notranslate nohighlight">\(\phi_P\)</span> to obtain physically realistic solutions.  Thus, the
@@ -126,7 +126,7 @@ Péclet number <span class="math notranslate nohighlight">\(P_f \equiv F_f / D_f
 strength and diffusive conductance.  To achieve physically realistic
 solutions, the inequality</p>
 <div class="math notranslate nohighlight" id="equation-eqn-num-inq">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eqn-num-inq" title="Permalink to this equation">¶</a></span>\[ \frac{1}{1-\alpha_f} &gt; P_f &gt; -\frac{1}{\alpha_f}\]</div>
+<span class="eqno">(1)<a class="headerlink" href="#equation-eqn-num-inq" title="Link to this equation">¶</a></span>\[ \frac{1}{1-\alpha_f} &gt; P_f &gt; -\frac{1}{\alpha_f}\]</div>
 <p>must be satisfied.
 The parameter <span class="math notranslate nohighlight">\(\alpha_f\)</span> is defined by the chosen scheme, depending
 on Equation <a class="reference internal" href="#equation-eqn-num-inq">(1)</a>. The various
@@ -134,14 +134,14 @@ differencing schemes are:</p>
 <dl>
 <dt>the central differencing scheme,</dt><dd><p>where</p>
 <div class="math notranslate nohighlight" id="equation-eqn-num-cds">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eqn-num-cds" title="Permalink to this equation">¶</a></span>\[\alpha_f = \frac{1}{2}\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-eqn-num-cds" title="Link to this equation">¶</a></span>\[\alpha_f = \frac{1}{2}\]</div>
 <p>so that <span class="math notranslate nohighlight">\(|P_f|&lt;2\)</span> satisfies Equation <a class="reference internal" href="#equation-eqn-num-inq">(1)</a>. Thus, the
 central differencing scheme is only numerically stable for a low
 values of <span class="math notranslate nohighlight">\(P_f\)</span>.</p>
 </dd>
 <dt>the upwind scheme,</dt><dd><p>where</p>
 <div class="math notranslate nohighlight" id="equation-eqn-num-ups">
-<span class="eqno">(3)<a class="headerlink" href="#equation-eqn-num-ups" title="Permalink to this equation">¶</a></span>\[\begin{split}\alpha_f = \begin{cases}
+<span class="eqno">(3)<a class="headerlink" href="#equation-eqn-num-ups" title="Link to this equation">¶</a></span>\[\begin{split}\alpha_f = \begin{cases}
 1 &amp; \text{if $P_f &gt; 0$,} \\
 0 &amp; \text{if $P_f &lt; 0$.}
 \end{cases}\end{split}\]</div>
@@ -152,7 +152,7 @@ numerical smearing (“false diffusion”).</p>
 </dd>
 <dt>the exponential scheme,</dt><dd><p>where</p>
 <div class="math notranslate nohighlight" id="equation-eqn-num-exs">
-<span class="eqno">(4)<a class="headerlink" href="#equation-eqn-num-exs" title="Permalink to this equation">¶</a></span>\[\alpha_f = \frac{(P_f-1)\exp{(P_f)}+1}{P_f(\exp{(P_f)}-1)}.\]</div>
+<span class="eqno">(4)<a class="headerlink" href="#equation-eqn-num-exs" title="Link to this equation">¶</a></span>\[\alpha_f = \frac{(P_f-1)\exp{(P_f)}+1}{P_f(\exp{(P_f)}-1)}.\]</div>
 <p>This formulation can be derived from the exact solution, and thus,
 guarantees positive coefficients while not over-predicting the
 diffusive terms. However, the computation of exponentials is slow and
@@ -161,7 +161,7 @@ dimensions.</p>
 </dd>
 <dt>the hybrid scheme,</dt><dd><p>where</p>
 <div class="math notranslate nohighlight" id="equation-eqn-num-hys">
-<span class="eqno">(5)<a class="headerlink" href="#equation-eqn-num-hys" title="Permalink to this equation">¶</a></span>\[\begin{split}\alpha_f =
+<span class="eqno">(5)<a class="headerlink" href="#equation-eqn-num-hys" title="Link to this equation">¶</a></span>\[\begin{split}\alpha_f =
 \begin{cases}
     \frac{P_f-1}{P_f} &amp; \text{if $P_f &gt; 2$,} \\
     \frac{1}{2} &amp; \text{if $|P_f| &lt; 2$,} \\
@@ -174,7 +174,7 @@ however, it deviates from the exponential scheme at <span class="math notranslat
 </dd>
 <dt>the power law scheme,</dt><dd><p>where</p>
 <div class="math notranslate nohighlight" id="equation-eqn-num-pls">
-<span class="eqno">(6)<a class="headerlink" href="#equation-eqn-num-pls" title="Permalink to this equation">¶</a></span>\[\begin{split}\alpha_f =
+<span class="eqno">(6)<a class="headerlink" href="#equation-eqn-num-pls" title="Link to this equation">¶</a></span>\[\begin{split}\alpha_f =
 \begin{cases}
     \frac{P_f-1}{P_f} &amp; \text{if $P_f &gt; 10$,} \\
     \frac{(P_f-1)+(1-P_f/10)^5}{P_f} &amp; \text{if $0 &lt; P_f &lt; 10$,} \\
@@ -196,8 +196,8 @@ and can be selected by the user.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -206,12 +206,12 @@ and can be selected by the user.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="discret.html"
-                        title="previous chapter">Finite Volume Method</a></p>
+  <p class="topless"><a href="equation.html"
+                        title="previous chapter">General Conservation Equation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../design.html"
                         title="next chapter">Design and Implementation</a></p>

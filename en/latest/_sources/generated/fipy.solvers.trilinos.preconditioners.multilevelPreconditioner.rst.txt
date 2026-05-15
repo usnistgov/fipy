@@ -4,26 +4,9 @@ fipy.solvers.trilinos.preconditioners.multilevelPreconditioner
 .. automodule:: fipy.solvers.trilinos.preconditioners.multilevelPreconditioner
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       MultilevelPreconditioner
    
-   
-
-   
-   
-   
-
-
-

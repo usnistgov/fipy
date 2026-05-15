@@ -4,26 +4,9 @@ fipy.terms.upwindConvectionTerm
 .. automodule:: fipy.terms.upwindConvectionTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       UpwindConvectionTerm
    
-   
-
-   
-   
-   
-
-
-

@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.updating.update0_1to1_0 &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.updating.update0_1to1_0 &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.updating.update0_1to1_0.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.updating" href="examples.updating.html" />
     <link rel="next" title="examples.updating.update1_0to2_0" href="examples.updating.update1_0to2_0.html" />
     <link rel="prev" title="examples.updating" href="examples.updating.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.updating.update0_1to1_0">
-<span id="examples-updating-update0-1to1-0"></span><h1>examples.updating.update0_1to1_0<a class="headerlink" href="#module-examples.updating.update0_1to1_0" title="Permalink to this heading">¶</a></h1>
+<span id="examples-updating-update0-1to1-0"></span><h1>examples.updating.update0_1to1_0<a class="headerlink" href="#module-examples.updating.update0_1to1_0" title="Link to this heading">¶</a></h1>
 <p>How to update scripts from version 0.1 to 1.0.</p>
 <p>It seems unlikely that many users are still running <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 0.1, but for those
 that are, the syntax of <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> scripts changed considerably between version 0.1
@@ -148,7 +148,7 @@ given by:</p>
 <div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="mf">10.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ny</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes.grid2D</span> <span class="kn">import</span> <span class="n">Grid2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.meshes.grid2D</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grid2D</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">L</span> <span class="o">/</span> <span class="n">nx</span><span class="p">,</span> <span class="n">L</span> <span class="o">/</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -161,8 +161,8 @@ given by:</p>
 <p>or</p>
 <div class="doctest highlight-default notranslate" id="index-1"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">valueLeft</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">valueRight</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.boundaryConditions.fixedValue</span> <span class="kn">import</span> <span class="n">FixedValue</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.boundaryConditions.fixedFlux</span> <span class="kn">import</span> <span class="n">FixedFlux</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.boundaryConditions.fixedValue</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedValue</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.boundaryConditions.fixedFlux</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedFlux</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">boundaryConditions</span> <span class="o">=</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">FixedValue</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">getFacesLeft</span><span class="p">(),</span> <span class="n">valueLeft</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">FixedValue</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">getFacesRight</span><span class="p">(),</span> <span class="n">valueRight</span><span class="p">),</span>
@@ -172,7 +172,7 @@ given by:</p>
 </pre></div>
 </div>
 <p>The solution variable is initialized to <cite>valueLeft</cite>:</p>
-<div class="doctest highlight-default notranslate" id="index-2"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<div class="doctest highlight-default notranslate" id="index-2"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.variables.cellVariable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;concentration&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span>
@@ -182,9 +182,9 @@ given by:</p>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">SteadyConvectionDiffusionScEquation</span></code> object is
 used to create the equation.  It needs to be passed a convection term
 instantiator as follows:</p>
-<div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.terms.exponentialConvectionTerm</span> <span class="kn">import</span> <span class="n">ExponentialConvectionTerm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.solvers</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.equations.stdyConvDiffScEquation</span> <span class="kn">import</span> <span class="n">SteadyConvectionDiffusionScEquation</span>
+<div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.terms.exponentialConvectionTerm</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExponentialConvectionTerm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.solvers</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.equations.stdyConvDiffScEquation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SteadyConvectionDiffusionScEquation</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
 <span class="gr">ImportError</span>: <span class="n">No module named equations.stdyConvDiffScEquation</span>
@@ -207,7 +207,7 @@ the <a class="reference internal" href="fipy.terms.exponentialConvectionTerm.htm
 handle most types of convection diffusion cases with the
 <a class="reference internal" href="fipy.terms.powerLawConvectionTerm.html#fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm" title="fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code></a> being more efficient.</p>
 <p>We iterate to equilibrium</p>
-<div class="doctest highlight-default notranslate" id="index-4"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.iterators.iterator</span> <span class="kn">import</span> <span class="n">Iterator</span>
+<div class="doctest highlight-default notranslate" id="index-4"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.iterators.iterator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">((</span><span class="n">eq</span><span class="p">,))</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
@@ -224,7 +224,7 @@ handle most types of convection diffusion cases with the
 <p>or</p>
 <div class="doctest highlight-default notranslate" id="index-5"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">getCellCenters</span><span class="p">()[:,</span> <span class="n">axis</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">numerix</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">convCoeff</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">diffCoeff</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DD</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">numerix</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">convCoeff</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">*</span> <span class="n">L</span> <span class="o">/</span> <span class="n">diffCoeff</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">analyticalArray</span> <span class="o">=</span> <span class="n">CC</span> <span class="o">/</span> <span class="n">DD</span>
@@ -234,7 +234,7 @@ handle most types of convection diffusion cases with the
 </div>
 <p>If the problem is run interactively, we can view the result:</p>
 <div class="doctest highlight-default notranslate" id="index-6"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="kn">from</span> <span class="nn">fipy.viewers.grid2DGistViewer</span> <span class="kn">import</span> <span class="n">Grid2DGistViewer</span>
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">fipy.viewers.grid2DGistViewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grid2DGistViewer</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
 <span class="gr">ImportError</span>: <span class="n">No module named grid2DGistViewer</span>
@@ -262,7 +262,7 @@ section:</p>
 a true 1D mesh class, so we instantiate the mesh as</p>
 <div class="doctest highlight-default notranslate" id="index-7"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="mf">10.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes.grid1D</span> <span class="kn">import</span> <span class="n">Grid1D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.meshes.grid1D</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grid1D</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid1D</span><span class="p">(</span><span class="n">dx</span> <span class="o">=</span> <span class="n">L</span> <span class="o">/</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">nx</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -279,14 +279,14 @@ vector to be 1D as well</p>
 but a <cite>Grid1D</cite> mesh does not even have top and bottom faces:</p>
 <div class="doctest highlight-default notranslate" id="index-8"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">valueLeft</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">valueRight</span> <span class="o">=</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.boundaryConditions.fixedValue</span> <span class="kn">import</span> <span class="n">FixedValue</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.boundaryConditions.fixedValue</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedValue</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">boundaryConditions</span> <span class="o">=</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">FixedValue</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">getFacesLeft</span><span class="p">(),</span> <span class="n">valueLeft</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">FixedValue</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">getFacesRight</span><span class="p">(),</span> <span class="n">valueRight</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The creation of the solution variable is unchanged:</p>
-<div class="doctest highlight-default notranslate" id="index-9"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<div class="doctest highlight-default notranslate" id="index-9"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.variables.cellVariable</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;concentration&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">value</span> <span class="o">=</span> <span class="n">valueLeft</span><span class="p">)</span>
@@ -297,11 +297,11 @@ objects no longer exist at all.  Instead, <a class="reference internal" href="fi
 added, subtracted, and equated to assemble an equation.  Where before the
 assembly of the equation occurred in the black-box of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">SteadyConvectionDiffusionScEquation</span></code>, we now assemble it directly:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.terms.implicitDiffusionTerm</span> <span class="kn">import</span> <span class="n">ImplicitDiffusionTerm</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.terms.implicitDiffusionTerm</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImplicitDiffusionTerm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">diffTerm</span> <span class="o">=</span> <span class="n">ImplicitDiffusionTerm</span><span class="p">(</span><span class="n">coeff</span> <span class="o">=</span> <span class="n">diffCoeff</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.terms.exponentialConvectionTerm</span> <span class="kn">import</span> <span class="n">ExponentialConvectionTerm</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.terms.exponentialConvectionTerm</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExponentialConvectionTerm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">diffTerm</span> <span class="o">+</span> <span class="n">ExponentialConvectionTerm</span><span class="p">(</span><span class="n">coeff</span> <span class="o">=</span> <span class="n">convCoeff</span><span class="p">,</span>
 <span class="gp">... </span>                                          <span class="n">diffusionTerm</span> <span class="o">=</span> <span class="n">diffTerm</span><span class="p">)</span>
 </pre></div>
@@ -316,7 +316,7 @@ the solution to an implicit steady-state problem like this can simply be
 obtained by telling the equation to solve itself (with an appropriate
 <cite>solver</cite> if desired, although the default solver is usually
 suitable):</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.solvers</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.solvers</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="n">var</span><span class="p">,</span>
 <span class="gp">... </span>         <span class="n">solver</span> <span class="o">=</span> <span class="n">LinearLUSolver</span><span class="p">(</span><span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.e-15</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">),</span>
 <span class="gp">... </span>         <span class="n">boundaryConditions</span> <span class="o">=</span> <span class="n">boundaryConditions</span><span class="p">)</span>
@@ -351,7 +351,7 @@ to different boundary conditions, if desired).</p>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> classes have been moved and renamed.  This error could be resolved
 by changing the <cite>import</cite> statement appropriately:</p>
 <div class="doctest highlight-default notranslate" id="index-10"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="kn">from</span> <span class="nn">fipy.viewers.gistViewer.gist1DViewer</span> <span class="kn">import</span> <span class="n">Gist1DViewer</span>
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">fipy.viewers.gistViewer.gist1DViewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gist1DViewer</span>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Gist1DViewer</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="n">var</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -360,7 +360,7 @@ by changing the <cite>import</cite> statement appropriately:</p>
 still do, if you desire), a generic “factory” method will return a <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code>
 appropriate for the supplied <cite>Variable</cite> object(s):</p>
 <div class="doctest highlight-default notranslate" id="index-11"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="kn">import</span> <span class="nn">fipy.viewers</span>
+<span class="gp">... </span>    <span class="kn">import</span><span class="w"> </span><span class="nn">fipy.viewers</span>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">fipy</span><span class="o">.</span><span class="n">viewers</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="n">var</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -371,8 +371,8 @@ convert your existing scripts to <a class="reference internal" href="../glossary
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -381,7 +381,7 @@ convert your existing scripts to <a class="reference internal" href="../glossary
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

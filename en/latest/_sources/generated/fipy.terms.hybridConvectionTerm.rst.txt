@@ -4,26 +4,9 @@ fipy.terms.hybridConvectionTerm
 .. automodule:: fipy.terms.hybridConvectionTerm
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       HybridConvectionTerm
    
-   
-
-   
-   
-   
-
-
-

@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.simple &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.phase.simple &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.simple.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.symmetry" href="examples.phase.symmetry.html" />
     <link rel="prev" title="examples.phase.quaternary" href="examples.phase.quaternary.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.phase.simple">
-<span id="examples-phase-simple"></span><h1>examples.phase.simple<a class="headerlink" href="#module-examples.phase.simple" title="Permalink to this heading">¶</a></h1>
+<span id="examples-phase-simple"></span><h1>examples.phase.simple<a class="headerlink" href="#module-examples.phase.simple" title="Link to this heading">¶</a></h1>
 <p>Solve a phase-field (Allen-Cahn) problem in one-dimension.</p>
 <p>To run this example from the base FiPy directory, type
 <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">examples/phase/simple/input.py</span></code> at the command line.  A viewer
@@ -128,7 +128,7 @@ examples, the word <code class="docutils literal notranslate"><span class="pre">
 FiPy.  It describes a steady 1D phase field problem with no-flux
 boundary conditions such that,</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-simple">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-simple" title="Permalink to this equation">¶</a></span>\[\frac{1}{M_\phi}\frac{\partial \phi}{\partial t} =
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-simple" title="Link to this equation">¶</a></span>\[\frac{1}{M_\phi}\frac{\partial \phi}{\partial t} =
 \kappa_\phi \nabla^2\phi
 - \frac{\partial f}{\partial \phi}\]</div>
 <p>For solidification problems, the Helmholtz free energy is frequently
@@ -144,8 +144,8 @@ heat, <span class="math notranslate nohighlight">\(T\)</span> is the temperature
 <div class="math notranslate nohighlight">
 \[p(\phi) = \phi^3(6\phi^2 - 15\phi + 10).\]</div>
 <p>We create a 1D solution mesh</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">DummySolver</span><span class="p">,</span> <span class="n">Viewer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">DummySolver</span><span class="p">,</span> <span class="n">Viewer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="mf">1.</span>
@@ -175,14 +175,15 @@ heat, <span class="math notranslate nohighlight">\(T\)</span> is the temperature
 </pre></div>
 </div>
 <p>If we are running interactively, we’ll want a viewer to see the results</p>
-<div class="doctest highlight-default notranslate" id="index-2"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate" id="index-2"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="p">(</span><span class="n">phase</span><span class="p">,))</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Initial condition. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/step.png"><img alt="step-function initial condition" class="align-center" src="../_images/step.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../_images/step.png"><img alt="step-function initial condition" class="align-center" src="../_images/step.png" style="width: 50%;" />
+</a>
 <p>We choose the parameter values,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kappa</span> <span class="o">=</span> <span class="mf">0.0025</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="mf">1.</span>
@@ -198,7 +199,7 @@ we are interested in a steady-state solution, we omit the transient term
 <span class="math notranslate nohighlight">\((1/M_\phi)\frac{\partial \phi}{\partial t}\)</span>.</p>
 <p>The analytical solution for this steady-state phase field problem, in an infinite domain, is</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-simple-analytical">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-simple-analytical" title="Permalink to this equation">¶</a></span>\[\phi = \frac{1}{2}\left[1 - \tanh\frac{x-L/2}{2\sqrt{\kappa/W}}\right]\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-simple-analytical" title="Link to this equation">¶</a></span>\[\phi = \frac{1}{2}\left[1 - \tanh\frac{x-L/2}{2\sqrt{\kappa/W}}\right]\]</div>
 <p>or</p>
 <div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">analyticalArray</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">numerix</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kappa</span><span class="o">/</span><span class="n">W</span><span class="p">))))</span>
@@ -235,13 +236,14 @@ gradient of that quantity.</p>
 <p>we obtain the surprising result that <span class="math notranslate nohighlight">\(\phi\)</span> is zero everywhere.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">analyticalArray</span><span class="p">,</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">))</span>
 <span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Fully explicit source. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/explicit.png"><img alt="steady-state phase field zero everywhere" class="align-center" src="../_images/explicit.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../_images/explicit.png"><img alt="steady-state phase field zero everywhere" class="align-center" src="../_images/explicit.png" style="width: 50%;" />
+</a>
 <p>On inspection, we can see that this occurs because, for our step-function initial condition,
 <span class="math notranslate nohighlight">\(m_\phi = 0\)</span> everywhere,
 hence we are actually only solving the simple implicit diffusion equation
@@ -267,12 +269,13 @@ transient term from Equation <a class="reference internal" href="#equation-eq-ph
 <p>After 13 time steps, the solution has converged to the analytical solution</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">analyticalArray</span><span class="p">,</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Relaxation, explicit. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/relaxation.png"><img alt="steady-state equilibrium phase field after relaxation" class="align-center" src="../_images/relaxation.png" style="width: 50%;" /></a>
+<a class="reference internal image-reference" href="../_images/relaxation.png"><img alt="steady-state equilibrium phase field after relaxation" class="align-center" src="../_images/relaxation.png" style="width: 50%;" />
+</a>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The solution is only found accurate
@@ -331,7 +334,7 @@ Either function would work, but <a class="reference internal" href="fipy.terms.t
 <span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="n">phase</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">analyticalArray</span><span class="p">,</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Kobayashi, semi-implicit. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
@@ -379,7 +382,7 @@ tangent to the source, we reach convergence in only 5 sweeps</p>
 <span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="n">phase</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">analyticalArray</span><span class="p">,</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Tangent, semi-implicit. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
@@ -412,7 +415,7 @@ physical parameters and dimensions. We’ll need a new mesh</p>
 </pre></div>
 </div>
 <p>We choose the parameter values appropriate for nickel, given in
-<span id="id1">[<a class="reference internal" href="../references.html#id19" title="J. A. Warren and W. J. Boettinger. Prediction of dendritic growth and microsegregation in a binary alloy using the phase field method. Acta Metallurgica et Materialia, 43(2):689-703, 1995.">31</a>]</span></p>
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id19" title="J. A. Warren and W. J. Boettinger. Prediction of dendritic growth and microsegregation in a binary alloy using the phase field method. Acta Metallurgica et Materialia, 43(2):689-703, 1995.">31</a>]</span></p>
 <div class="doctest highlight-default notranslate" id="index-6"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Lv</span> <span class="o">=</span> <span class="mi">2350</span> <span class="c1"># J / cm**3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Tm</span> <span class="o">=</span> <span class="mf">1728.</span> <span class="c1"># K</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">Tm</span><span class="p">)</span>
@@ -513,37 +516,38 @@ If SciPy is available, another way to compare against the expected result
 is to do a least-squared fit to determine the interface velocity and
 thickness</p>
 <div class="doctest highlight-default notranslate" id="index-8"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">tanhResiduals</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">tanhResiduals</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="n">V</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">p</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">numerix</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">V</span> <span class="o">*</span> <span class="n">t</span> <span class="o">-</span> <span class="n">L</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">d</span><span class="p">)))</span>
-<span class="gp">... </span>    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">leastsq</span> 
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">leastsq</span>
 <span class="gp">... </span>    <span class="n">x</span> <span class="o">=</span>  <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="p">(</span><span class="n">V_fit</span><span class="p">,</span> <span class="n">d_fit</span><span class="p">),</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">tanhResiduals</span><span class="p">,</span> <span class="p">[</span><span class="n">L</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">delta</span><span class="p">],</span>
-<span class="gp">... </span>                                  <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">globalValue</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">globalValue</span><span class="p">,</span> <span class="n">elapsed</span><span class="p">))</span> 
+<span class="gp">... </span>                                  <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">globalValue</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">globalValue</span><span class="p">,</span> <span class="n">elapsed</span><span class="p">))</span>
 <span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">V_fit</span> <span class="o">=</span> <span class="n">d_fit</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The SciPy library is unavailable to fit the interface </span><span class="se">\</span>
 <span class="gp">... </span><span class="s2">thickness and velocity&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">V_fit</span> <span class="o">/</span> <span class="n">velocity</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">4.2e-2</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">V_fit</span> <span class="o">/</span> <span class="n">velocity</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">4.2e-2</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d_fit</span> <span class="o">/</span> <span class="n">delta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">2e-2</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d_fit</span> <span class="o">/</span> <span class="n">delta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">2e-2</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Dimensional, semi-implicit. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/dimensional.png"><img alt="phase field when solved with physical parameters" class="align-center" src="../_images/dimensional.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="../_images/dimensional.png"><img alt="phase field when solved with physical parameters" class="align-center" src="../_images/dimensional.png" style="width: 90%;" />
+</a>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -552,7 +556,7 @@ thickness</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

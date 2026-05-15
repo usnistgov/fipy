@@ -4,26 +4,9 @@ fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner
 .. automodule:: fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
    
       MultilevelSGSPreconditioner
    
-   
-
-   
-   
-   
-
-
-

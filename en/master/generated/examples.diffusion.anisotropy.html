@@ -35,23 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.anisotropy &#8212; FiPy 4.0.2+4.gb847e2c7d documentation</title>
+    <title>examples.diffusion.anisotropy &#8212; FiPy 4.0.2+5.gd8c21fd26 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45154cb6"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=3cd0351a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.diffusion.anisotropy.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.2+4.gb847e2c7d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.2+5.gd8c21fd26 documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion" href="examples.diffusion.html" />
     <link rel="next" title="examples.diffusion.circle" href="examples.diffusion.circle.html" />
     <link rel="prev" title="examples.diffusion" href="examples.diffusion.html" />
@@ -118,7 +118,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.diffusion.anisotropy">
-<span id="examples-diffusion-anisotropy"></span><h1>examples.diffusion.anisotropy<a class="headerlink" href="#module-examples.diffusion.anisotropy" title="Permalink to this heading">¶</a></h1>
+<span id="examples-diffusion-anisotropy"></span><h1>examples.diffusion.anisotropy<a class="headerlink" href="#module-examples.diffusion.anisotropy" title="Link to this heading">¶</a></h1>
 <p>Solve the diffusion equation with an anisotropic diffusion coefficient.</p>
 <p>We wish to solve the problem</p>
 <div class="math notranslate nohighlight">
@@ -148,19 +148,19 @@ solution is given by,</p>
  \sqrt{\Gamma'_{00} \Gamma'_{11}} }\]</div>
 <p>where <span class="math notranslate nohighlight">\(\left(X, Y \right)^T = R \left(x, y \right)^T\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> is the initial
 mass.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2D</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTermCorrection</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">serialComm</span><span class="p">,</span> <span class="n">numerix</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2D</span><span class="p">,</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTermCorrection</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">fipy.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">serialComm</span><span class="p">,</span> <span class="n">numerix</span>
 </pre></div>
 </div>
 <p>Import a mesh previously created using <a class="reference internal" href="../glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Gmsh2D</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.msh&#39;</span><span class="p">,</span> <span class="n">communicator</span><span class="o">=</span><span class="n">serialComm</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Gmsh2D</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.msh&#39;</span><span class="p">,</span> <span class="n">communicator</span><span class="o">=</span><span class="n">serialComm</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Set the center-most cell to have a value.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hasOld</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">var</span><span class="p">[</span><span class="n">numerix</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hasOld</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">var</span><span class="p">[</span><span class="n">numerix</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.</span>
 </pre></div>
 </div>
 <p>Choose an orientation for the anisotropy.</p>
@@ -180,17 +180,17 @@ mass.</p>
 <span class="gp">... </span>    <span class="n">viewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">datamin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">cellVolumeAverage</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cellVolumes</span><span class="p">))</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">cellVolumeAverage</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cellVolumes</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span><span class="o">=</span><span class="mf">0.00025</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">var</span><span class="o">.</span><span class="n">updateOld</span><span class="p">()</span> 
+<span class="gp">... </span>    <span class="n">var</span><span class="o">.</span><span class="n">updateOld</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="n">res</span> <span class="o">=</span> <span class="mf">1.</span>
 <span class="gp">...</span>
 <span class="gp">... </span>    <span class="k">while</span> <span class="n">res</span> <span class="o">&gt;</span> <span class="mf">1e-2</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="n">res</span> <span class="o">=</span> <span class="n">eqn</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span> 
+<span class="gp">... </span>        <span class="n">res</span> <span class="o">=</span> <span class="n">eqn</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -198,9 +198,9 @@ mass.</p>
 </pre></div>
 </div>
 <p>Compare with the analytical solution (within 5% accuracy).</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rotationMatrix</span><span class="p">))</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">solution</span> <span class="o">=</span> <span class="n">mass</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">gamma_prime</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Y</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">gamma_prime</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">time</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">time</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma_prime</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">gamma_prime</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">((</span><span class="n">var</span> <span class="o">-</span> <span class="n">solution</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">solution</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mf">0.08</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">,</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rotationMatrix</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">solution</span> <span class="o">=</span> <span class="n">mass</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">gamma_prime</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Y</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">gamma_prime</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">time</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">time</span> <span class="o">*</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma_prime</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">gamma_prime</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">((</span><span class="n">var</span> <span class="o">-</span> <span class="n">solution</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">solution</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mf">0.08</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -208,8 +208,8 @@ mass.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 09, 2026.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on May 15, 2026.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
   </div>  
@@ -218,7 +218,7 @@ mass.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.2+4.gb847e2c7d
+Version 4.0.2+5.gd8c21fd26
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
