@@ -1,4 +1,5 @@
 sphinx
+docutils
 pandas
 sphinxcontrib-bibtex
 git+https://github.com/guyer/sphinx-readme@guyer-patch-1
