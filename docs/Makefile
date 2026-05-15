@@ -17,7 +17,7 @@ help:
 
 # Generate isolated TeX from ReST for \input in nist.sty
 %.tex.txt: %.rst
-	rst2latex.py --template=$(TEMPLATE) $(R2LOPTS) $< > $@
+	rst2latex --template=$(TEMPLATE) $(R2LOPTS) $< > $@
 
 # Break circular dependency
 %.rst: ;
