@@ -30,5 +30,5 @@ Cartesian grids.
 .. toctree::
 
    equation
-   discret
+   discrete
    scheme

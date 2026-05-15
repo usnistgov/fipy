@@ -8,7 +8,7 @@ How to update scripts from version 1.0 to 2.0.
 this is very inconvenient for our users, but we hope you'll agree that the new
 syntax is easier to read and easier to use. We assure you that this is not
 something we do casually; it has been over three years since our last
-incompatible change (when :term:`FiPy` 1.0 superceded :term:`FiPy` 0.1).
+incompatible change (when :term:`FiPy` 1.0 superseded :term:`FiPy` 0.1).
 
 All examples included with version 2.0 have been updated to use the new syntax,
 but any scripts you have written for :term:`FiPy` 1.0 will need to be updated. A
@@ -66,7 +66,7 @@ The following items **must** be changed in your scripts
    :class:`~fipy.variables.vectorFaceVariable.VectorFaceVariable` no longer exist.
    :class:`~fipy.variables.cellVariable.CellVariable` and
    and :class:`~fipy.variables.faceVariable.FaceVariable` now both inherit from
-   :class:`~fipy.varibles.meshVariable.MeshVariable`, which
+   :class:`~fipy.variables.meshVariable.MeshVariable`, which
    can have arbitrary rank. A field of scalars (default) will have ``rank=0``, a
    field of vectors will have ``rank=1``, etc. You should write
 
