@@ -337,6 +337,24 @@ class UniformGrid1D(UniformGrid):
             (1, 10)
             >>> print(mesh.faceCenters.globalValue.shape)
             (1, 11)
+
+        Distance vectors used by upwinding and by Robin boundary
+        conditions must agree with the non-uniform reference (#706):
+
+            >>> from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
+            >>> u = Grid1D(nx=4, dx=2.)
+            >>> nu = NonUniformGrid1D(nx=4, dx=2.)
+            >>> import numpy as np
+            >>> bool(np.allclose(np.array(u._cellToFaceDistanceVectors),
+            ...                  np.array(nu._cellToFaceDistanceVectors)))
+            True
+            >>> bool(np.allclose(np.array(u._cellDistanceVectors),
+            ...                  np.array(nu._cellDistanceVectors)))
+            True
+            >>> u._cellToFaceDistanceVectors.shape
+            (1, 2, 5)
+            >>> u._cellDistanceVectors.shape
+            (1, 5)
         """
 
 def _test():
