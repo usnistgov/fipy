@@ -16,6 +16,7 @@ def _suite():
             'exponentialConvectionTerm',
             'upwindConvectionTerm',
             'implicitSourceTerm',
+            'residualTerm',
             'coupledBinaryTerm',
             'abstractBinaryTerm',
             'unaryTerm',
