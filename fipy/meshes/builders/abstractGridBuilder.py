@@ -56,9 +56,20 @@ class _AbstractGridBuilder(object):
 
             if newD.unit.isDimensionless():
                 if type(d) in [list, tuple]:
-                    newD = numerix.array(d)
+                    # ``numerix.array(list_of_ints)`` defaults to an integer
+                    # dtype, which silently truncates the half-cell distances
+                    # (``dx/2``) used at boundary faces, so the grid
+                    # geometry must be promoted to floating-point here.
+                    # See #672.
+                    newD = numerix.array(d, dtype='d')
                 else:
-                    newD = d
+                    # ``ds[0]`` is normalised by ``newdx /= scale`` above,
+                    # which has the side effect of casting any integer
+                    # input to ``float64``.  Do the same for the trailing
+                    # dimensions so an integer ``dy``/``dz`` cannot leak
+                    # into the geometry arrays and corrupt ``_cellDistances``
+                    # via integer truncation.  See #672.
+                    newD = newD / scale
             else:
                 newD /= scale
 

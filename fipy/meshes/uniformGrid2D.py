@@ -851,6 +851,18 @@ class UniformGrid2D(UniformGrid):
             (2, 100)
             >>> print(square.faceCenters.globalValue.shape)
             (2, 220)
+
+        Integer ``dx``/``dy`` must yield the same geometry as the float
+        equivalent, so that solving a diffusion problem on either mesh
+        produces matching cell distances and avoids the integer-truncation
+        divide-by-zero from #672:
+
+            >>> m_int = UniformGrid2D(dx=1, dy=1, nx=4, ny=4)
+            >>> m_flt = UniformGrid2D(dx=1., dy=1., nx=4, ny=4)
+            >>> bool(numerix.allclose(m_int._cellDistances, m_flt._cellDistances))
+            True
+            >>> bool(numerix.all(m_int._cellDistances > 0))
+            True
         """
 
 def _test():

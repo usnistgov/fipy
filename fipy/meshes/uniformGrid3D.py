@@ -987,6 +987,16 @@ class UniformGrid3D(UniformGrid):
             (3, 1000)
             >>> print(cube.faceCenters.globalValue.shape)
             (3, 3300)
+
+        Integer ``dx``/``dy``/``dz`` must yield the same geometry as the
+        float equivalent (#672):
+
+            >>> m_int = UniformGrid3D(dx=1, dy=1, dz=1, nx=2, ny=2, nz=2)
+            >>> m_flt = UniformGrid3D(dx=1., dy=1., dz=1., nx=2, ny=2, nz=2)
+            >>> bool(numerix.allclose(m_int._cellDistances, m_flt._cellDistances))
+            True
+            >>> bool(numerix.all(m_int._cellDistances > 0))
+            True
         """
 
 def _test():
