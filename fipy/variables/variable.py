@@ -950,6 +950,21 @@ class Variable(object):
         """
         Given `self` and `other`, return the desired base class for an operation
         result.
+
+        Regression for #486 -- a bare scalar/array passed as the *first*
+        argument of a numpy ufunc must yield the same class as if it had
+        been passed second:
+
+           >>> from fipy import Grid1D, CellVariable
+           >>> from fipy.tools import numerix
+           >>> from fipy.variables.constant import _Constant
+           >>> mesh = Grid1D(nx=3)
+           >>> v = CellVariable(mesh=mesh, value=2.)
+           >>> _Constant(0.5)._getArithmeticBaseClass(v) is CellVariable
+           True
+           >>> print(numerix.allclose(numerix.array(numerix.fmax(0.1, v)),
+           ...                        numerix.array(numerix.fmax(v, 0.1))))
+           True
         """
         if other is None:
             return Variable
@@ -958,10 +973,14 @@ class Variable(object):
             # If self and other have the same base class, result has that base class.
             # If self derives from other, result has self's base class.
             # If other derives from self, result has other's base class.
+            # If ``self`` is a bare ``_Constant`` wrapping a scalar / ndarray,
+            # the result's class is dictated entirely by ``other`` (see #486).
             # If self and other don't have a common base, we don't know how to combine them.
             from fipy.variables.constant import _Constant
             if isinstance(self, other._getArithmeticBaseClass()) or isinstance(other, _Constant):
                 return self._getArithmeticBaseClass()
+            elif isinstance(self, _Constant):
+                return other._getArithmeticBaseClass()
             else:
                 return None
         else:
