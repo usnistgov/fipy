@@ -27,7 +27,7 @@ class ResidualTerm(_ExplicitSourceTerm):
        >>> eq = TransientTerm(var=v) == DiffusionTerm(var=v, coeff=1.)
        >>> rt = ResidualTerm(equation=eq)
 
-    valid for use with subtraction or scalar pre-multiplication.  Negation
+    valid for use with subtraction or scalar multiplication.  Negation
     flips the sign of the residual contribution:
 
        >>> sandbox = CellVariable(mesh=mesh, hasOld=True, value=0.)
