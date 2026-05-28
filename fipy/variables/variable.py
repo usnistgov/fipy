@@ -952,8 +952,9 @@ class Variable(object):
         result.
 
         Regression for #486 -- a bare scalar/array passed as the *first*
-        argument of a numpy ufunc must yield the same class as if it had
-        been passed second:
+        argument of one of the numpy ufuncs (`numerix.fmax`,
+        `numerix.add`, ...) must yield the same class as if it had been
+        passed second:
 
            >>> from fipy import Grid1D, CellVariable
            >>> from fipy.tools import numerix
