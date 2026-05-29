@@ -35,15 +35,16 @@ class PyAMGXSolver(Solver):
         **kwargs
             Other AMGX solver options
         """
-        super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
+        super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                           iterations=iterations, precon=precon)
 
         # update solver config:
         self.config_dict = self.CONFIG_DICT.copy()
 
         self.config_dict["solver"]["max_iters"] = self.iterations
 
-        if self.precon is not None:
-            self.precon._applyToSolver(self.config_dict["solver"])
+        if self.preconditioner is not None:
+            self.preconditioner._applyToSolver(self.config_dict["solver"])
 
         smoother = self.value_or_default(smoother, self.default_smoother)
         if smoother is not None:
