@@ -152,6 +152,9 @@ def _OperatorVariableClass(baseClass=object):
                         return s
                 elif ins.opname == 'LOAD_CONST':
                     stack.append(ins.argval)
+                elif ins.opname == 'LOAD_SMALL_INT':
+                    # New in Python 3.14 (small ints no longer use LOAD_CONST)
+                    stack.append(ins.argval)
                 elif ins.opname in ['LOAD_ATTR', 'LOAD_METHOD']:
                     # LOAD_METHOD new in Python 3.7
                     stack.append(stack.pop() + "." + ins.argval)
@@ -160,10 +163,12 @@ def _OperatorVariableClass(baseClass=object):
                 elif ins.opname == 'LOAD_GLOBAL':
                     # Changed in Python 3.11
                     stack.append(ins.argval)
-                elif ins.opname == 'LOAD_FAST':
+                elif ins.opname in ['LOAD_FAST', 'LOAD_FAST_BORROW']:
+                    # LOAD_FAST_BORROW new in Python 3.14
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
-                elif ins.opname == 'LOAD_FAST_LOAD_FAST':
-                    # New in Python 3.13
+                elif ins.opname in ['LOAD_FAST_LOAD_FAST', 'LOAD_FAST_BORROW_LOAD_FAST_BORROW']:
+                    # LOAD_FAST_LOAD_FAST new in Python 3.13;
+                    # LOAD_FAST_BORROW_LOAD_FAST_BORROW new in Python 3.14
                     for arg in range(len(self.var)):
                         stack.append(self.__var(arg, style=style, argDict=argDict, id=id, freshen=freshen))
                 elif ins.opname in ['CALL_FUNCTION', 'CALL_METHOD']:
@@ -188,7 +193,12 @@ def _OperatorVariableClass(baseClass=object):
                     pass
                 elif ins.opname == 'BINARY_OP':
                     # New in Python 3.11
-                    stack.append(stack.pop(-2) + " " + ins.argrepr + " " + stack.pop())
+                    if ins.argrepr == '[]':
+                        # Subscript is a BINARY_OP (NB_SUBSCR) in Python 3.14;
+                        # earlier versions emit BINARY_SUBSCR (handled above)
+                        stack.append(stack.pop(-2) + "[" + str(stack.pop()) + "]")
+                    else:
+                        stack.append(stack.pop(-2) + " " + ins.argrepr + " " + stack.pop())
                 elif ins.opname == 'PRECALL':
                     # New in Python 3.11
                     pass
