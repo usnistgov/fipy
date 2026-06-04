@@ -10,6 +10,28 @@ __all__ = ["LinearLUSolver"]
 
 class LinearLUSolver(ScipySolver):
     """Interface to :term:`LU`-factorization in :ref:`SciPy`.
+
+    The number of iterative refinement sweeps honors the `iterations`
+    argument, consistent with the other `LinearLUSolver` implementations
+    (`GH #1208 <https://github.com/usnistgov/fipy/issues/1208>`_).  Forcing
+    an unreachable tolerance runs the full count rather than capping at 10:
+
+    >>> import warnings
+    >>> import fipy as fp
+    >>> mesh = fp.Grid1D(nx=10)
+    >>> var = fp.CellVariable(mesh=mesh)
+    >>> var.constrain(0., where=mesh.facesLeft)
+    >>> var.constrain(1., where=mesh.facesRight)
+    >>> eq = fp.DiffusionTerm() == 0
+    >>> solver = LinearLUSolver(iterations=12, tolerance=0.)
+    >>> solver = eq._prepareLinearSystem(var=var, solver=solver,
+    ...                                  boundaryConditions=(), dt=1.)
+    >>> L, x, b = solver._Lxb
+    >>> with warnings.catch_warnings():
+    ...     warnings.simplefilter("ignore")
+    ...     _ = solver._solve_(L, x, b)
+    >>> print(solver.convergence.iterations)
+    12
     """
 
     def _adaptLegacyTolerance(self, L, x, b):
@@ -65,7 +87,7 @@ class LinearLUSolver(ScipySolver):
                       panel_size=10,
                       permc_spec=3)
 
-            for iteration in range(min(self.iterations, 10)):
+            for iteration in range(self.iterations):
                 residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
                 if residual <= self.tolerance * tolerance_scale:
