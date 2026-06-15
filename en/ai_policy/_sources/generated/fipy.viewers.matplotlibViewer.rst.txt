@@ -1,0 +1,29 @@
+fipy.viewers.matplotlibViewer
+=============================
+
+.. automodule:: fipy.viewers.matplotlibViewer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      MatplotlibViewer
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   abstractMatplotlib2DViewer
+   abstractMatplotlibViewer
+   matplotlib1DViewer
+   matplotlib2DContourViewer
+   matplotlib2DGridContourViewer
+   matplotlib2DGridViewer
+   matplotlib2DViewer
+   matplotlibSparseMatrixViewer
+   matplotlibStreamViewer
+   matplotlibVectorViewer
+   test

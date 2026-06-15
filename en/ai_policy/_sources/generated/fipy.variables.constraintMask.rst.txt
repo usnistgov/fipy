@@ -1,0 +1,6 @@
+fipy.variables.constraintMask
+=============================
+
+.. automodule:: fipy.variables.constraintMask
+
+   

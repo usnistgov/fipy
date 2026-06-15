@@ -1,0 +1,6 @@
+fipy.variables.modCellGradVariable
+==================================
+
+.. automodule:: fipy.variables.modCellGradVariable
+
+   

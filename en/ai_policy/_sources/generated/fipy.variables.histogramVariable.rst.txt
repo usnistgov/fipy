@@ -1,0 +1,12 @@
+fipy.variables.histogramVariable
+================================
+
+.. automodule:: fipy.variables.histogramVariable
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      HistogramVariable
+   

@@ -1,0 +1,12 @@
+fipy.solvers.trilinos.linearCGSSolver
+=====================================
+
+.. automodule:: fipy.solvers.trilinos.linearCGSSolver
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearCGSSolver
+   
