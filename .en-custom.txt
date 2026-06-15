@@ -5,6 +5,7 @@ advected
 advecting
 advection
 advects
+agentic
 Alber
 Allen-Cahn
 al.
@@ -92,6 +93,7 @@ doctest
 doctests
 DOI
 Dolfyn
+dr
 electrochemistry
 Electrochimica
 electrodeposition
@@ -191,6 +193,8 @@ linearize
 linearizing
 Linux
 liquidus
+LLM
+LLMs
 Lobkovsky
 lockfiles
 LSMLIB
@@ -359,6 +363,7 @@ Tcl
 TCoupled
 timestep
 timesteps
+tl
 TMS
 TODO
 toolset
@@ -393,7 +398,7 @@ Waals
 webpage
 whitespace
 Win32
-workflows
+workflow
 XP
 Xu
 XY
