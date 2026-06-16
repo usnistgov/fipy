@@ -1,7 +1,7 @@
 .. |.changelog| replace:: Change Log
 .. _.changelog: https://pages.nist.gov/fipy/en/latest/CHANGELOG.html#changelog
 .. |.examples.diffusion.mesh1D| replace:: ``examples.diffusion.mesh1D``
-.. _.examples.diffusion.mesh1D: https://github.com/usnistgov/fipy/blob/4d751fba3419f47e65c5e8ccd810bbeb4c58ae39/examples/diffusion/mesh1D.py
+.. _.examples.diffusion.mesh1D: https://github.com/usnistgov/fipy/blob/4f9fb7761985a9e683e7b812d8d592bd2e597d3c/examples/diffusion/mesh1D.py
 .. |.faq| replace:: Frequently Asked Questions
 .. _.faq: https://pages.nist.gov/fipy/en/latest/FAQ.html#faq
 .. |.FiPy| replace:: FiPy
@@ -45,12 +45,12 @@ array calculations, sparse matrices and data rendering.
 The |.FiPy|_ framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
 combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
-implemented models include phase field `BoettingerReview:2002`
-`ChenReview:2002` `McFaddenReview:2002` treatments of polycrystalline,
+implemented models include phase field :cite:`BoettingerReview:2002`
+:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
 dendritic, and electrochemical phase transformations, as well as drug
-eluting stents `Saylor:2011p2794`, reactive wetting `PhysRevE.82.051601`,
-photovoltaics `Hangarter:2011p2795` and a level set treatment of the
-electrodeposition process `NIST:damascene:2001`.
+eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
+photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
+electrodeposition process :cite:`NIST:damascene:2001`.
 
 The latest information about |.FiPy|_ can be found at
 http://www.ctcms.nist.gov/fipy/.
@@ -104,7 +104,7 @@ Conventions and Notation
 
 |.FiPy|_ is driven by |.Python|_ script files than you can view or modify in any
 text editor.  |.FiPy|_ sessions are invoked from a command-line shell, such
-as `tcsh` or `bash`.
+as :command:`tcsh` or :command:`bash`.
 
 Throughout, text to be typed at the keyboard will appear ``like this``.
 Commands to be issued from an interactive shell will appear::

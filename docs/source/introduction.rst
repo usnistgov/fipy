@@ -19,4 +19,5 @@ Introduction
    PUBLICATIONS
    CHANGELOG
    ADMINISTRATA
+   AI_POLICY
    glossary
