@@ -1,6 +1,0 @@
-fipy.variables.operatorVariable
-===============================
-
-.. automodule:: fipy.variables.operatorVariable
-
-   

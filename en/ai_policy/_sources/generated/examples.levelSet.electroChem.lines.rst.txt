@@ -1,6 +1,0 @@
-examples.levelSet.electroChem.lines
-===================================
-
-.. automodule:: examples.levelSet.electroChem.lines
-
-   
