@@ -28,10 +28,10 @@ are not welcome.
 This policy applies to:
 
 - Code, whether or not via pull request,
-- Documentation.
+- Documentation,
 - Issues,
 - Discussions,
-- Comments and feedback on pull requests, issues, or discussions.
+- Comments and feedback on any of the above.
 
 tl;dr
 -----
