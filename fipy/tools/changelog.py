@@ -160,7 +160,8 @@ class ChangeLog(object):
         question = issues.labels.apply(lambda x: 'question' in x)
         worksforme = issues.labels.apply(lambda x: 'worksforme' in x)
         duplicate = issues.labels.apply(lambda x: 'duplicate' in x)
-        issues = issues[~wontfix & ~invalid & ~question & ~worksforme & ~duplicate]
+        extractive = issues.labels.apply(lambda x: 'extractive' in x)
+        issues = issues[~wontfix & ~invalid & ~question & ~worksforme & ~duplicate & ~extractive]
 
         # fix the dates to reflect dates from original Trac issue tracker
         trac = (r" _Imported from trac ticket .*,  "
