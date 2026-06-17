@@ -3,6 +3,7 @@
   :width: 110
   :height: 110
   :align: left
+
 | |Tests|_ |Documentation|_ |nix|_
 | |GitHub|_ |PyPI|_  |CondaForge|_ |Binder|_
 | |gitter|_ |OpenHub|_
