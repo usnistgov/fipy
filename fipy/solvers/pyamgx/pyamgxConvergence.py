@@ -1,5 +1,10 @@
-from ..convergence import (Convergence, IterationDivergence,
-                           BreakdownDivergence)
+from ..convergence import (
+    BreakdownDivergence,
+    Convergence,
+    Divergence,
+    IterationDivergence,
+)
+
 
 class pyamgx_Convergence(Convergence):
     """
@@ -20,4 +25,11 @@ class pyamgx_IterationDivergence(IterationDivergence):
     """
     status_code = "diverged"
     status_name = "AMGX_SOLVE_DIVERGED"
+    suite = "pyamgx"
+
+class pyamgx_Divergence(Divergence):
+    """
+    """
+    status_code = "not_converged"
+    status_name = "AMGX_SOLVE_NOT_CONVERGED"
     suite = "pyamgx"
