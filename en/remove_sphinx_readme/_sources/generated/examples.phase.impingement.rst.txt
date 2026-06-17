@@ -1,0 +1,15 @@
+examples.phase.impingement
+==========================
+
+.. automodule:: examples.phase.impingement
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   mesh20x20
+   mesh40x1
+   test

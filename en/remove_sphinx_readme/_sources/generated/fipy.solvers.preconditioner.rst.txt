@@ -1,0 +1,14 @@
+fipy.solvers.preconditioner
+===========================
+
+.. automodule:: fipy.solvers.preconditioner
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MatrixModifyingPreconditioner
+      Preconditioner
+      SolverModifyingPreconditioner
+   
