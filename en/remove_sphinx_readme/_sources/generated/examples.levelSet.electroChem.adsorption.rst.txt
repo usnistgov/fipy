@@ -1,6 +1,0 @@
-examples.levelSet.electroChem.adsorption
-========================================
-
-.. automodule:: examples.levelSet.electroChem.adsorption
-
-   
