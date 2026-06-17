@@ -1,6 +1,0 @@
-fipy.terms.test
-===============
-
-.. automodule:: fipy.terms.test
-
-   

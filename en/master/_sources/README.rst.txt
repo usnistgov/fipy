@@ -37,7 +37,7 @@ photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
 electrodeposition process :cite:`NIST:damascene:2001`.
 
 The latest information about :term:`FiPy` can be found at
-http://www.ctcms.nist.gov/fipy/.
+http://pages.nist.gov/fipy/en/stable.
 
 See the latest updates in the :ref:`CHANGELOG`.
 
