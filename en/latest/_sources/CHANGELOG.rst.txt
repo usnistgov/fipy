@@ -11,6 +11,34 @@ Change Log
 Version |release|
 -----------------
 
+Pulls
+-----
+
+- Remove sphinx-readme
+  (`#1216 <https://github.com/usnistgov/fipy/pull/1216>`_)
+- Add policy on AI contributions
+  (`#1214 <https://github.com/usnistgov/fipy/pull/1214>`_)
+- Introduce `+INTERACTIVE` doctest skipper
+  (`#1183 <https://github.com/usnistgov/fipy/pull/1183>`_)
+- Access VTK without saving to disk
+  (`#1182 <https://github.com/usnistgov/fipy/pull/1182>`_)
+  Thanks to `@isaac-blanc <https://github.com/isaac-blanc>`_.
+- Improve code clarity and consistency through minor refinements
+  (`#1131 <https://github.com/usnistgov/fipy/pull/1131>`_)
+  Thanks to `@arpitjain099 <https://github.com/arpitjain099>`_.
+
+Fixes
+-----
+
+- `#1190 <https://github.com/usnistgov/fipy/issues/1190>`_:
+  `Grid3D` with array as `dx` not working anymore
+- `#1138 <https://github.com/usnistgov/fipy/issues/1138>`_:
+  `erf` operator not rendering.
+  Thanks to `@flash631 <https://github.com/flash631>`_.
+
+--------------------------
+Version 4.0.2 - 2026-02-25
+--------------------------
 
 Pulls
 -----
