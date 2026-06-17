@@ -1,0 +1,6 @@
+examples.levelSet.electroChem.adsorbingSurfactantEquation
+=========================================================
+
+.. automodule:: examples.levelSet.electroChem.adsorbingSurfactantEquation
+
+   

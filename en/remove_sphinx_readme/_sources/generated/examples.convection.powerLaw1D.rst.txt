@@ -1,0 +1,14 @@
+examples.convection.powerLaw1D
+==============================
+
+.. automodule:: examples.convection.powerLaw1D
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   mesh1D
+   tri2D

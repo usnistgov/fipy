@@ -1,0 +1,6 @@
+fipy.variables.faceGradVariable
+===============================
+
+.. automodule:: fipy.variables.faceGradVariable
+
+   

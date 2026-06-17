@@ -1,0 +1,6 @@
+examples.convection.powerLaw1D.mesh1D
+=====================================
+
+.. automodule:: examples.convection.powerLaw1D.mesh1D
+
+   

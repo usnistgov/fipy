@@ -1,0 +1,12 @@
+fipy.terms.diffusionTerm
+========================
+
+.. automodule:: fipy.terms.diffusionTerm
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DiffusionTerm
+   
