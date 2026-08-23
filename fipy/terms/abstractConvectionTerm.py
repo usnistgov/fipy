@@ -161,7 +161,7 @@ class _AbstractConvectionTerm(FaceTerm):
         ...     assert numerix.allclose(reused, initial)
         ...     assert numerix.allclose(reused, rebuilt)
 
-        A transition to zero diffusion must also refresh the large-Peclet
+        A transition to zero diffusion must also refresh the large Peclet
         branch and boundary-constraint weights.
 
         >>> diffusion = FaceVariable(mesh=mesh, value=1.)
