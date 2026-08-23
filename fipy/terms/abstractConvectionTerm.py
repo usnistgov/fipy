@@ -122,6 +122,69 @@ class _AbstractConvectionTerm(FaceTerm):
         >>> print(numerix.allclose(v, v0))
         True
 
+        A cached convection stencil must keep lazy dependencies on both
+        convection and diffusion coefficients.
+
+        >>> from fipy import DiffusionTerm, ExponentialConvectionTerm
+        >>> from fipy import FaceVariable, LinearLUSolver
+        >>> mesh = Grid1D(nx=20, dx=1.)
+        >>> x = numerix.asarray(mesh.cellCenters[0])
+        >>> energy = CellVariable(mesh=mesh,
+        ...                       value=numerix.where(x < 10., 1., 3.))
+        >>> solver = LinearLUSolver()
+
+        Common positive scaling must preserve the steady-state solution and
+        agree with a newly constructed equation.
+
+        >>> for ConvectionClass in (ConvectionTerm,
+        ...                         ExponentialConvectionTerm):
+        ...     scale = CellVariable(mesh=mesh, value=1.)
+        ...     diffusion = scale.faceValue
+        ...     convection = (scale * energy).faceGrad
+        ...     reused = CellVariable(mesh=mesh, value=0.)
+        ...     reused.constrain(0., mesh.facesLeft)
+        ...     reused.constrain(1., mesh.facesRight)
+        ...     equation = (DiffusionTerm(diffusion, var=reused)
+        ...                 - ConvectionClass(convection, var=reused) == 0.)
+        ...     equation.solve(solver=solver)
+        ...     initial = reused.value.copy()
+        ...     scale.setValue(2.)
+        ...     reused.setValue(0.)
+        ...     equation.solve(solver=solver)
+        ...     rebuilt = CellVariable(mesh=mesh, value=0.)
+        ...     rebuilt.constrain(0., mesh.facesLeft)
+        ...     rebuilt.constrain(1., mesh.facesRight)
+        ...     rebuiltEquation = (DiffusionTerm(diffusion, var=rebuilt)
+        ...                        - ConvectionClass(convection,
+        ...                                          var=rebuilt) == 0.)
+        ...     rebuiltEquation.solve(solver=solver)
+        ...     assert numerix.allclose(reused, initial)
+        ...     assert numerix.allclose(reused, rebuilt)
+
+        A transition to zero diffusion must also refresh the large-Peclet
+        branch and boundary-constraint weights.
+
+        >>> diffusion = FaceVariable(mesh=mesh, value=1.)
+        >>> convection = FaceVariable(mesh=mesh, rank=1, value=(1.,))
+        >>> reused = CellVariable(mesh=mesh, value=0.)
+        >>> reused.constrain(0., mesh.facesLeft)
+        >>> reused.constrain(1., mesh.facesRight)
+        >>> equation = (DiffusionTerm(diffusion, var=reused)
+        ...             - ExponentialConvectionTerm(convection,
+        ...                                          var=reused) == 0.)
+        >>> equation.solve(solver=solver)
+        >>> diffusion.setValue(0.)
+        >>> reused.setValue(0.)
+        >>> equation.solve(solver=solver)
+        >>> rebuilt = CellVariable(mesh=mesh, value=0.)
+        >>> rebuilt.constrain(0., mesh.facesLeft)
+        >>> rebuilt.constrain(1., mesh.facesRight)
+        >>> rebuiltEquation = (DiffusionTerm(diffusion, var=rebuilt)
+        ...                    - ExponentialConvectionTerm(convection,
+        ...                                                 var=rebuilt) == 0.)
+        >>> rebuiltEquation.solve(solver=solver)
+        >>> assert numerix.allclose(reused, rebuilt)
+
         """
 
         if self.stencil is None:
@@ -129,13 +192,15 @@ class _AbstractConvectionTerm(FaceTerm):
             geomCoeff = self._getGeomCoeff(var)
             large = 1e+20
             pecletLarge = large - (geomCoeff < 0) * (2 * large)
-            if numerix.all(self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff) < 0):
-                pecletLarge = -pecletLarge
+            negativeDiagonal = numerix.all(
+                self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff) < 0
+            )
+            pecletLarge *= 1 - 2 * negativeDiagonal
 
             if diffusionGeomCoeff is None or diffusionGeomCoeff[0] is None:
                 peclet = pecletLarge
             else:
-                diffCoeff = diffusionGeomCoeff[0].numericValue
+                diffCoeff = diffusionGeomCoeff[0]
                 diffCoeff = diffCoeff - (diffCoeff == 0) * geomCoeff / pecletLarge
                 peclet = -geomCoeff / diffCoeff
 
@@ -172,7 +237,9 @@ class _AbstractConvectionTerm(FaceTerm):
             else:
                 alpha = 0.0
 
-            alpha_constraint = numerix.where(var.faceGrad.constraintMask, 1.0, alpha)
+            alpha_constraint = alpha + (
+                var.faceGrad.constraintMask * (1.0 - alpha)
+            )
 
             def divergence(face_value):
                 return (
