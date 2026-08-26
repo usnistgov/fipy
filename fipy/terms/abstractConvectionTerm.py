@@ -102,7 +102,8 @@ class _AbstractConvectionTerm(FaceTerm):
         when evaluation upwind direction.
 
         >>> from fipy import Grid1D, CellVariable
-        >>> from fipy import TransientTerm, ConvectionTerm, ImplicitSourceTerm
+        >>> from fipy import (TransientTerm, ConvectionTerm,
+        ...                   ImplicitSourceTerm, DiffusionTerm)
 
         >>> m = Grid1D(nx=3, dx=0.5)
         >>> v = CellVariable(mesh=m)
@@ -122,6 +123,40 @@ class _AbstractConvectionTerm(FaceTerm):
         >>> print(numerix.allclose(v, v0))
         True
 
+        Test for issue #1223
+        Ensure that proportional scaling of diffusion and convection
+        coefficients results in the same stencil.
+
+        >>> mesh = Grid1D(nx=20, dx=1.0)
+        >>> energy = CellVariable(name="energy", mesh=mesh, value=1.0)
+        >>> energy.setValue(3.0, where=mesh.x >= 10.0)
+        >>> scale = CellVariable(name="common scale", mesh=mesh, value=1.0)
+        >>> diffusion_coefficient = scale.faceValue
+        >>> convection_coefficient = (scale * energy).faceGrad
+
+        >>> v = CellVariable(name="solution", mesh=mesh, value=0.0)
+        >>> v.constrain(0.0, where=mesh.facesLeft)
+        >>> v.constrain(1.0, where=mesh.facesRight)
+
+        >>> eq = (DiffusionTerm(coeff=diffusion_coefficient, var=v)
+        ...       - ConvectionTerm(coeff=convection_coefficient, var=v)
+        ...       == 0.0)
+
+        >>> eq.solve()
+
+        >>> solution_at_scale_1 = v.value.copy()
+
+        Scale diffusion and convection by same amount and re-solve
+
+        >>> scale.value = 2.0
+        >>> v.value = 0.0
+        >>> eq.solve()
+
+        >>> solution_at_scale_2 = v.value.copy()
+
+        >>> error = float(max(abs(solution_at_scale_1 - solution_at_scale_2)))
+        >>> print(error)
+        0.0
         """
 
         if self.stencil is None:
