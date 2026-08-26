@@ -170,7 +170,7 @@ class _AbstractConvectionTerm(FaceTerm):
             if diffusionGeomCoeff is None or diffusionGeomCoeff[0] is None:
                 peclet = pecletLarge
             else:
-                diffCoeff = diffusionGeomCoeff[0].numericValue
+                diffCoeff = diffusionGeomCoeff[0]
                 diffCoeff = diffCoeff - (diffCoeff == 0) * geomCoeff / pecletLarge
                 peclet = -geomCoeff / diffCoeff
 
