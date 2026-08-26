@@ -162,10 +162,12 @@ class _AbstractConvectionTerm(FaceTerm):
         if self.stencil is None:
 
             geomCoeff = self._getGeomCoeff(var)
-            large = 1e+20
-            pecletLarge = large - (geomCoeff < 0) * (2 * large)
-            if numerix.all(self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff) < 0):
-                pecletLarge = -pecletLarge
+
+            geometrySign = 1 - 2 * (geomCoeff < 0)
+            diagonalSign = self._getDiagonalSign(transientGeomCoeff,
+                                                  diffusionGeomCoeff)
+            diagonalSign = 1 - 2 * numerix.all(diagonalSign < 0)
+            pecletLarge = 1e+20 * geometrySign * diagonalSign
 
             if diffusionGeomCoeff is None or diffusionGeomCoeff[0] is None:
                 peclet = pecletLarge
