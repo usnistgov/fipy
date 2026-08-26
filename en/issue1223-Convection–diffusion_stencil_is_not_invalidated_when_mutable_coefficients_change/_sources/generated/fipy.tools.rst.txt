@@ -1,0 +1,27 @@
+fipy.tools
+==========
+
+.. automodule:: fipy.tools
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   changelog
+   comms
+   copy_script
+   debug
+   decorators
+   dimensions
+   dump
+   inline
+   logging
+   numerix
+   parser
+   sharedtempfile
+   test
+   timer
+   vector

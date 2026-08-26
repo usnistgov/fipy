@@ -1,0 +1,22 @@
+fipy.viewers.vtkViewer
+======================
+
+.. automodule:: fipy.viewers.vtkViewer
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      VTKViewer
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   test
+   vtkCellViewer
+   vtkFaceViewer
+   vtkViewer

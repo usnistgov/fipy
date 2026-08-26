@@ -1,0 +1,12 @@
+fipy.tools.timer
+================
+
+.. automodule:: fipy.tools.timer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Timer
+   

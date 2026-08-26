@@ -1,0 +1,6 @@
+fipy.tools.dimensions.NumberDict
+================================
+
+.. automodule:: fipy.tools.dimensions.NumberDict
+
+   

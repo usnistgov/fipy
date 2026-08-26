@@ -1,0 +1,6 @@
+fipy.viewers.mayaviViewer.test
+==============================
+
+.. automodule:: fipy.viewers.mayaviViewer.test
+
+   

@@ -1,0 +1,13 @@
+fipy.tools.dimensions.physicalField
+===================================
+
+.. automodule:: fipy.tools.dimensions.physicalField
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PhysicalField
+      PhysicalUnit
+   

@@ -1,0 +1,6 @@
+fipy.variables.addOverFacesVariable
+===================================
+
+.. automodule:: fipy.variables.addOverFacesVariable
+
+   
