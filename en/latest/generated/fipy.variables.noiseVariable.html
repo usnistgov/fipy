@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.variables.noiseVariable &#8212; FiPy 4.0.3 documentation</title>
+    <title>fipy.variables.noiseVariable &#8212; FiPy 4.0.3+1.g136bd4c31c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=04fc738e"></script>
+    <script src="../_static/documentation_options.js?v=6fee3f35"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.3 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.3+1.g136bd4c31c documentation" href="../contents.html" />
     <link rel="up" title="fipy.variables" href="fipy.variables.html" />
     <link rel="next" title="fipy.variables.operatorVariable" href="fipy.variables.operatorVariable.html" />
     <link rel="prev" title="fipy.variables.modularVariable" href="fipy.variables.modularVariable.html" />
@@ -147,7 +147,7 @@ number generated used by all <cite>NoiseVariable</cite> objects.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mesh</strong> (<a class="reference internal" href="fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>) – the mesh that defines the geometry of this <cite>Variable</cite></p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – the user-readable name of the <cite>Variable</cite></p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span class="xref std std-term">array_like</span></a>) – the initial value</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.5)"><span class="xref std std-term">array_like</span></a>) – the initial value</p></li>
 <li><p><strong>rank</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the rank (number of dimensions) of each element of this
 <cite>Variable</cite>. Default: 0</p></li>
 <li><p><strong>elementshape</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – the shape of each element of this variable
@@ -273,7 +273,7 @@ method that has a memory requirement on the order of <cite>Ncells</cite> by
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>) – A point or set of points in the format (X, Y, Z)</p></li>
 <li><p><strong>order</strong> (<code class="docutils literal notranslate"><span class="pre">{`0`,</span> <span class="pre">`1`}</span></code>) – The order of interpolation, default is 0</p></li>
-<li><p><strong>nearestCellIDs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span class="xref std std-term">array_like</span></a>) – Optional argument if user can calculate own
+<li><p><strong>nearestCellIDs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.5)"><span class="xref std std-term">array_like</span></a>) – Optional argument if user can calculate own
 nearest cell IDs array, shape should be same as points</p></li>
 </ul>
 </dd>
@@ -1133,7 +1133,7 @@ values.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jun 17, 2026.
+                Last updated on Aug 27, 2026.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
@@ -1143,7 +1143,7 @@ values.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.3
+Version 4.0.3+1.g136bd4c31c
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

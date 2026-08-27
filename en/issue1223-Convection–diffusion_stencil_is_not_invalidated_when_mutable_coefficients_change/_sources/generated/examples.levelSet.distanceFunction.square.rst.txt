@@ -1,6 +1,0 @@
-examples.levelSet.distanceFunction.square
-=========================================
-
-.. automodule:: examples.levelSet.distanceFunction.square
-
-   
