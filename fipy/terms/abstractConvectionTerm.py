@@ -193,6 +193,37 @@ class _AbstractConvectionTerm(FaceTerm):
                 raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """
+        A change in diffusion must refresh the boundary-constraint weights.
+
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=20, dx=1.0)
+        >>> diffusion = fp.FaceVariable(mesh=mesh, value=1.)
+        >>> convection = fp.FaceVariable(mesh=mesh, rank=1, value=(1.,))
+        >>> reused = fp.CellVariable(mesh=mesh, value=0.)
+        >>> reused.constrain(0., mesh.facesLeft)
+        >>> reused.constrain(1., mesh.facesRight)
+        >>> eq = (fp.DiffusionTerm(diffusion, var=reused)
+        ...       - fp.ConvectionTerm(convection,
+        ...                           var=reused) == 0.)
+        >>> eq.solve()
+
+        >>> diffusion.setValue(2.)
+        >>> reused.setValue(0.)
+        >>> eq.solve()
+
+        >>> rebuilt = fp.CellVariable(mesh=mesh, value=0.)
+        >>> rebuilt.constrain(0., mesh.facesLeft)
+        >>> rebuilt.constrain(1., mesh.facesRight)
+        >>> rebuilt_eq = (fp.DiffusionTerm(diffusion, var=rebuilt)
+        ...               - fp.ConvectionTerm(convection,
+        ...                                   var=rebuilt) == 0.)
+        >>> rebuilt_eq.solve()
+
+        >>> print(numerix.allclose(reused, rebuilt))
+        True
+        """
 
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
@@ -209,7 +240,8 @@ class _AbstractConvectionTerm(FaceTerm):
             else:
                 alpha = 0.0
 
-            alpha_constraint = numerix.where(var.faceGrad.constraintMask, 1.0, alpha)
+            alpha_constraint = (var.faceGrad.constraintMask * 1.0
+                                + ~var.faceGrad.constraintMask * alpha)
 
             def divergence(face_value):
                 return (
@@ -301,7 +333,6 @@ class _AbstractConvectionTerm(FaceTerm):
         >>> error1 = float(np.sqrt(((var.value - expected)**2 * mesh.dx).sum()))
 
         >>> assert np.allclose(np.log(error1 / error0 ) / np.log(nx0 / nx1), 1.0, atol=0.002)
-
         """
 
 class __ConvectionTerm(_AbstractConvectionTerm):
