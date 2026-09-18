@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>FiPy Contents &#8212; FiPy 4.0.3+1.g136bd4c31c documentation</title>
+    <title>FiPy Contents &#8212; FiPy 4.0.3+2.g0eca65c473 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/documentation_options.js?v=6fee3f35"></script>
+    <script src="_static/documentation_options.js?v=3afc1c2a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 4.0.3+1.g136bd4c31c documentation" href="#" />
+    <link rel="top" title="FiPy 4.0.3+2.g0eca65c473 documentation" href="#" />
     <link rel="next" title="Introduction" href="introduction.html" />
   
  
@@ -277,6 +277,25 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="numerical/index.html">Theoretical and Numerical Background</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="numerical/equation.html">General Conservation Equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numerical/discret.html">Finite Volume Method</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numerical/discret.html#cell-centered-fvm-cc-fvm">Cell Centered FVM (CC-FVM)</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="numerical/discret.html#boundary-conditions">Boundary Conditions</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="numerical/discret.html#vertex-centered-fvm-vc-fvm">Vertex Centered FVM (VC-FVM)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numerical/discret.html#discretization">Discretization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numerical/discret.html#transient-term-partial-rho-phi-partial-t">Transient Term <span class="math notranslate nohighlight">\(\partial (\rho \phi) / \partial t\)</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numerical/discret.html#convection-term-nabla-cdot-left-vec-u-phi-right">Convection Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \vec{u} \phi \right)\)</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numerical/discret.html#diffusion-term-nabla-cdot-left-gamma-1-nabla-phi-right">Diffusion Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \Gamma_1 \nabla \phi \right)\)</span></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="numerical/discret.html#higher-order-diffusion">Higher Order Diffusion</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="numerical/discret.html#source-term">Source Term</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numerical/discret.html#linear-equations">Linear Equations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="numerical/scheme.html">Numerical Schemes</a></li>
 </ul>
 </li>
@@ -298,7 +317,7 @@
 <li class="toctree-l2"><a class="reference internal" href="PUBLICATIONS.html">Publications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PUBLICATIONS.html#presentations">Presentations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html">Change Log</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#version-release">Version 4.0.3+1.g136bd4c31c</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#version-release">Version 4.0.3+2.g0eca65c473</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="CHANGELOG.html#pulls">Pulls</a></li>
 <li class="toctree-l4"><a class="reference internal" href="CHANGELOG.html#fixes">Fixes</a></li>
 </ul>
@@ -5109,7 +5128,7 @@
 
 
                 <div class='last-updated'>
-                Last updated on Aug 27, 2026.
+                Last updated on Sep 18, 2026.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
@@ -5119,7 +5138,7 @@
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.3+1.g136bd4c31c
+Version 4.0.3+2.g0eca65c473
 
 <div class="sphinxsidebarsection">
   <h4>Next topic</h4>
