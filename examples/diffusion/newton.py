@@ -133,7 +133,7 @@ later comparison.
 
 >>> newton = []
 >>> C.updateOld()
->>> deltaC.updateOld
+>>> deltaC.updateOld()
 >>> for sweep in range(20):
 ...     deltaC.value = 0.
 ...     res = newtonEq.sweep(dt=1000.)
