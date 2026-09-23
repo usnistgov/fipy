@@ -81,6 +81,13 @@ class _AbstractBinaryTerm(Term):
         self.term._checkVar(var)
         self.other._checkVar(var)
 
+    def reset(self):
+        """Restore :class:`~fipy.terms.term.Term` to unused state
+        """
+        for term in (self.term, self.other):
+            term.reset()
+
+        super(_AbstractBinaryTerm, self).reset()
 
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 class __NonDiffusionTerm(_NonDiffusionTerm):
