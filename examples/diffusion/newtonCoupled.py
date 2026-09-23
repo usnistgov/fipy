@@ -35,8 +35,8 @@ subject to the boundary conditions
 .. math::
 
    \begin{aligned}
-       A &= 1\qquad\text{at \(x = 0\) \\
-       B &= 2\qquad\text{at \(x = 100\)
+       A &= 1\qquad\text{at \(x = 0\)} \\
+       B &= 2\qquad\text{at \(x = 100\)}
    \end{aligned}
 
 >>> A.constrain(1., where=mesh.facesLeft)
@@ -60,7 +60,7 @@ Store the result for comparison later:
 >>> Bfixed = B.copy()
 >>> Bfixed.name = "B fixed point"
 
-For Newton's method, we solve solve the set of equations
+For Newton's method, we solve the set of equations
 :math:`\mathbf{F}(\mathbf{x})` on the variables :math:`\mathbf{x}`
 by the first order Taylor expansion
 

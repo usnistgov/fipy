@@ -25,7 +25,7 @@ subject to the boundary condition
 
 .. math::
 
-   C = 1\qquad\text{at \(x = 0\)
+   C = 1\qquad\text{at \(x = 0\)}
 
 >>> C.constrain(1., where=mesh.facesLeft)
 
@@ -44,7 +44,7 @@ Store the result for comparison later:
 >>> Cfixed = C.copy()
 >>> Cfixed.name = "C fixed point"
 
-For Newton's method, we solve solve the set of equations
+For Newton's method, we solve the set of equations
 :math:`\mathbf{F}(\mathbf{x})` on the variables :math:`\mathbf{x}`
 by the first order Taylor expansion
 
@@ -82,7 +82,7 @@ then
 
 .. math::
 
-   \begin{align*}
+   \begin{aligned}
         \delta \mathbf{F}(C)
         &\equiv \delta\left\{
             \frac{\partial C}{\partial t}
@@ -100,7 +100,7 @@ then
         + \nabla\cdot\left[
             \left(3 + C^3\right)\left(2 + C^2\right)\nabla \delta C
         \right]
-    \end{align*}
+    \end{aligned}
 
 There's probably a more proper way to get here via variational derivatives
 and the Euler-Lagrange equation, but it's leaving me with a couple of extra
