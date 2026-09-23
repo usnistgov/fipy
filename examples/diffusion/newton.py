@@ -3,15 +3,7 @@ r"""Perform Newton iterations to solve non-linear equations.
 >>> import fipy as fp
 >>> from matplotlib import pyplot as plt
 
-The first step is to define a one-dimensional domain.
-
->>> mesh = fp.Grid1D(nx=100, dx=1.)
-
-and a solution variable
-
->>> C = fp.CellVariable(name="C", mesh=mesh, value=0., hasOld=True)
-
-The first demonstration solves a single diffusion problem in 1D, where the
+We wish to solve a single diffusion equation in 1D, where the
 diffusion coefficient is a nonlinear function of the solution variable.
 
 .. math::
@@ -22,15 +14,18 @@ diffusion coefficient is a nonlinear function of the solution variable.
        \left(3 + C^3\right)\left(2 + C^2\right)\nabla C
    \right]
 
+>>> mesh = fp.Grid1D(nx=100, dx=1.)
+>>> C = fp.CellVariable(name="C", mesh=mesh, value=0., hasOld=True)
+
 >>> Cface = C.faceValue
 >>> eq = (fp.TransientTerm(var=C)
 ...       == fp.DiffusionTerm(coeff=(3 + Cface**3) * (2 + Cface**2), var=C))
 
-subject the boundary condition
+subject to the boundary condition
 
 .. math::
 
-   C = 1\qquad\text{at \(x = 9\)
+   C = 1\qquad\text{at \(x = 0\)
 
 >>> C.constrain(1., where=mesh.facesLeft)
 
@@ -156,10 +151,10 @@ The solutions agree, although not terribly well.
 True
 
 >>> if __name__ == '__main__':
-...     single_viewer = fp.Viewer(vars=(Cfixed, Cnewton),
-...                               datamin=0.,
-...                               datamax=1.)
-...     single_viewer.plot()
+...     viewer = fp.Viewer(vars=(Cfixed, Cnewton),
+...                        datamin=0.,
+...                        datamax=1.)
+...     viewer.plot()
 
 .. image:: /figures/examples/diffusion/newton_single_solution.*
    :width: 90%
