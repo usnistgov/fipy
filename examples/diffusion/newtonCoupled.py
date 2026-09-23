@@ -129,7 +129,7 @@ then
 
 There's probably a more proper way to get here via variational derivatives
 and the Euler-Lagrange equation, but it's leaving me with a couple of extra
-terms that blow up the solution.  More rigororous derivations are welcome.
+terms that blow up the solution.  More rigorous derivations are welcome.
 
 >>> dA = fp.CellVariable(mesh=mesh, name=r"$\delta A$", hasOld=True)
 >>> dB = fp.CellVariable(mesh=mesh, name=r"$\delta B$", hasOld=True)

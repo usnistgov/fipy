@@ -104,7 +104,7 @@ then
 
 There's probably a more proper way to get here via variational derivatives
 and the Euler-Lagrange equation, but it's leaving me with a couple of extra
-terms that blow up the solution.  More rigororous derivations are welcome.
+terms that blow up the solution.  More rigorous derivations are welcome.
 
 >>> deltaC = fp.CellVariable(mesh=mesh, name=r"$\delta C$", hasOld=True)
 >>> newtonEq = ((fp.TransientTerm(var=deltaC) 
