@@ -1,0 +1,12 @@
+fipy.tools.comms.commWrapper
+============================
+
+.. automodule:: fipy.tools.comms.commWrapper
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CommWrapper
+   

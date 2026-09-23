@@ -1,0 +1,12 @@
+fipy.solvers.petsc.linearBicgSolver
+===================================
+
+.. automodule:: fipy.solvers.petsc.linearBicgSolver
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearBicgSolver
+   

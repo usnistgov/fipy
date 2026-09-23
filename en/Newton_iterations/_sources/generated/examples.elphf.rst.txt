@@ -1,0 +1,18 @@
+examples.elphf
+==============
+
+.. automodule:: examples.elphf
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   diffusion
+   input
+   phase
+   phaseDiffusion
+   poisson
+   test
