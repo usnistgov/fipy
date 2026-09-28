@@ -53,23 +53,25 @@ to a set of equations :math:`\mathbf{F}(\mathbf{x})`, such that
    \mathbf{F}(\mathbf{x}) \approx 0
 
 Newton's method is a technique where we seek a new solution
-:math:`\mathbf{x} + \delta \mathbf{x}` that hopefully has a smaller residual
+:math:`\mathbf{x} + \delta \mathbf{x}` that hopefully has a smaller residual for
 
 .. math::
 
-   \mathbf{F}(\mathbf{x} + \delta \mathbf{x}) = 0.
+   \mathbf{F}(\mathbf{x} + \delta \mathbf{x}) \approx 0.
 
 We apply a first order Taylor expansion
 
 .. math::
+   :label: diffusion.newton.Taylor
 
    \mathbf{F}(\mathbf{x} + \delta \mathbf{x})
    \approx \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
-   = 0
+   \approx 0
    
 where :math:`\delta` is a variation *operator*, such that for
 
 .. math::
+   :label: diffusion.newton.residual
     
    \mathbf{F}(\mathbf{x}) = \mathbf{F}(C)
    \equiv \left\{
@@ -80,6 +82,7 @@ where :math:`\delta` is a variation *operator*, such that for
 then, by the chain rule,
 
 .. math::
+   :label: diffusion.newton.variation
 
    \begin{aligned}
         \delta \mathbf{F}(C)
@@ -108,6 +111,10 @@ then, by the chain rule,
    derivatives and the Euler-Lagrange equation, but it's leaving me with a
    couple of extra terms that blow up the solution.  More rigorous
    derivations are welcome.
+
+We can now use Eqs.  :eq:`diffusion.newton.residual` and
+:eq:`diffusion.newton.variation` to solve Eq.
+:eq:`diffusion.newton.Taylor` for :math:`\delta C`.
 
 >>> deltaC = fp.CellVariable(mesh=mesh, name=r"$\delta C$", hasOld=True)
 >>> newtonEq = ((fp.TransientTerm(var=deltaC) 

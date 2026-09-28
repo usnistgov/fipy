@@ -60,34 +60,23 @@ Store the result for comparison later:
 >>> Bfixed = B.copy()
 >>> Bfixed.name = "B fixed point"
 
-For Newton's method, we solve the set of equations
-:math:`\mathbf{F}(\mathbf{x})` on the variables :math:`\mathbf{x}`
-by the first order Taylor expansion
+As in :mod:`examples.diffusion.newton`, given an approximate set of solutions :math:`\mathbf{x}` to the
+equations :math:`\mathbf{F}(\mathbf{x})`, we apply Newton's method to seek
+an improved set of solutions :math:`\mathbf{x} + \delta\mathbf{x}` by applying
+a first order Taylor expansion
 
 .. math::
-    
-   \mathbf{F} + \mathbf{J}\cdot\delta \mathbf{x} = 0
-
-where :math:`\mathbf{J}` is the Jacobian of :math:`\mathbf{F}`:
-
-.. math::
-
-    J_{ij} = \frac{\partial F_i}{\partial x_j}
-    
-and :math:`\delta \mathbf{x}` is the variation in :math:`\mathbf{x}`.
-
-Let us find
-
-.. math::
+   :label: diffusion.newtonCoupled.Taylor
 
    \mathbf{F}(\mathbf{x} + \delta \mathbf{x})
-   = \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
+   \approx \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
    \approx 0
    
 where :math:`\delta` is a variation *operator*, such that for
 
 .. math::
-    
+   :label: diffusion.newtonCoupled.residual
+
    \mathbf{F}(\mathbf{x})
    \equiv \left\{
        \begin{aligned}
@@ -104,6 +93,7 @@ where :math:`\delta` is a variation *operator*, such that for
 then
 
 .. math::
+   :label: diffusion.newtonCoupled.variation
 
    \begin{align*}
         \delta \mathbf{F}
@@ -113,9 +103,13 @@ then
                 &= \nabla\cdot\left[
                     \delta A \, 3 A^2\left(2 + B^2\right)\nabla A
                 \right] 
+                \\
+                &\qquad {}
                 + \nabla\cdot\left[
                     \left(3 + A^3\right)\left(2 + B^2\right)\nabla \delta A
                 \right] 
+                \\
+                &\qquad {}
                 + \nabla\cdot\left[
                     \delta B\, 2 B \left(3 + A^3\right)\nabla A
                 \right]
@@ -127,9 +121,9 @@ then
         \right.
     \end{align*}
 
-There's probably a more proper way to get here via variational derivatives
-and the Euler-Lagrange equation, but it's leaving me with a couple of extra
-terms that blow up the solution.  More rigorous derivations are welcome.
+We can now use Eqs.  :eq:`diffusion.newtonCoupled.residual` and
+:eq:`diffusion.newtonCoupled.variation` to solve Eq.
+:eq:`diffusion.newtonCoupled.Taylor` for :math:`\delta A` and :math:`\delta B`.
 
 >>> dA = fp.CellVariable(mesh=mesh, name=r"$\delta A$", hasOld=True)
 >>> dB = fp.CellVariable(mesh=mesh, name=r"$\delta B$", hasOld=True)
@@ -148,7 +142,10 @@ terms that blow up the solution.  More rigorous derivations are welcome.
 
    Because `Aeq` and `Beq` were used in coupled form for the fixed-point
    solution, and are now used in decoupled form for their residuals, we
-   must clear out their cached matrices.
+   must clear out their cached matrices.  This was not necessary in
+   :mod:`examples.diffusion.newton` because the matrix did not change shape
+   between calculating the uncoupled fixed point solution and the uncoupled
+   Newton residual.
 
 >>> eq.reset()
 
