@@ -44,29 +44,28 @@ Store the result for comparison later:
 >>> Cfixed = C.copy()
 >>> Cfixed.name = "C fixed point"
 
-For Newton's method, we solve the set of equations
-:math:`\mathbf{F}(\mathbf{x})` on the variables :math:`\mathbf{x}`
-by the first order Taylor expansion
+If :math:`\mathbf{x}` is an approximate solution
+to a set of equations :math:`\mathbf{F}(\mathbf{x})`, such that
 
-.. math::
-    
-   \mathbf{F} + \mathbf{J}\cdot\delta \mathbf{x} = 0
-
-where :math:`\mathbf{J}` is the Jacobian of :math:`\mathbf{F}`:
 
 .. math::
 
-    J_{ij} = \frac{\partial F_i}{\partial x_j}
-    
-and :math:`\delta \mathbf{x}` is the variation in :math:`\mathbf{x}`.
+   \mathbf{F}(\mathbf{x}) \approx 0
 
-Let us find
+Newton's method is a technique where we seek a new solution
+:math:`\mathbf{x} + \delta \mathbf{x}` that hopefully has a smaller residual
+
+.. math::
+
+   \mathbf{F}(\mathbf{x} + \delta \mathbf{x}) = 0.
+
+We apply a first order Taylor expansion
 
 .. math::
 
    \mathbf{F}(\mathbf{x} + \delta \mathbf{x})
-   = \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
-   \approx 0
+   \approx \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
+   = 0
    
 where :math:`\delta` is a variation *operator*, such that for
 
@@ -78,7 +77,7 @@ where :math:`\delta` is a variation *operator*, such that for
        = \nabla\cdot\left[\left(3 + C^3\right)\left(2 + C^2\right)\nabla C\right]
    \right\}
 
-then
+then, by the chain rule,
 
 .. math::
 
@@ -97,14 +96,18 @@ then
                 3 C^2 \left(2 + C^2\right) + \left(3 + C^3\right) 2 C
             \right] \nabla C
         \right\}
-        + \nabla\cdot\left[
+        \\
+        &\qquad\qquad {} + \nabla\cdot\left[
             \left(3 + C^3\right)\left(2 + C^2\right)\nabla \delta C
         \right]
     \end{aligned}
 
-There's probably a more proper way to get here via variational derivatives
-and the Euler-Lagrange equation, but it's leaving me with a couple of extra
-terms that blow up the solution.  More rigorous derivations are welcome.
+.. note::
+
+   There's probably a more proper way to get here via variational
+   derivatives and the Euler-Lagrange equation, but it's leaving me with a
+   couple of extra terms that blow up the solution.  More rigorous
+   derivations are welcome.
 
 >>> deltaC = fp.CellVariable(mesh=mesh, name=r"$\delta C$", hasOld=True)
 >>> newtonEq = ((fp.TransientTerm(var=deltaC) 
