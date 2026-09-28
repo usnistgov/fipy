@@ -201,10 +201,14 @@ True
 ...     viewer = fp.Viewer(vars=(Afixed, Anewton, Bfixed, Bnewton))
 ...     viewer.plot()
 
-.. image:: /figures/examples/diffusion/newton_coupled_solution.*
+.. figure:: /figures/examples/diffusion/newton_coupled_solution.*
    :width: 90%
    :align: center
    :alt: solution to coupled non-linear diffusion problem evolved by fixed point and Newton iteration
+
+   Solutions vs position for a coupled non-linear diffusion problem evolved
+   by fixed point and Newton iteration.  Fixed point and Newton solutions
+   overlie each other.
 
 Convert residual lists into arrays
 
@@ -232,10 +236,13 @@ True
 >>> if __name__ == '__main__':
 ...     input("Coupled equation fixed-point vs Newton iteration. Press <return> to proceed...")
 
-.. image:: /figures/examples/diffusion/newton_coupled_convergence.*
+.. figure:: /figures/examples/diffusion/newton_coupled_convergence.*
    :width: 90%
    :align: center
    :alt: convergence of coupled non-linear diffusion problem evolved by fixed point and Newton iteration
+
+   Convergence of coupled non-linear diffusion problem evolved by fixed
+   point and Newton iterations.
 
 """
 
