@@ -1,0 +1,6 @@
+examples.diffusion.mesh20x20Coupled
+===================================
+
+.. automodule:: examples.diffusion.mesh20x20Coupled
+
+   

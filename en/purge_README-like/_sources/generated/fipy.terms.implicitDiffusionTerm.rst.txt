@@ -1,0 +1,6 @@
+fipy.terms.implicitDiffusionTerm
+================================
+
+.. automodule:: fipy.terms.implicitDiffusionTerm
+
+   

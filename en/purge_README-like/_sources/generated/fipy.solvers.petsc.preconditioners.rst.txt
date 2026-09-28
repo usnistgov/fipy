@@ -1,0 +1,20 @@
+fipy.solvers.petsc.preconditioners
+==================================
+
+.. automodule:: fipy.solvers.petsc.preconditioners
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   defaultPreconditioner
+   hyprePreconditioner
+   icPreconditioner
+   iluPreconditioner
+   jacobiPreconditioner
+   luPreconditioner
+   petscPreconditioner
+   ssorPreconditioner

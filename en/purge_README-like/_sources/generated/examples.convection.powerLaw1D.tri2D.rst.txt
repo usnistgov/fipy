@@ -1,0 +1,6 @@
+examples.convection.powerLaw1D.tri2D
+====================================
+
+.. automodule:: examples.convection.powerLaw1D.tri2D
+
+   
