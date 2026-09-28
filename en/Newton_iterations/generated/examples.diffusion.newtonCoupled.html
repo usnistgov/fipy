@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.newtonCoupled &#8212; FiPy 4.0.3+9.g5e6f5cf710 documentation</title>
+    <title>examples.diffusion.newtonCoupled &#8212; FiPy 4.0.3+13.g9b2a04dbad documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=8f8488a9"></script>
+    <script src="../_static/documentation_options.js?v=92d489a6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.3+9.g5e6f5cf710 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.3+13.g9b2a04dbad documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion" href="examples.diffusion.html" />
     <link rel="next" title="examples.diffusion.nthOrder" href="examples.diffusion.nthOrder.html" />
     <link rel="prev" title="examples.diffusion.newton" href="examples.diffusion.newton.html" />
@@ -176,23 +176,17 @@ equation for a single, large time step.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Bfixed</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;B fixed point&quot;</span>
 </pre></div>
 </div>
-<p>For Newton’s method, we solve the set of equations
-<span class="math notranslate nohighlight">\(\mathbf{F}(\mathbf{x})\)</span> on the variables <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>
-by the first order Taylor expansion</p>
-<div class="math notranslate nohighlight">
-\[\mathbf{F} + \mathbf{J}\cdot\delta \mathbf{x} = 0\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mathbf{J}\)</span> is the Jacobian of <span class="math notranslate nohighlight">\(\mathbf{F}\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[J_{ij} = \frac{\partial F_i}{\partial x_j}\]</div>
-<p>and <span class="math notranslate nohighlight">\(\delta \mathbf{x}\)</span> is the variation in <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p>
-<p>Let us find</p>
-<div class="math notranslate nohighlight">
-\[\mathbf{F}(\mathbf{x} + \delta \mathbf{x})
-= \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
+<p>As in <a class="reference internal" href="examples.diffusion.newton.html#module-examples.diffusion.newton" title="examples.diffusion.newton"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.diffusion.newton</span></code></a>, given an approximate set of solutions <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> to the
+equations <span class="math notranslate nohighlight">\(\mathbf{F}(\mathbf{x})\)</span>, we apply Newton’s method to seek
+an improved set of solutions <span class="math notranslate nohighlight">\(\mathbf{x} + \delta\mathbf{x}\)</span> by applying
+a first order Taylor expansion</p>
+<div class="math notranslate nohighlight" id="equation-diffusion-newtoncoupled-taylor">
+<span class="eqno">(2)<a class="headerlink" href="#equation-diffusion-newtoncoupled-taylor" title="Link to this equation">¶</a></span>\[\mathbf{F}(\mathbf{x} + \delta \mathbf{x})
+\approx \mathbf{F}(\mathbf{x}) + \left.\delta \mathbf{F}\right\rvert_\mathbf{x}
 \approx 0\]</div>
 <p>where <span class="math notranslate nohighlight">\(\delta\)</span> is a variation <em>operator</em>, such that for</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\mathbf{F}(\mathbf{x})
+<div class="math notranslate nohighlight" id="equation-diffusion-newtoncoupled-residual">
+<span class="eqno">(3)<a class="headerlink" href="#equation-diffusion-newtoncoupled-residual" title="Link to this equation">¶</a></span>\[\begin{split}\mathbf{F}(\mathbf{x})
 \equiv \left\{
     \begin{aligned}
         \frac{\partial A}{\partial t}
@@ -205,8 +199,8 @@ by the first order Taylor expansion</p>
     \end{aligned}
 \right.\end{split}\]</div>
 <p>then</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{align*}
+<div class="math notranslate nohighlight" id="equation-diffusion-newtoncoupled-variation">
+<span class="eqno">(4)<a class="headerlink" href="#equation-diffusion-newtoncoupled-variation" title="Link to this equation">¶</a></span>\[\begin{split}\begin{align*}
      \delta \mathbf{F}
      &amp;\equiv \left\{
          \begin{aligned}
@@ -214,9 +208,13 @@ by the first order Taylor expansion</p>
              &amp;= \nabla\cdot\left[
                  \delta A \, 3 A^2\left(2 + B^2\right)\nabla A
              \right]
+             \\
+             &amp;\qquad {}
              + \nabla\cdot\left[
                  \left(3 + A^3\right)\left(2 + B^2\right)\nabla \delta A
              \right]
+             \\
+             &amp;\qquad {}
              + \nabla\cdot\left[
                  \delta B\, 2 B \left(3 + A^3\right)\nabla A
              \right]
@@ -227,9 +225,9 @@ by the first order Taylor expansion</p>
          \end{aligned}
      \right.
  \end{align*}\end{split}\]</div>
-<p>There’s probably a more proper way to get here via variational derivatives
-and the Euler-Lagrange equation, but it’s leaving me with a couple of extra
-terms that blow up the solution.  More rigorous derivations are welcome.</p>
+<p>We can now use Eqs.  <a class="reference internal" href="#equation-diffusion-newtoncoupled-residual">(3)</a> and
+<a class="reference internal" href="#equation-diffusion-newtoncoupled-variation">(4)</a> to solve Eq.
+<a class="reference internal" href="#equation-diffusion-newtoncoupled-taylor">(2)</a> for <span class="math notranslate nohighlight">\(\delta A\)</span> and <span class="math notranslate nohighlight">\(\delta B\)</span>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dA</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\delta A$&quot;</span><span class="p">,</span> <span class="n">hasOld</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dB</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\delta B$&quot;</span><span class="p">,</span> <span class="n">hasOld</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dAeq</span> <span class="o">=</span> <span class="p">((</span><span class="n">fp</span><span class="o">.</span><span class="n">TransientTerm</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">dA</span><span class="p">)</span>
@@ -248,7 +246,10 @@ terms that blow up the solution.  More rigorous derivations are welcome.</p>
 <p class="admonition-title">Note</p>
 <p>Because <cite>Aeq</cite> and <cite>Beq</cite> were used in coupled form for the fixed-point
 solution, and are now used in decoupled form for their residuals, we
-must clear out their cached matrices.</p>
+must clear out their cached matrices.  This was not necessary in
+<a class="reference internal" href="examples.diffusion.newton.html#module-examples.diffusion.newton" title="examples.diffusion.newton"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.diffusion.newton</span></code></a> because the matrix did not change shape
+between calculating the uncoupled fixed point solution and the uncoupled
+Newton residual.</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 </pre></div>
@@ -307,8 +308,15 @@ the new off-diagonal Jacobian terms as explicit source values (thanks to
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/newton_coupled_solution.png"><img alt="solution to coupled non-linear diffusion problem evolved by fixed point and Newton iteration" class="align-center" src="../_images/newton_coupled_solution.png" style="width: 90%;" />
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/newton_coupled_solution.png"><img alt="solution to coupled non-linear diffusion problem evolved by fixed point and Newton iteration" src="../_images/newton_coupled_solution.png" style="width: 90%;" />
 </a>
+<figcaption>
+<p><span class="caption-text">Solutions vs position for a coupled non-linear diffusion problem evolved
+by fixed point and Newton iteration.  Fixed point and Newton solutions
+overlie each other.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>Convert residual lists into arrays</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fixedPoint</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fixedPoint</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">newton</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">newton</span><span class="p">)</span>
@@ -338,13 +346,19 @@ much smaller residual than the fixed point iterations:</p>
 <span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Coupled equation fixed-point vs Newton iteration. Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/newton_coupled_convergence.png"><img alt="convergence of coupled non-linear diffusion problem evolved by fixed point and Newton iteration" class="align-center" src="../_images/newton_coupled_convergence.png" style="width: 90%;" />
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/newton_coupled_convergence.png"><img alt="convergence of coupled non-linear diffusion problem evolved by fixed point and Newton iteration" src="../_images/newton_coupled_convergence.png" style="width: 90%;" />
 </a>
+<figcaption>
+<p><span class="caption-text">Convergence of coupled non-linear diffusion problem evolved by fixed
+point and Newton iterations.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 23, 2026.
+                Last updated on Sep 28, 2026.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
@@ -354,7 +368,7 @@ much smaller residual than the fixed point iterations:</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.3+9.g5e6f5cf710
+Version 4.0.3+13.g9b2a04dbad
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
