@@ -159,10 +159,14 @@ True
 ...                        datamax=1.)
 ...     viewer.plot()
 
-.. image:: /figures/examples/diffusion/newton_single_solution.*
+.. figure:: /figures/examples/diffusion/newton_single_solution.*
    :width: 90%
    :align: center
-   :alt: solution to non-linear diffusion problem evolved by fixed point and Newton iteration
+   :alt: Overlapping curves showing fixed point and Newton iterations are similar
+
+   Solution vs position for a non-linear diffusion problem evolved by fixed
+   point and Newton iteration.  Fixed point and Newton solutions overlie
+   each other.
 
 Convert residual lists into arrays
 
@@ -190,10 +194,13 @@ True
 >>> if __name__ == '__main__':
 ...     input("Single equation fixed-point vs Newton iteration. Press <return> to proceed...")
 
-.. image:: /figures/examples/diffusion/newton_single_convergence.*
+.. figure:: /figures/examples/diffusion/newton_single_convergence.*
    :width: 90%
    :align: center
-   :alt: convergence of non-linear diffusion problem evolved by fixed point and Newton iteration
+   :alt: Semilog plot showing Newton residual dropping 14 orders of magnitude compared to five for fixed point
+
+   Convergence of non-linear diffusion problem evolved by fixed point and
+   Newton iterations
 
 """
 
