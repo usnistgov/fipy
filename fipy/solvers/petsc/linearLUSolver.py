@@ -71,11 +71,20 @@ class LinearLUSolver(PETScSolver):
         ksp.create(PETSc.COMM_WORLD)
         ksp.setType("preonly")
         self.preconditioner._applyToSolver(solver=ksp, matrix=L)
+
         # TODO: SuperLU invoked with PCFactorSetMatSolverType(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
         # PETSc.PC().setFactorSolverType("superlu")
 
         L.assemble()
+        diag = L.createVecLeft()
+        L.getDiagonal(diag)
+        maxdiag = diag.norm(PETSc.NormType.NORM_INFINITY)
+        scale = 1.0 / maxdiag
+        L.scale(scale)
+        b.scale(scale)
+        diag.destroy()
+        
         ksp.setOperators(L)
         ksp.setFromOptions()
 
