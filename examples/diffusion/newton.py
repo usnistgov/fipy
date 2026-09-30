@@ -204,7 +204,7 @@ True
 .. figure:: /figures/examples/diffusion/newton_single_convergence.*
    :width: 90%
    :align: center
-   :alt: Semilog plot showing Newton residual dropping 14 orders of magnitude compared to six for fixed point
+   :alt: Semi-log plot showing Newton residual dropping 14 orders of magnitude compared to five for fixed point
 
    Convergence of non-linear diffusion problem evolved by fixed point and
    Newton iterations.
