@@ -1,0 +1,6 @@
+examples.convection.peclet
+==========================
+
+.. automodule:: examples.convection.peclet
+
+   
