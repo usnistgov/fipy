@@ -65,7 +65,7 @@ class LinearLUSolver(ScipySolver):
                       panel_size=10,
                       permc_spec=3)
 
-            for iteration in range(min(self.iterations, 10)):
+            for iteration in range(self.iterations):
                 residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
                 if residual <= self.tolerance * tolerance_scale:
