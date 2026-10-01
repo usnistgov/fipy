@@ -95,31 +95,29 @@ then
 .. math::
    :label: diffusion.newtonCoupled.variation
 
-   \begin{align*}
-        \delta \mathbf{F}
-        &\equiv \left\{
-            \begin{aligned}
-                \frac{\partial\, \delta A}{\partial t} 
-                &= \nabla\cdot\left[
-                    \delta A \, 3 A^2\left(2 + B^2\right)\nabla A
-                \right] 
-                \\
-                &\qquad {}
-                + \nabla\cdot\left[
-                    \left(3 + A^3\right)\left(2 + B^2\right)\nabla \delta A
-                \right] 
-                \\
-                &\qquad {}
-                + \nabla\cdot\left[
-                    \delta B\, 2 B \left(3 + A^3\right)\nabla A
-                \right]
-                \\
-                \frac{\partial \, \delta B}{\partial t} 
-                &= \nabla\cdot\left[\delta A\,5 A^4\nabla B\right]
-                + \nabla\cdot\left[A^5\nabla \delta B\right]
-            \end{aligned}
-        \right.
-    \end{align*}
+    \delta \mathbf{F}
+    \equiv \left\{
+        \begin{aligned}
+            \frac{\partial\, \delta A}{\partial t}
+            &= \nabla\cdot\left[
+                \delta A \, 3 A^2\left(2 + B^2\right)\nabla A
+            \right]
+            \\
+            &\qquad {}
+            + \nabla\cdot\left[
+                \left(3 + A^3\right)\left(2 + B^2\right)\nabla \delta A
+            \right]
+            \\
+            &\qquad {}
+            + \nabla\cdot\left[
+                \delta B\, 2 B \left(3 + A^3\right)\nabla A
+            \right]
+            \\
+            \frac{\partial \, \delta B}{\partial t}
+            &= \nabla\cdot\left[\delta A\,5 A^4\nabla B\right]
+            + \nabla\cdot\left[A^5\nabla \delta B\right]
+        \end{aligned}
+    \right.
 
 We can now use Eqs.  :eq:`diffusion.newtonCoupled.residual` and
 :eq:`diffusion.newtonCoupled.variation` to solve Eq.
