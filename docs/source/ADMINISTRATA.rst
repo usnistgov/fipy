@@ -171,29 +171,6 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
    `mamba-org/mamba#3737 <https://github.com/mamba-org/mamba/issues/3737>`_,
    `conda/conda#14481 <https://github.com/conda/conda/pull/14481>`_.
 
-=====================
-README-like documents
-=====================
-
-The contents of
-
- * :file:`CHANGELOG.rst`
- * :file:`INSTALLATION.rst`
- * :file:`README.rst`
-
-are managed by the
-`sphinx-readme <https://sphinx-readme.readthedocs.io/>`_ extension.
-In order to make changes
-
- * Make edits to the corresponding files in :file:`docs/source/`.
- * Run::
-
-    $ make -C docs html
-
-   to re-render the 3 affected files.
-
- * Add and commit the resulting changes.
-
 ================
 Making a Release
 ================
