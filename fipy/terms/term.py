@@ -112,6 +112,12 @@ class Term(object):
             self._sparsematrix.zeroEntries()
         return self._sparsematrix
 
+    def reset(self):
+        """Restore :class:`~fipy.terms.term.Term` to unused state
+        """
+        if hasattr(self, "_sparsematrix"):
+            del self._sparsematrix
+
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 
         self._log.debug("BEGIN _prepareLinearSystem")

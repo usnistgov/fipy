@@ -21,6 +21,8 @@ Selected illustrations of diffusion problems.
 * :mod:`examples.diffusion.electrostatics`
 * :mod:`examples.diffusion.nthOrder.input4thOrder1D`
 * :mod:`examples.diffusion.anisotropy`
+* :mod:`examples.diffusion.newton`
+* :mod:`examples.diffusion.newtonCoupled`
 
 Convection Examples
 -------------------
