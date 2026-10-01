@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.terms.firstOrderAdvectionTerm &#8212; FiPy 4.0.3+3.g7c5f8ac8cd documentation</title>
+    <title>fipy.terms.firstOrderAdvectionTerm &#8212; FiPy 4.0.3+7.g200ee6020f documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=27a791c1"></script>
+    <script src="../_static/documentation_options.js?v=69ca23a7"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}, "macros": {"erf": "\\operatorname{erf}", "Ei": "\\operatorname{ei}"}}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 4.0.3+3.g7c5f8ac8cd documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 4.0.3+7.g200ee6020f documentation" href="../contents.html" />
     <link rel="up" title="fipy.terms" href="fipy.terms.html" />
     <link rel="next" title="fipy.terms.hybridConvectionTerm" href="fipy.terms.hybridConvectionTerm.html" />
     <link rel="prev" title="fipy.terms.faceTerm" href="fipy.terms.faceTerm.html" />
@@ -373,6 +373,12 @@ customize the residual calculation.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Restore <a class="reference internal" href="fipy.terms.term.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> to unused state</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.residualVectorAndNorm">
 <span class="sig-name descname"><span class="pre">residualVectorAndNorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.residualVectorAndNorm" title="Link to this definition">¶</a></dt>
 <dd><p>Builds the <cite>Term</cite>’s linear system once.</p>
@@ -469,7 +475,7 @@ customize the residual calculation.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 30, 2026.
+                Last updated on Oct 01, 2026.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.
                 </div>
               </div>
@@ -479,7 +485,7 @@ customize the residual calculation.</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.3+3.g7c5f8ac8cd
+Version 4.0.3+7.g200ee6020f
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -498,6 +504,7 @@ Version 4.0.3+3.g7c5f8ac8cd
 <li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.justErrorVector"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.justErrorVector()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.justResidualVector"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.justResidualVector()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.matrix"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.matrix</span></code></a></li>
+<li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.reset"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.reset()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.residualVectorAndNorm"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.residualVectorAndNorm()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.solve"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.solve()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm.sweep"><code class="docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm.sweep()</span></code></a></li>

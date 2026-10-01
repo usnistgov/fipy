@@ -1,6 +1,0 @@
-fipy.terms.abstractConvectionTerm
-=================================
-
-.. automodule:: fipy.terms.abstractConvectionTerm
-
-   

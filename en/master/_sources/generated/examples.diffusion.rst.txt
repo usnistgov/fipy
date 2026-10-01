@@ -19,6 +19,8 @@ examples.diffusion
    mesh1D
    mesh20x20
    mesh20x20Coupled
+   newton
+   newtonCoupled
    nthOrder
    steadyState
    test

@@ -10,5 +10,6 @@ fipy.solvers.pyamgx.pyamgxConvergence
    
       pyamgx_BreakdownDivergence
       pyamgx_Convergence
+      pyamgx_Divergence
       pyamgx_IterationDivergence
    
