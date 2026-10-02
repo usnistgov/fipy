@@ -1,4 +1,6 @@
 
+import atexit
+
 from scipy.sparse import csr_matrix, linalg
 
 import pyamgx
@@ -36,6 +38,9 @@ class PyAMGXSolver(Solver):
             Other AMGX solver options
         """
         super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
+
+        # clean up AMGX artifacts before pyamgx.finalize() is invoked
+        atexit.register(self._destroy_AMGX)
 
         # update solver config:
         self.config_dict = self.CONFIG_DICT.copy()
