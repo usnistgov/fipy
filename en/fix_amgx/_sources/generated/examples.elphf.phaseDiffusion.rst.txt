@@ -1,0 +1,6 @@
+examples.elphf.phaseDiffusion
+=============================
+
+.. automodule:: examples.elphf.phaseDiffusion
+
+   

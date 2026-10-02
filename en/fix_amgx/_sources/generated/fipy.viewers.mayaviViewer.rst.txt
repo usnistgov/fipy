@@ -1,0 +1,15 @@
+fipy.viewers.mayaviViewer
+=========================
+
+.. automodule:: fipy.viewers.mayaviViewer
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   mayaviClient
+   mayaviDaemon
+   test

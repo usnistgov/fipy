@@ -1,0 +1,14 @@
+examples.diffusion.steadyState.mesh50x50
+========================================
+
+.. automodule:: examples.diffusion.steadyState.mesh50x50
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   input
+   tri2Dinput

@@ -1,0 +1,15 @@
+examples.diffusion.nthOrder
+===========================
+
+.. automodule:: examples.diffusion.nthOrder
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   input4thOrder1D
+   input4thOrder_line
+   test
