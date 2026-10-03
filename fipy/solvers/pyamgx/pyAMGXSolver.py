@@ -40,7 +40,7 @@ class PyAMGXSolver(Solver):
         super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
 
         # clean up AMGX artifacts before pyamgx.finalize() is invoked
-        atexit.register(self._destroy_AMGX)
+        atexit.register(self.close)
 
         # update solver config:
         self.config_dict = self.CONFIG_DICT.copy()
@@ -71,7 +71,7 @@ class PyAMGXSolver(Solver):
         else:
             return None
 
-    def _destroy_AMGX(self):
+    def close(self):
         """destroy AMGX objects
         """
         if hasattr(self, "A_gpu"):
@@ -91,12 +91,12 @@ class PyAMGXSolver(Solver):
     def __exit__(self, *args):
         """Clean up AMGX artifacts after context manager
         """
-        self._destroy_AMGX()
+        self.close()
 
     def __del__(self):
         """Clean up AMGX artifacts after deletion
         """
-        self._destroy_AMGX()
+        self.close()
 
     @property
     def _matrixClass(self):
