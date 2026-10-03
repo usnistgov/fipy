@@ -106,7 +106,12 @@ class PyAMGXSolver(Solver):
         return numerix.L2norm(b)
 
     def _matrixNorm(self, L, x, b):
-        return linalg.norm(L.matrix, ord=numerix.inf)
+        return linalg.norm(L, ord=numerix.inf)
+
+    def _residualVectorAndNorm(self, L, x, b):
+        residualVector = L * x - b
+
+        return residualVector, numerix.L2norm(residualVector)
 
     def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
