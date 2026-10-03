@@ -1,4 +1,6 @@
 
+import atexit
+
 from scipy.sparse import csr_matrix, linalg
 
 import pyamgx
@@ -37,13 +39,16 @@ class PyAMGXSolver(Solver):
         """
         super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
 
+        # clean up AMGX artifacts before pyamgx.finalize() is invoked
+        atexit.register(self.close)
+
         # update solver config:
         self.config_dict = self.CONFIG_DICT.copy()
 
         self.config_dict["solver"]["max_iters"] = self.iterations
 
-        if self.precon is not None:
-            self.precon._applyToSolver(self.config_dict["solver"])
+        if self.preconditioner is not None:
+            self.preconditioner._applyToSolver(self.config_dict["solver"])
 
         smoother = self.value_or_default(smoother, self.default_smoother)
         if smoother is not None:
@@ -66,9 +71,9 @@ class PyAMGXSolver(Solver):
         else:
             return None
 
-    def _destroy_AMGX(self):
-        # destroy AMGX objects:
-        # self.resources apparently doesn't need to be destroyed
+    def close(self):
+        """destroy AMGX objects
+        """
         if hasattr(self, "A_gpu"):
             self.A_gpu.destroy()
             del self.A_gpu
@@ -81,12 +86,17 @@ class PyAMGXSolver(Solver):
         if hasattr(self, "cfg"):
             self.cfg.destroy()
             del self.cfg
+        # self.resources apparently doesn't need to be destroyed
 
     def __exit__(self, *args):
-        self._destroy_AMGX()
+        """Clean up AMGX artifacts after context manager
+        """
+        self.close()
 
     def __del__(self):
-        self._destroy_AMGX()
+        """Clean up AMGX artifacts after deletion
+        """
+        self.close()
 
     @property
     def _matrixClass(self):
