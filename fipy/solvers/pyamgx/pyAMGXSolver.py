@@ -72,8 +72,8 @@ class PyAMGXSolver(Solver):
             return None
 
     def _destroy_AMGX(self):
-        # destroy AMGX objects:
-        # self.resources apparently doesn't need to be destroyed
+        """destroy AMGX objects
+        """
         if hasattr(self, "A_gpu"):
             self.A_gpu.destroy()
             del self.A_gpu
@@ -86,11 +86,16 @@ class PyAMGXSolver(Solver):
         if hasattr(self, "cfg"):
             self.cfg.destroy()
             del self.cfg
+        # self.resources apparently doesn't need to be destroyed
 
     def __exit__(self, *args):
+        """Clean up AMGX artifacts after context manager
+        """
         self._destroy_AMGX()
 
     def __del__(self):
+        """Clean up AMGX artifacts after deletion
+        """
         self._destroy_AMGX()
 
     @property
