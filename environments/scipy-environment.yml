@@ -10,6 +10,7 @@ dependencies:
   - matplotlib-base
   - packaging
   - mayavi
+  - vtk <9.6
   - gmsh <4.0|>=4.5.2
   - steppyngstounes
   - pip
