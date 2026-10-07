@@ -3,16 +3,20 @@ channels:
   - nodefaults
 dependencies:
   - setuptools
-  - python>=3.7,<3.9
-  - numpy
-  - scipy
+  - python >=3.7,<3.9
+  # conda never solves if numpy & scipy aren't constrained
+  - numpy <2.0
+  - scipy <1.8
   - matplotlib-base
   - packaging
   - mayavi
+  - vtk <9.6
   - gmsh <4.0|>=4.5.2
   - mpich
   - mpi4py
   - pytrilinos
+  # tbb-devel is corrupted on linux
+  - tbb-devel <2020.2 # [linux]
   - pip
   - pip:
     - steppyngstounes

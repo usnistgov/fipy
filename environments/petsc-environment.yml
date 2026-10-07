@@ -9,13 +9,14 @@ dependencies:
   - matplotlib-base
   - packaging
   - mayavi
+  - vtk <9.6
   - gmsh <4.0|>=4.5.2
   - pip
   - mpich
   - mpi4py
   # petsc >= 3.20.3 has parallel failures when running tests
-  - petsc4py < 3.20.3|>=3.23.0
-  - petsc < 3.20.3|>=3.23.0
+  - petsc4py <3.20.3|>=3.23.0
+  - petsc <3.20.3|>=3.23.0
   - steppyngstounes
 platforms:
   - linux-64
