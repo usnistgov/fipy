@@ -145,6 +145,7 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
         conda-lock lock \
           --file environments/${solver}-environment.yml \
           --lockfile environments/locks/conda-${solver}-lock.yml
+        sed -i 's/%21/!/g' environments/locks/conda-${solver}-lock.yml
         conda-lock render \
           --filename-template environments/locks/conda-${solver}-{platform}.lock \
           environments/locks/conda-${solver}-lock.yml
@@ -160,12 +161,11 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
    As of 2025-04-30, locking 
    :file:`environment/locks/trilinos-environment.yml` is extremely slow.
 
-.. attention::
+.. note::
 
-   Due to an issue with URL encoding, it may be necessary to replace
-   ``%21`` with ``!`` in the
-   :file:`environments/locks/conda-${solver}-lock.yml` files before calling
-   :command:`conda-lock render`.
+   The replacement of ``%21`` with ``!`` in the
+   :file:`environments/locks/conda-${solver}-lock.yml` files is
+   due to an issue with URL encoding.
 
    See `conda/conda-lock#764 <https://github.com/conda/conda-lock/issues/764>`_, 
    `mamba-org/mamba#3737 <https://github.com/mamba-org/mamba/issues/3737>`_,

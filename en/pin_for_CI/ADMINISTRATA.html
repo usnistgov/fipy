@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Git practices &#8212; FiPy 4.0.3+10.g23b5f0b0ca documentation</title>
+    <title>Git practices &#8212; FiPy 4.0.3+11.ge1a5df9829 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
@@ -43,12 +43,12 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/documentation_options.js?v=4eeee3d7"></script>
+    <script src="_static/documentation_options.js?v=ac131a2e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 4.0.3+10.g23b5f0b0ca documentation" href="contents.html" />
+    <link rel="top" title="FiPy 4.0.3+11.ge1a5df9829 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="AI Policy" href="AI_POLICY.html" />
     <link rel="prev" title="Change Log" href="CHANGELOG.html" />
@@ -225,6 +225,7 @@ the <code class="docutils literal notranslate"><span class="pre">CONDA_ENVIRONME
     conda-lock lock \
       --file environments/${solver}-environment.yml \
       --lockfile environments/locks/conda-${solver}-lock.yml
+    sed -i &#39;s/%21/!/g&#39; environments/locks/conda-${solver}-lock.yml
     conda-lock render \
       --filename-template environments/locks/conda-${solver}-{platform}.lock \
       environments/locks/conda-${solver}-lock.yml
@@ -241,12 +242,11 @@ everything still works.</p>
 <p>As of 2025-04-30, locking
 <code class="file docutils literal notranslate"><span class="pre">environment/locks/trilinos-environment.yml</span></code> is extremely slow.</p>
 </div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Due to an issue with URL encoding, it may be necessary to replace
-<code class="docutils literal notranslate"><span class="pre">%21</span></code> with <code class="docutils literal notranslate"><span class="pre">!</span></code> in the
-<code class="file docutils literal notranslate"><span class="pre">environments/locks/conda-$</span><em><span class="pre">solver</span></em><span class="pre">-lock.yml</span></code> files before calling
-<strong class="command">conda-lock render</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The replacement of <code class="docutils literal notranslate"><span class="pre">%21</span></code> with <code class="docutils literal notranslate"><span class="pre">!</span></code> in the
+<code class="file docutils literal notranslate"><span class="pre">environments/locks/conda-$</span><em><span class="pre">solver</span></em><span class="pre">-lock.yml</span></code> files is
+due to an issue with URL encoding.</p>
 <p>See <a class="reference external" href="https://github.com/conda/conda-lock/issues/764">conda/conda-lock#764</a>,
 <a class="reference external" href="https://github.com/mamba-org/mamba/issues/3737">mamba-org/mamba#3737</a>,
 <a class="reference external" href="https://github.com/conda/conda/pull/14481">conda/conda#14481</a>.</p>
@@ -405,7 +405,7 @@ request to update the <a class="reference external" href="https://github.com/con
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.3+10.g23b5f0b0ca
+Version 4.0.3+11.ge1a5df9829
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
