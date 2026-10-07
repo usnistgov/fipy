@@ -145,7 +145,7 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
         conda-lock lock \
           --file environments/${solver}-environment.yml \
           --lockfile environments/locks/conda-${solver}-lock.yml
-        sed -i 's/%21/!/g' environments/locks/conda-${solver}-lock.yml
+        sed -i '' -e 's/%21/!/g' environments/locks/conda-${solver}-lock.yml
         conda-lock render \
           --filename-template environments/locks/conda-${solver}-{platform}.lock \
           environments/locks/conda-${solver}-lock.yml
