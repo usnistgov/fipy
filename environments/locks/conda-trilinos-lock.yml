@@ -5118,7 +5118,7 @@ package:
   platform: linux-64
   dependencies:
     libgcc-ng: '>=9.3.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/x264-1%21161.3030-h7f98852_1.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/linux-64/x264-1!161.3030-h7f98852_1.tar.bz2
   hash:
     md5: 4c9106542ee02c991b64b575ca4ea029
     sha256: d8b0b52d1239536889b410d2eef380e9812f5ccc5e28dcc2675abb092f1b1155
@@ -5130,7 +5130,7 @@ package:
   platform: osx-64
   dependencies:
     __osx: '>=11.0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1%21164.3095-hd115831_3.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1!164.3095-hd115831_3.conda
   hash:
     md5: 2e2b66198a1910d718054f9b38637540
     sha256: a0e27c4cf7d48d2177266da466732eb3d2a8e0d01e5d8257a2a2e981e66074b1
