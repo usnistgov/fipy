@@ -1,0 +1,15 @@
+examples.reactiveWetting
+========================
+
+.. automodule:: examples.reactiveWetting
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   liquidVapor1D
+   liquidVapor2D
+   test

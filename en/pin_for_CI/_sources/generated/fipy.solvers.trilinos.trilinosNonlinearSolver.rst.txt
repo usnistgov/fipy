@@ -1,0 +1,12 @@
+fipy.solvers.trilinos.trilinosNonlinearSolver
+=============================================
+
+.. automodule:: fipy.solvers.trilinos.trilinosNonlinearSolver
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TrilinosNonlinearSolver
+   

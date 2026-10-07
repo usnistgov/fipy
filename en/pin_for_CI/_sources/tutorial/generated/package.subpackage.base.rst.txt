@@ -1,0 +1,12 @@
+package.subpackage.base
+=======================
+
+.. automodule:: package.subpackage.base
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Base
+   

@@ -1,0 +1,6 @@
+examples.diffusion.circleQuad
+=============================
+
+.. automodule:: examples.diffusion.circleQuad
+
+   

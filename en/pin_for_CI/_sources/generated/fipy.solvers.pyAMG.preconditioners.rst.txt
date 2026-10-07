@@ -1,0 +1,13 @@
+fipy.solvers.pyAMG.preconditioners
+==================================
+
+.. automodule:: fipy.solvers.pyAMG.preconditioners
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   smoothedAggregationPreconditioner
