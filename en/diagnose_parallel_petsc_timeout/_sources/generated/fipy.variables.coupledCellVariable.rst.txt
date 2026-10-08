@@ -1,0 +1,6 @@
+fipy.variables.coupledCellVariable
+==================================
+
+.. automodule:: fipy.variables.coupledCellVariable
+
+   
