@@ -108,9 +108,6 @@ class TestCommand(object):
         if self.trilinos:
             self.initialize_trilinos()
 
-        if self.pyamgx:
-            self.initialize_pyamgx()
-
         if self.inline:
             self.initialize_weave()
 
@@ -220,25 +217,6 @@ class TestCommand(object):
         except:
             pass
         import PyTrilinos
-
-
-    @staticmethod
-    def initialize_pyamgx():
-        ## Unregister the function pyamgx.finalize
-        ## from atexit. This prevents
-        ## pyamgx from printing an error message
-        ## about memory leaks and a dump of leaked memory.
-        ## The memory leaks happen because
-        ## the tests do not use the pyamgx solvers
-        ## "cleanly", i.e., they do not use the
-        ## `with` statement.
-        import pyamgx
-        import atexit
-        if hasattr(atexit, 'unregister'):
-            atexit.unregister(pyamgx.finalize)
-        else:
-            atexit._exithandlers.remove(
-                (pyamgx.finalize, (), {}))
 
 
     @staticmethod

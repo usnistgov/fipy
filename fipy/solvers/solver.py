@@ -442,9 +442,10 @@ class Solver(object):
 
         For reproducibility between suites, we select a solver with
         predictable characteristics (that counts out GMRES) and no
-        preconditioning.
+        preconditioning (AMGX does not have a CGS solver).
 
-        >>> Solver = fp.LinearCGSSolver
+        >>> Solver = fp.LinearCGSSolver # doctest: +NOT_PYAMGX_SOLVER
+        >>> Solver = fp.LinearCGSolver # doctest: +PYAMGX_SOLVER
         >>> solver = Solver(precon=None)
 
         >>> solver = eq._prepareLinearSystem(var=phi,
@@ -569,7 +570,7 @@ class Solver(object):
         ...                    <= iter_upper),
         ...                   error < enorm]
         ...         satisfied[criterion] = all(checks)
-        >>> print(all(satisfied.values()))
+        >>> print(all(satisfied.values())) # doctest: +NOT_PYAMGX_SOLVER
         True
         """
         pass
