@@ -1,6 +1,0 @@
-fipy.variables.minmodCellToFaceVariable
-=======================================
-
-.. automodule:: fipy.variables.minmodCellToFaceVariable
-
-   

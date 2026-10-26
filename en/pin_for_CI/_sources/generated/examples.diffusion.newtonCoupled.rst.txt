@@ -1,6 +1,0 @@
-examples.diffusion.newtonCoupled
-================================
-
-.. automodule:: examples.diffusion.newtonCoupled
-
-   

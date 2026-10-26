@@ -1,6 +1,0 @@
-examples.chemotaxis.input
-=========================
-
-.. automodule:: examples.chemotaxis.input
-
-   
