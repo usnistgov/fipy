@@ -106,6 +106,42 @@ class Term(object):
         return SparseMatrix
 
     def _getMatrix(self, SparseMatrix, mesh, nonZerosPerRow=0):
+        """
+
+        Test of issue #1235
+
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=1)
+        >>> n = fp.CellVariable(mesh=mesh, value=0., hasOld=True, name="n")
+        >>> p = fp.CellVariable(mesh=mesh, value=0., hasOld=True, name="p")
+
+        >>> def source():
+        ...     return (fp.ImplicitSourceTerm(coeff=2., var=n)
+        ...             + fp.ImplicitSourceTerm(coeff=3., var=p))
+
+        >>> r = source()
+        >>> eqn = fp.TransientTerm(var=n) + r
+        >>> eqp = fp.TransientTerm(var=p) + source()
+        >>> coupled = eqn & eqp
+
+        >>> coupled.cacheMatrix()
+        >>> _ = coupled.justResidualVector(dt=1.)
+        >>> print(coupled.matrix)
+         3.000000   3.000000  
+         2.000000   4.000000  
+
+        Ensure the same matrix is generated when the source term is reused
+
+        >>> eqp_shared = fp.TransientTerm(var=p) + r
+        >>> coupled_shared = eqn & eqp_shared
+
+        >>> coupled_shared.cacheMatrix()
+        >>> _ = coupled_shared.justResidualVector(dt=1.)
+        >>> print(coupled_shared.matrix)
+         3.000000   3.000000  
+         2.000000   4.000000  
+        """
         if not hasattr(self, "_sparsematrix"):
             self._sparsematrix = SparseMatrix(mesh=mesh, nonZerosPerRow=nonZerosPerRow)
         else:
