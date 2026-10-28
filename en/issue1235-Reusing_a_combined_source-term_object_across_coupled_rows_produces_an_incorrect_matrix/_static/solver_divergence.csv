@@ -1,0 +1,10 @@
+,,PETSc_,pyamgx_,SciPy_,Trilinos_
+:class:`~fipy.solvers.convergence.BreakdownDivergence`,Illegal input or the iterative solver has broken down.,|KSP_DIVERGED_BREAKDOWN|_,|AMGX_SOLVE_FAILED|_,|SciPy_lt0|_,|AZ_breakdown|_
+:class:`~fipy.solvers.convergence.IterationDivergence`,Maximum number of iterations was reached.,|KSP_DIVERGED_ITS|_,|AMGX_SOLVE_DIVERGED|_,|SciPy_gt0|_,|AZ_maxits|_
+:class:`~fipy.solvers.convergence.PreconditioningDivergence`,The system involving the preconditioner was ill-conditioned.,|KSP_DIVERGED_PC_FAILED|_,,,
+:class:`~fipy.solvers.convergence.IllConditionedPreconditionerDivergence`,"An inner product of the form :math:`\mathbf{x}^T \mathsf{P}^{-1} \mathbf{x}` was not positive, so the preconditioning matrix :math:`\mathsf{P}` does not appear to be positive definite.",|KSP_DIVERGED_INDEFINITE_PC|_,,,
+:class:`~fipy.solvers.convergence.IllConditionedDivergence`,The matrix :math:`\mathsf{L}` appears to be ill-conditioned.,|KSP_DIVERGED_INDEFINITE_MAT|_,,,|AZ_ill_cond|_
+:class:`~fipy.solvers.convergence.StagnatedDivergence`,The method stagnated.,,,,
+:class:`~fipy.solvers.convergence.OutOfRangeDivergence`,A scalar quantity became too small or too large to continue computing.,|KSP_DIVERGED_NANORINF|_,,,
+:class:`~fipy.solvers.convergence.NullDivergence`,Breakdown when solving the Hessenberg system within GMRES.,|KSP_DIVERGED_NULL|_,,,
+:class:`~fipy.solvers.convergence.ToleranceDivergence`,The residual norm increased by a factor of ``divtol``.,|KSP_DIVERGED_DTOL|_,,,

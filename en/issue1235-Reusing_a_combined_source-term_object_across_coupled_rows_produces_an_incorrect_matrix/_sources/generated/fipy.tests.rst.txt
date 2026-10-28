@@ -1,0 +1,16 @@
+fipy.tests
+==========
+
+.. automodule:: fipy.tests
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   doctestPlus
+   lateImportTest
+   test
+   testProgram

@@ -1,0 +1,15 @@
+fipy.tools.dimensions
+=====================
+
+.. automodule:: fipy.tools.dimensions
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   DictWithDefault
+   NumberDict
+   physicalField

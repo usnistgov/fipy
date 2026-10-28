@@ -1,0 +1,14 @@
+examples.flow
+=============
+
+.. automodule:: examples.flow
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   stokesCavity
+   test

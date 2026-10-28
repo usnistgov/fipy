@@ -1,0 +1,12 @@
+examples.phase.phaseViewer
+==========================
+
+.. automodule:: examples.phase.phaseViewer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PhaseViewer
+   

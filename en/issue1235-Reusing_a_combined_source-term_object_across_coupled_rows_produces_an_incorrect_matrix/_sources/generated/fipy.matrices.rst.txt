@@ -1,0 +1,18 @@
+fipy.matrices
+=============
+
+.. automodule:: fipy.matrices
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   offsetSparseMatrix
+   petscMatrix
+   scipyMatrix
+   sparseMatrix
+   test
+   trilinosMatrix

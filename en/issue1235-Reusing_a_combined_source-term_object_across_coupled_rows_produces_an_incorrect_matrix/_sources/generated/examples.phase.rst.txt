@@ -1,0 +1,25 @@
+examples.phase
+==============
+
+.. automodule:: examples.phase
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   anisotropy
+   anisotropyOLD
+   binary
+   binaryCoupled
+   impingement
+   missOrientation
+   phaseViewer
+   polyxtal
+   polyxtalCoupled
+   quaternary
+   simple
+   symmetry
+   test

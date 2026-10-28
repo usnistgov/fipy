@@ -1,0 +1,37 @@
+fipy.viewers
+============
+
+.. automodule:: fipy.viewers
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      Viewer
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DummyViewer
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      MeshDimensionError
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   matplotlibViewer
+   mayaviViewer
+   multiViewer
+   test
+   tsvViewer
+   viewer
+   vtkViewer

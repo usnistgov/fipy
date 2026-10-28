@@ -1,0 +1,6 @@
+examples.diffusion.newton
+=========================
+
+.. automodule:: examples.diffusion.newton
+
+   

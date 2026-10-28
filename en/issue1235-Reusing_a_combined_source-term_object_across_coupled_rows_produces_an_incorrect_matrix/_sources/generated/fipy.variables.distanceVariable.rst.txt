@@ -1,0 +1,12 @@
+fipy.variables.distanceVariable
+===============================
+
+.. automodule:: fipy.variables.distanceVariable
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DistanceVariable
+   

@@ -1,0 +1,6 @@
+examples.convection.advection.explicitUpwind
+============================================
+
+.. automodule:: examples.convection.advection.explicitUpwind
+
+   

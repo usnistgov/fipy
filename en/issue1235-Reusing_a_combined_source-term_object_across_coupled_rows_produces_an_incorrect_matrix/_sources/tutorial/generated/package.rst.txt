@@ -1,0 +1,13 @@
+﻿package
+=======
+
+.. automodule:: package
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   subpackage

@@ -1,0 +1,12 @@
+fipy.viewers.matplotlibViewer.matplotlib1DViewer
+================================================
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlib1DViewer
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Matplotlib1DViewer
+   

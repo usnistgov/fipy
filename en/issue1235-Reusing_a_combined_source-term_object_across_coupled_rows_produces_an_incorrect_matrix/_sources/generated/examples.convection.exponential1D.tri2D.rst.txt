@@ -1,0 +1,6 @@
+examples.convection.exponential1D.tri2D
+=======================================
+
+.. automodule:: examples.convection.exponential1D.tri2D
+
+   

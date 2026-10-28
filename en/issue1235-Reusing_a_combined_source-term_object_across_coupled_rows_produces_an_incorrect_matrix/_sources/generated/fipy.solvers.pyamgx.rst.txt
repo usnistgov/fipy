@@ -1,0 +1,23 @@
+fipy.solvers.pyamgx
+===================
+
+.. automodule:: fipy.solvers.pyamgx
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   aggregationAMGSolver
+   classicalAMGSolver
+   linearBiCGStabSolver
+   linearCGSolver
+   linearFGMRESSolver
+   linearGMRESSolver
+   linearLUSolver
+   preconditioners
+   pyAMGXSolver
+   pyamgxConvergence
+   smoothers

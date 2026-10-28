@@ -1,0 +1,6 @@
+fipy.matrices.scipyMatrix
+=========================
+
+.. automodule:: fipy.matrices.scipyMatrix
+
+   

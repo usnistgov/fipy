@@ -1,0 +1,12 @@
+fipy.variables.betaNoiseVariable
+================================
+
+.. automodule:: fipy.variables.betaNoiseVariable
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BetaNoiseVariable
+   
