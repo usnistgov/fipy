@@ -143,10 +143,21 @@ class Term(object):
          2.000000   4.000000  
         """
         if not hasattr(self, "_sparsematrix"):
-            self._sparsematrix = SparseMatrix(mesh=mesh, nonZerosPerRow=nonZerosPerRow)
+            self._sparsematrix = {}
+
+        if hasattr(SparseMatrix, "offsetRange"):
+            key = ((SparseMatrix.varIndex,
+                    SparseMatrix.equationIndex),
+                   SparseMatrix.offsetRange)
         else:
-            self._sparsematrix.zeroEntries()
-        return self._sparsematrix
+            key = ((0, 0), (1, 1))
+
+        if key not in self._sparsematrix:
+            self._sparsematrix[key] = SparseMatrix(mesh=mesh,
+                                                   nonZerosPerRow=nonZerosPerRow)
+        else:
+            self._sparsematrix[key].zeroEntries()
+        return self._sparsematrix[key]
 
     def reset(self):
         """Restore :class:`~fipy.terms.term.Term` to unused state
