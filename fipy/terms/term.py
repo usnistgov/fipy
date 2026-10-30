@@ -127,7 +127,8 @@ class Term(object):
 
         >>> coupled.cacheMatrix()
         >>> _ = coupled.justResidualVector(dt=1.)
-        >>> print(coupled.matrix.numpyArray) # doctest: +PROCESSOR_0
+        >>> numpyMatrix = coupled.matrix.numpyArray
+        >>> print(numpyMatrix) # doctest: +PROCESSOR_0
         [[ 3.  3.]
          [ 2.  4.]]
 
@@ -138,7 +139,8 @@ class Term(object):
 
         >>> coupled_shared.cacheMatrix()
         >>> _ = coupled_shared.justResidualVector(dt=1.)
-        >>> print(coupled_shared.matrix.numpyArray) # doctest: +PROCESSOR_0
+        >>> numpyMatrix = coupled_shared.matrix.numpyArray
+        >>> print(numpyMatrix) # doctest: +PROCESSOR_0
         [[ 3.  3.]
          [ 2.  4.]]
         """
