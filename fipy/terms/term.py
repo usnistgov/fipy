@@ -127,9 +127,9 @@ class Term(object):
 
         >>> coupled.cacheMatrix()
         >>> _ = coupled.justResidualVector(dt=1.)
-        >>> print(coupled.matrix)
-         3.000000   3.000000  
-         2.000000   4.000000  
+        >>> print(coupled.matrix.numpyArray)
+        [[ 3.  3.]
+         [ 2.  4.]]
 
         Ensure the same matrix is generated when the source term is reused
 
@@ -138,9 +138,9 @@ class Term(object):
 
         >>> coupled_shared.cacheMatrix()
         >>> _ = coupled_shared.justResidualVector(dt=1.)
-        >>> print(coupled_shared.matrix)
-         3.000000   3.000000  
-         2.000000   4.000000  
+        >>> print(coupled_shared.matrix.numpyArray)
+        [[ 3.  3.]
+         [ 2.  4.]]
         """
         if not hasattr(self, "_sparsematrix"):
             self._sparsematrix = {}
