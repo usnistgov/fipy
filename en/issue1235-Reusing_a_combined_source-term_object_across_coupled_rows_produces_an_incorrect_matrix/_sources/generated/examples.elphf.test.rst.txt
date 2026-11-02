@@ -1,6 +1,0 @@
-examples.elphf.test
-===================
-
-.. automodule:: examples.elphf.test
-
-   

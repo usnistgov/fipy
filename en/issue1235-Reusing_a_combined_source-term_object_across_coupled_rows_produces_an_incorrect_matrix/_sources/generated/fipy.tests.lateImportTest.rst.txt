@@ -1,6 +1,0 @@
-fipy.tests.lateImportTest
-=========================
-
-.. automodule:: fipy.tests.lateImportTest
-
-   
