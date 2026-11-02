@@ -12,11 +12,7 @@ def OffsetSparseMatrix(SparseMatrix,
     class OffsetSparseMatrixClass(SparseMatrix):
         def __init__(self, mesh, nonZerosPerRow=1, exactNonZeros=False,
                      numberOfVariables=numberOfVariables,
-                     numberOfEquations=numberOfEquations,
-                     equationIndex=equationIndex,
-                     varIndex=varIndex):
-            self.equationIndex = equationIndex
-            self.varIndex = varIndex
+                     numberOfEquations=numberOfEquations):
             if hasattr(nonZerosPerRow, "__iter__"):
                 # nonZerosPerRow is an iterable for each row.
                 # need to pad rows for other equations with zeros.
@@ -57,5 +53,12 @@ def OffsetSparseMatrix(SparseMatrix,
                 SparseMatrix.addAtDiagonal(self, tmp)
             else:
                 SparseMatrix.addAtDiagonal(self, vector)
+
+    # Term._getMatrix() needs to know where this offsetMatrix *class*
+    # is located. This seems like a use case for a metaclass, but I can't
+    # figure out how to make it work.
+    OffsetSparseMatrixClass.varIndex = varIndex
+    OffsetSparseMatrixClass.equationIndex = equationIndex
+    OffsetSparseMatrixClass.offsetRange = (numberOfVariables, numberOfEquations)
 
     return OffsetSparseMatrixClass
