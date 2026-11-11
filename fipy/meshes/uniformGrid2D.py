@@ -853,11 +853,13 @@ class UniformGrid2D(UniformGrid):
             (2, 220)
 
         Integer `dx` and `dy` must give the same cell distances, and the same
-        solution, as their float equivalents (#672).  The half-cell distances
-        at the boundaries were truncated to zero.
+        solution, as their float equivalents (#672).  The grid builder
+        converts `dx` to a float but keeps an integer `dy`, so with `dy=1`
+        the half-cell distances at the top and bottom boundaries were
+        truncated to zero.
 
-            >>> intMesh = UniformGrid2D(nx=3, ny=2, dx=1, dy=2)
-            >>> floatMesh = UniformGrid2D(nx=3, ny=2, dx=1., dy=2.)
+            >>> intMesh = UniformGrid2D(nx=3, ny=2, dx=1, dy=1)
+            >>> floatMesh = UniformGrid2D(nx=3, ny=2, dx=1., dy=1.)
             >>> print(numerix.allclose(intMesh._cellDistances,
             ...                        floatMesh._cellDistances))
             True
