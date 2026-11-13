@@ -298,14 +298,14 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellDistances(self):
-        Hdis = numerix.repeat((self.dy,), self.numberOfHorizontalFaces)
-        Hdis = numerix.reshape(Hdis, (self.nx, self.numberOfHorizontalRows))
+        Hdis = numerix.zeros((self.nx, self.numberOfHorizontalRows), dtype=numerix.float64)
+        Hdis[:] = self.dy
         if self.numberOfHorizontalRows > 0:
             Hdis[..., 0] = self.dy / 2.
             Hdis[..., -1] = self.dy / 2.
 
-        Vdis = numerix.repeat((self.dx,), self.numberOfFaces - self.numberOfHorizontalFaces)
-        Vdis = numerix.reshape(Vdis, (self.numberOfVerticalColumns, self.ny))
+        Vdis = numerix.zeros((self.numberOfVerticalColumns, self.ny), dtype=numerix.float64)
+        Vdis[:] = self.dx
         if self.numberOfVerticalColumns > 0:
             Vdis[0, ...] = self.dx / 2.
             Vdis[-1, ...] = self.dx / 2.
@@ -851,6 +851,25 @@ class UniformGrid2D(UniformGrid):
             (2, 100)
             >>> print(square.faceCenters.globalValue.shape)
             (2, 220)
+
+        Integer `dx` and `dy` must give the same cell distances, and the same
+        solution, as their float equivalents (#672).  The grid builder
+        converts `dx` to a float but keeps an integer `dy`, so with `dy=1`
+        the half-cell distances at the top and bottom boundaries were
+        truncated to zero.
+
+            >>> intMesh = UniformGrid2D(nx=3, ny=2, dx=1, dy=1)
+            >>> floatMesh = UniformGrid2D(nx=3, ny=2, dx=1., dy=1.)
+            >>> print(numerix.allclose(intMesh._cellDistances,
+            ...                        floatMesh._cellDistances))
+            True
+            >>> intVar = CellVariable(mesh=intMesh, value=0.)
+            >>> floatVar = CellVariable(mesh=floatMesh, value=0.)
+            >>> for v in (intVar, floatVar):
+            ...     v.constrain(1., where=v.mesh.facesLeft)
+            ...     (TransientTerm() == DiffusionTerm()).solve(var=v, dt=1.)
+            >>> print(numerix.allclose(intVar.globalValue, floatVar.globalValue))
+            True
         """
 
 def _test():
