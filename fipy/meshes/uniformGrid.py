@@ -51,11 +51,25 @@ class UniformGrid(AbstractMesh):
     _faceToCellDistances = property(_getFaceToCellDistances,
                                     _setFaceToCellDistances)
 
-    """Distance vectors, calculated as in :class:`~fipy.meshes.mesh.Mesh`"""
     @property
     def _cellToFaceDistanceVectors(self):
-        faceCenters = MA.repeat(self._faceCenters[..., numerix.NewAxis, :], 2, 1)
-        return faceCenters - numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
+        """Vector from each of the two cells of a face to the face center
+
+        On a uniform grid this is half the grid spacing along the face
+        normal: along the normal for the first cell and against it for the
+        second, which is masked on the boundary.
+        """
+        normals = self.faceNormals
+        spacing = numerix.array([getattr(self, d)
+                                 for d in ("dx", "dy", "dz")[:normals.shape[0]]],
+                                dtype=numerix.float64)
+        halfSpacing = numerix.sum(abs(normals) * spacing[..., numerix.NewAxis],
+                                  axis=0) / 2.
+        sides = numerix.array([1., -1.])[..., numerix.NewAxis]
+        vectors = normals[:, numerix.NewAxis, :] * sides * halfSpacing
+        mask = numerix.repeat(MA.getmaskarray(self.faceCellIDs)[numerix.NewAxis],
+                              normals.shape[0], axis=0)
+        return MA.array(vectors, mask=mask)
 
     @property
     def _cellDistanceVectors(self):
