@@ -298,13 +298,13 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellDistances(self):
-        Hdis = numerix.zeros((self.nx, self.numberOfHorizontalRows), 'd')
+        Hdis = numerix.zeros((self.nx, self.numberOfHorizontalRows), dtype=numerix.float64)
         Hdis[:] = self.dy
         if self.numberOfHorizontalRows > 0:
             Hdis[..., 0] = self.dy / 2.
             Hdis[..., -1] = self.dy / 2.
 
-        Vdis = numerix.zeros((self.numberOfVerticalColumns, self.ny), 'd')
+        Vdis = numerix.zeros((self.numberOfVerticalColumns, self.ny), dtype=numerix.float64)
         Vdis[:] = self.dx
         if self.numberOfVerticalColumns > 0:
             Vdis[0, ...] = self.dx / 2.
