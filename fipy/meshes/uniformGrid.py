@@ -80,7 +80,7 @@ class UniformGrid(AbstractMesh):
             ...           numerix.allclose(uniform.cellDistanceVectors,
             ...                            nonuniform.cellDistanceVectors),
             ...           numerix.allequal(MA.getmaskarray(u), MA.getmaskarray(n)),
-            ...           numerix.allclose(MA.filled(u, 0.), MA.filled(n, 0.))) # doctest: +SERIAL
+            ...           numerix.allclose(MA.filled(u, 0.), MA.filled(n, 0.)))
             UniformGrid1D True True True
             UniformGrid2D True True True
             UniformGrid3D True True True
