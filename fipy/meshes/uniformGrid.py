@@ -1,6 +1,8 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.abstractMesh import AbstractMesh
+from fipy.tools import numerix
+from fipy.tools.numerix import MA
 
 __all__ = ["UniformGrid"]
 
@@ -48,3 +50,57 @@ class UniformGrid(AbstractMesh):
 
     _faceToCellDistances = property(_getFaceToCellDistances,
                                     _setFaceToCellDistances)
+
+    @property
+    def _cellToFaceDistanceVectors(self):
+        """Vector from each of the two cells of a face to the face center
+
+        On a uniform grid this is half the grid spacing along the face
+        normal: along the normal for the first cell and against it for the
+        second, which is masked on the boundary.
+        """
+        normals = self.faceNormals
+        spacing = numerix.array([getattr(self, d)
+                                 for d in ("dx", "dy", "dz")[:normals.shape[0]]],
+                                dtype=numerix.float64)
+        halfSpacing = numerix.sum(abs(normals) * spacing[..., numerix.NewAxis],
+                                  axis=0) / 2.
+        sides = numerix.array([1., -1.])[..., numerix.NewAxis]
+        vectors = normals[:, numerix.NewAxis, :] * sides * halfSpacing
+        mask = numerix.repeat(MA.getmaskarray(self.faceCellIDs)[numerix.NewAxis],
+                              normals.shape[0], axis=0)
+        return MA.array(vectors, mask=mask)
+
+    @property
+    def _cellDistanceVectors(self):
+        """Vector from the first to the second cell of each face, or from
+        the cell to the face on the boundary
+
+        Uniform grids give the same vectors as the equivalent non-uniform
+        grids, which are calculated by :class:`~fipy.meshes.mesh.Mesh`
+        (#706).
+
+            >>> from fipy import Grid1D, Grid2D, Grid3D
+            >>> for uniform, nonuniform in (
+            ...         (Grid1D(nx=3, dx=0.5),
+            ...          Grid1D(dx=[0.5] * 3)),
+            ...         (Grid2D(nx=3, ny=2, dx=0.5, dy=2.),
+            ...          Grid2D(dx=[0.5] * 3, dy=[2.] * 2)),
+            ...         (Grid3D(nx=3, ny=2, nz=2, dx=0.5, dy=2., dz=1.5),
+            ...          Grid3D(dx=[0.5] * 3, dy=[2.] * 2, dz=[1.5] * 2))):
+            ...     u = uniform.cellToFaceDistanceVectors
+            ...     n = nonuniform.cellToFaceDistanceVectors
+            ...     print(type(uniform).__name__,
+            ...           numerix.allclose(uniform.cellDistanceVectors,
+            ...                            nonuniform.cellDistanceVectors),
+            ...           numerix.allequal(MA.getmaskarray(u), MA.getmaskarray(n)),
+            ...           numerix.allclose(MA.filled(u, 0.), MA.filled(n, 0.)))
+            UniformGrid1D True True True
+            UniformGrid2D True True True
+            UniformGrid3D True True True
+        """
+        vectors = numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
+        vectors = vectors[..., 1, :] - vectors[..., 0, :]
+        return MA.filled(MA.where(MA.getmaskarray(vectors),
+                                  self._cellToFaceDistanceVectors[:, 0],
+                                  vectors))
