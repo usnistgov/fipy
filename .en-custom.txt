@@ -141,6 +141,7 @@ google
 GPU
 Granasy
 GRICAD
+Gummel
 Guyer
 gzip
 gzipped
@@ -321,6 +322,7 @@ Runge-Kutta
 runtime
 Ryo
 Saylor
+Scharfetter
 Schroedinger
 Scikit-fmm
 scipy
