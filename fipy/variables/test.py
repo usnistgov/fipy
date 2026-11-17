@@ -24,6 +24,7 @@ def _suite():
             'fipy.variables.unaryOperatorVariable',
             'fipy.variables.coupledCellVariable',
             'fipy.variables.cellToFaceVariable',
+            'fipy.variables.scharfetterGummelFaceVariable',
             'fipy.variables.faceGradVariable',
             'fipy.variables.gaussCellGradVariable',
             'fipy.variables.modCellGradVariable',
